@@ -1,0 +1,63 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 4284377 */
+  src: url('iconfont.woff2?t=1697422154408') format('woff2'),
+       url('iconfont.woff?t=1697422154408') format('woff'),
+       url('iconfont.ttf?t=1697422154408') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-category:before {
+  content: "\e600";
+}
+
+.icon-delivery:before {
+  content: "\e70e";
+}
+
+.icon-log:before {
+  content: "\e69a";
+}
+
+.icon-finance:before {
+  content: "\e8ae";
+}
+
+.icon-order:before {
+  content: "\e605";
+}
+
+.icon-config:before {
+  content: "\e617";
+}
+
+.icon-icon-shishi:before {
+  content: "\e687";
+}
+
+.icon-brand:before {
+  content: "\e6a9";
+}
+
+.icon-user-group:before {
+  content: "\e606";
+}
+
+.icon-access:before {
+  content: "\e69c";
+}
+
+.icon-store:before {
+  content: "\e772";
+}
+
+.icon-product:before {
+  content: "\e833";
+}
+
