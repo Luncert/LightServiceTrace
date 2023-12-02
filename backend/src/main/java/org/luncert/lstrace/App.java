@@ -1,11 +1,11 @@
 package org.luncert.lstrace;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.luncert.lstrace.server.SyslogUdpServer;
 
-@SpringBootApplication
 public class App {
-  public static void main(String[] args) {
-    SpringApplication.run(App.class, args);
+
+  public static void main(String[] args) throws Exception {
+    int port = args.length > 0 ? Integer.parseInt(args[0]) : 6000;
+    new SyslogUdpServer(port).run();
   }
 }

@@ -9,17 +9,12 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
-public class SyslogServer {
+public class SyslogTcpServer {
 
   private final int port;
 
-  public SyslogServer(int port) {
+  public SyslogTcpServer(int port) {
     this.port = port;
-  }
-
-  public static void main(String[] args) throws Exception {
-    int port = args.length > 0 ? Integer.parseInt(args[0]) : 3000;
-    new SyslogServer(port).run();
   }
 
   public void run() throws Exception {

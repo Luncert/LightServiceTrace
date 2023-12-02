@@ -3,6 +3,7 @@ package org.luncert.lstrace.server;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.socket.DatagramPacket;
 import org.luncert.lstrace.syslog.IRfc5424SyslogParser;
 import org.luncert.lstrace.syslog.Rfc5424SyslogEvent;
 import org.luncert.lstrace.syslog.Rfc5425ByteBufSyslogParser;
@@ -14,8 +15,8 @@ public class SyslogProcessingHandler
 
   @Override
   public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-    ByteBuf m = (ByteBuf) msg;
-    Rfc5424SyslogEvent syslogEvent = parser.parse(m);
+    DatagramPacket m = (DatagramPacket) msg;
+    Rfc5424SyslogEvent syslogEvent = parser.parse(m.content());
     m.release();
     System.out.println(syslogEvent);
   }

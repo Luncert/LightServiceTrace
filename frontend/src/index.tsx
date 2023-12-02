@@ -7,7 +7,7 @@ import { ThemeProvider, createTheme } from '@suid/material';
 import initI18n from './i18n/config';
 import Home from './view/Home';
 
-initI18n('zh');
+initI18n('en');
 
 const root = document.getElementById('root');
 

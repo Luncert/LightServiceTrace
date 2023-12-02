@@ -32,10 +32,14 @@ public class Rfc5424BytesSyslogParser implements IRfc5424SyslogParser<byte[]> {
         .host(token(' '))
         .appName(token(' '))
         .procId(token(' '))
-        .msgId(token(' '))
-        .structuredData(parserData.raw[parserData.cursor] == '['
-            ? token((']')) : token(' '));
+        .msgId(token(' '));
 
+    if (parserData.raw[parserData.cursor] == '[') {
+      builder.structuredData(token(']'));
+      parserData.cursor += 1;
+    } else {
+      builder.structuredData(token(' '));
+    }
 
     if (parserData.cursor < raw.length) {
       if (match(3, UTF_8_BOM)) {
