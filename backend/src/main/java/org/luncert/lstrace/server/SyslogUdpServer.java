@@ -10,12 +10,10 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
-public class SyslogUdpServer {
+public class SyslogUdpServer extends AbstractServer {
 
-  private final int port;
-
-  public SyslogUdpServer(int port) {
-    this.port = port;
+  public SyslogUdpServer(SyslogServerConfig config) {
+    super(config);
   }
 
   public void run() throws Exception {
@@ -38,7 +36,7 @@ public class SyslogUdpServer {
             }
           });
 
-      ChannelFuture f = b.bind(port).sync();
+      ChannelFuture f = b.bind(config.getPort()).sync();
       f.channel().closeFuture().sync();
     } finally {
       group.shutdownGracefully();
