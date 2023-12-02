@@ -1,6 +1,4 @@
-package org.luncert.lstrace.syslog;
-
-import io.netty.buffer.ByteBuf;
+package org.luncert.lstrace.syslog.rfc5424;
 
 public interface IRfc5424SyslogParser<I> {
 

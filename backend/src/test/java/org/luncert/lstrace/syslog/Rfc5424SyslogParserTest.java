@@ -2,6 +2,8 @@ package org.luncert.lstrace.syslog;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.luncert.lstrace.syslog.rfc5424.Rfc5424BytesSyslogParser;
+import org.luncert.lstrace.syslog.rfc5424.Rfc5424SyslogEvent;
 
 public class Rfc5424SyslogParserTest {
 

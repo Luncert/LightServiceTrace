@@ -1,4 +1,4 @@
-package org.luncert.lstrace.server;
+package org.luncert.lstrace.syslog.server;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package org.luncert.lstrace.syslog;
+package org.luncert.lstrace.syslog.rfc5424;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;

@@ -1,4 +1,4 @@
-package org.luncert.lstrace.server;
+package org.luncert.lstrace.syslog.server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -8,14 +8,13 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class SyslogTcpServer {
 
   private final int port;
-
-  public SyslogTcpServer(int port) {
-    this.port = port;
-  }
+  private final SyslogProcessingHandler syslogProcessingHandler;
 
   public void run() throws Exception {
     EventLoopGroup bossGroup = new NioEventLoopGroup();
@@ -30,7 +29,7 @@ public class SyslogTcpServer {
               ch.pipeline().addLast(
 //                  new RequestDecoder(),
 //                  new ResponseDataEncoder(),
-                  new SyslogProcessingHandler());
+                  syslogProcessingHandler);
             }
           }).option(ChannelOption.SO_BACKLOG, 128)
           .childOption(ChannelOption.SO_KEEPALIVE, true);

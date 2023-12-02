@@ -1,4 +1,4 @@
-package org.luncert.lstrace.server;
+package org.luncert.lstrace.syslog.server;
 
 public abstract class AbstractServer {
 

@@ -1,4 +1,4 @@
-package org.luncert.lstrace.syslog;
+package org.luncert.lstrace.syslog.rfc5424;
 
 public class Rfc5424SyslogException extends RuntimeException {
 

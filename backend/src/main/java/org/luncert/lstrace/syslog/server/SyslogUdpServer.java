@@ -1,4 +1,4 @@
-package org.luncert.lstrace.server;
+package org.luncert.lstrace.syslog.server;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -12,8 +12,12 @@ import io.netty.handler.logging.LoggingHandler;
 
 public class SyslogUdpServer extends AbstractServer {
 
-  public SyslogUdpServer(SyslogServerConfig config) {
+  private final SyslogProcessingHandler syslogProcessingHandler;
+
+  public SyslogUdpServer(SyslogServerConfig config,
+                         SyslogProcessingHandler syslogProcessingHandler) {
     super(config);
+    this.syslogProcessingHandler = syslogProcessingHandler;
   }
 
   public void run() throws Exception {
@@ -32,7 +36,7 @@ public class SyslogUdpServer extends AbstractServer {
 //                  new RequestDecoder(),
 //                  new ResponseDataEncoder(),
                   new LoggingHandler(LogLevel.INFO),
-                  new SyslogProcessingHandler());
+                  syslogProcessingHandler);
             }
           });
 

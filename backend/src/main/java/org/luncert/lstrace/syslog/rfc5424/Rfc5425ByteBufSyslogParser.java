@@ -1,4 +1,4 @@
-package org.luncert.lstrace.syslog;
+package org.luncert.lstrace.syslog.rfc5424;
 
 import io.netty.buffer.ByteBuf;
 import java.nio.charset.StandardCharsets;

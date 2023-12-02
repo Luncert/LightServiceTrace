@@ -6,10 +6,12 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import org.luncert.lstrace.exception.InvalidUsageOfOptionException;
 import org.luncert.lstrace.exception.UnrecognizedOptionException;
-import org.luncert.lstrace.server.Protocol;
-import org.luncert.lstrace.server.SyslogServerConfig;
-import org.luncert.lstrace.server.SyslogServerConfig.SyslogServerConfigBuilder;
-import org.luncert.lstrace.server.SyslogUdpServer;
+import org.luncert.lstrace.syslog.server.Protocol;
+import org.luncert.lstrace.syslog.server.SyslogProcessingHandler;
+import org.luncert.lstrace.syslog.server.SyslogServerConfig;
+import org.luncert.lstrace.syslog.server.SyslogServerConfig.SyslogServerConfigBuilder;
+import org.luncert.lstrace.syslog.server.SyslogUdpServer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -18,6 +20,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class App implements ApplicationRunner {
 
+  @Autowired
+  private SyslogProcessingHandler syslogProcessingHandler;
+
   public static void main(String[] args) {
     SpringApplication.run(App.class, args);
   }
@@ -25,8 +30,7 @@ public class App implements ApplicationRunner {
   @Override
   public void run(ApplicationArguments args) throws Exception {
     SyslogServerConfig config = createConfig(args);
-    System.out.println(config);
-    new SyslogUdpServer(config).run();
+    new SyslogUdpServer(config, syslogProcessingHandler).run();
   }
 
   private final Map<String, BiConsumer<SyslogServerConfigBuilder, List<String>>>
