@@ -3,28 +3,25 @@ package org.luncert.lstrace.syslog;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-public class Rfc5424SyslogParser {
+public class Rfc5424BytesSyslogParser implements IRfc5424SyslogParser<byte[]> {
 
-  private static final char SP = ' ';
-  private static final byte[] UTF_8_BOM = {(byte) 0xef, (byte) 0xbb, (byte) 0xbf};
+  private final ThreadLocal<BytesParserData> dataThreadLocal = new ThreadLocal<>();
 
-
-  private final ThreadLocal<ParserData> dataThreadLocal = new ThreadLocal<>();
-
-  private static class ParserData {
+  private static class BytesParserData {
 
     private int cursor = 0;
     private final byte[] raw;
 
-    public ParserData(byte[] raw) {
+    public BytesParserData(byte[] raw) {
       this.raw = raw;
     }
   }
 
   public Rfc5424SyslogEvent parse(byte[] raw) {
     Rfc5424SyslogEvent.Rfc5424SyslogEventBuilder builder = Rfc5424SyslogEvent.builder();
-    ParserData parserData = new ParserData(raw);
+    BytesParserData parserData = new BytesParserData(raw);
     dataThreadLocal.set(parserData);
+
     String prioVersion = token(SP);
     if (prioVersion == null) {
       throw new Rfc5424SyslogException("prioVersion missing");
@@ -75,7 +72,7 @@ public class Rfc5424SyslogParser {
   }
 
   private String token(char c) {
-    ParserData parserData = dataThreadLocal.get();
+    BytesParserData parserData = dataThreadLocal.get();
     for (int i = parserData.cursor; i < parserData.raw.length; i++) {
       if (parserData.raw[i] == c) {
         int cursor = parserData.cursor;
@@ -89,7 +86,7 @@ public class Rfc5424SyslogParser {
   }
 
   private boolean match(int len, byte[] pattern) {
-    ParserData parserData = dataThreadLocal.get();
+    BytesParserData parserData = dataThreadLocal.get();
     int j = 0;
     for (int i = parserData.cursor; i < parserData.raw.length; i++, j++) {
       if (parserData.raw[i] != pattern[j]) {

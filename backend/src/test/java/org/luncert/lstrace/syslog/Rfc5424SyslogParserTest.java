@@ -5,7 +5,7 @@ import org.junit.Test;
 
 public class Rfc5424SyslogParserTest {
 
-  public final Rfc5424SyslogParser parser = new Rfc5424SyslogParser();
+  public final Rfc5424BytesSyslogParser parser = new Rfc5424BytesSyslogParser();
 
   @Test
   public void test() {
