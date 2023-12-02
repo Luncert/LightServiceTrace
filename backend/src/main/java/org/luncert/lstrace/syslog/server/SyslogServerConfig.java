@@ -16,5 +16,5 @@ public class SyslogServerConfig {
   private String host;
 
   @Builder.Default
-  private int port = 6000;
+  private int port = 7522;
 }

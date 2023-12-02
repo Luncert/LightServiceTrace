@@ -1,6 +1,10 @@
 
 export default ({
   title: "Service Trace",
+  menu: {
+    "log-explorer": "Explore",
+    "log-streaming": "Streaming"
+  },
   labels: {
   },
   model: {

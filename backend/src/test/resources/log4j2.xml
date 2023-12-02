@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
   <Appenders>
-    <Syslog name="Syslog" format="RFC5424" host="localhost" port="6000"
+    <Syslog name="Syslog" format="RFC5424" host="localhost" port="7522"
             protocol="UDP" appName="test" facility="LOCAL0" />
     <Console name="ConsoleAppender" target="SYSTEM_OUT">
       <PatternLayout pattern="%style{%date{DEFAULT}}{yellow} %highlight{%-5level}{FATAL=bg_red, ERROR=red, WARN=yellow, INFO=green} %message"/>
