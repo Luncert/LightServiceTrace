@@ -1,0 +1,74 @@
+{
+  "textMateRules": [
+    {
+      "scope": "log.constant",
+      "style": {
+        "foreground": "rgb(214, 233, 105)"
+      }
+    },
+    {
+      "scope": "log.date",
+      "style": {
+        "foreground": "rgb(105, 203, 233)"
+      }
+    },
+    {
+      "scope": "log.debug",
+      "style": {
+        "foreground": "rgb(105, 114, 233)"
+      }
+    },
+    {
+      "scope": "log.error",
+      "style": {
+        "foreground": "rgb(233, 105, 105)"
+      }
+    },
+    {
+      "scope": "log.exception",
+      "style": {
+        "foreground": "rgb(207, 49, 49)"
+      }
+    },
+    {
+      "scope": "log.exceptiontype",
+      "style": {
+        "foreground": "rgb(177, 5, 5)"
+      }
+    },
+    {
+      "scope": "log.info",
+      "style": {
+        "foreground": "rgb(80, 158, 84)"
+      }
+    },
+    {
+      "scope": "log.string",
+      "style": {
+        "foreground": "rgb(115, 172, 150)"
+      }
+    },
+    {
+      "scope": "log.verbose",
+      "style": {
+        "foreground": "rgb(61, 64, 100)"
+      }
+    },
+    {
+      "scope": "log.warning",
+      "style": {
+        "foreground": "rgb(161, 152, 26)"
+      }
+    },
+    {
+      "scope": "log.dataLink",
+      "style": {
+        "foreground": "rgb(81, 126, 150)",
+        "fontStyle": "italic"
+      }
+    }
+  ],
+  "customPatterns": [
+
+  ]
+}

@@ -34,4 +34,10 @@ declare global {
     structuredData: string;
     message: string;
   }
+
+  interface TerminalStyle {
+    foreground?: string;
+    background?: string;
+    fontStyle?: string;
+  }
 }

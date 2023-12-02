@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "",
   "scripts": {
+    "antlr": "antlr4ts -visitor src/antlr/grammar/JSON.g4 && antlr4ts -visitor src/antlr/grammar/ToString.g4",
     "start": "vite",
     "dev": "vite",
     "build": "vite build",
@@ -11,6 +12,7 @@
   "license": "MIT",
   "devDependencies": {
     "@suid/vite-plugin": "^0.1.5",
+    "antlr4ts-cli": "^0.5.0-alpha.4",
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.31",
     "solid-devtools": "^0.27.3",
@@ -24,13 +26,20 @@
     "@suid/icons-material": "^0.6.11",
     "@suid/material": "^0.15.1",
     "@types/uuid": "^9.0.7",
+    "antlr4ts": "^0.5.0-alpha.4",
     "axios": "^1.6.2",
+    "color-parse": "^2.0.0",
     "i": "^0.3.7",
     "i18next": "^23.7.7",
     "npm": "^10.2.3",
     "sass": "^1.69.3",
     "solid-icons": "^1.0.12",
     "solid-js": "^1.7.6",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "vscode-oniguruma": "^2.0.1",
+    "vscode-textmate": "^9.0.0",
+    "xterm": "^5.3.0",
+    "xterm-addon-fit": "^0.8.0",
+    "xterm-addon-search": "^0.13.0"
   }
 }
