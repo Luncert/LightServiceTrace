@@ -1,29 +1,17 @@
 package org.luncert.lstrace.syslog;
 
 import io.netty.buffer.ByteBuf;
-import java.io.ByteArrayOutputStream;
-import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 public class Rfc5425ByteBufSyslogParser implements IRfc5424SyslogParser<ByteBuf> {
 
   private final ThreadLocal<ByteBufParserData> dataThreadLocal = new ThreadLocal<>();
-  private static final Field byteArrayOutputStreamRef;
-
-  static {
-    try {
-      byteArrayOutputStreamRef = ByteArrayOutputStream.class.getDeclaredField("buf");
-    } catch (NoSuchFieldException e) {
-      throw new RuntimeException(e);
-    }
-  }
 
   private static class ByteBufParserData {
 
     private int cursor = 0;
     private final ByteBuf byteBuf;
-    private final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    private final ExtendedByteArrayOutputStream outputStream = new ExtendedByteArrayOutputStream();
 
     public ByteBufParserData(ByteBuf byteBuf) {
       this.byteBuf = byteBuf;
@@ -46,17 +34,21 @@ public class Rfc5425ByteBufSyslogParser implements IRfc5424SyslogParser<ByteBuf>
         .host(token(' '))
         .appName(token(' '))
         .procId(token(' '))
-        .msgId(token(' '))
-        .structuredData(getBufOfOutputStream()[parserData.cursor] == '['
-            ? token((']')) : token(' '));
+        .msgId(token(' '));
 
-    if (parserData.cursor < getBufOfOutputStream().length) {
+    if (nextByte() == '[') {
+      builder.structuredData(token(']'));
+      parserData.cursor += 2;
+    } else {
+      builder.structuredData(token(' '));
+      parserData.cursor += 1;
+    }
+
+    if (parserData.byteBuf.readableBytes() > 0) {
       if (match(3, UTF_8_BOM)) {
         parserData.cursor += 3;
       }
-      builder.message(
-          new String(copyOfOutputStream(parserData.cursor, parserData.outputStream.size()),
-          StandardCharsets.UTF_8));
+      builder.message(new String(readAll(), StandardCharsets.UTF_8));
     }
 
     builder.raw(parserData.outputStream.toByteArray());
@@ -95,22 +87,12 @@ public class Rfc5425ByteBufSyslogParser implements IRfc5424SyslogParser<ByteBuf>
       if (b == c) {
         int cursor = parserData.cursor;
         parserData.cursor = i + 1;
-        return new String(copyOfOutputStream(cursor, i), StandardCharsets.UTF_8);
+        return new String(parserData.outputStream.splice(cursor, i), StandardCharsets.UTF_8);
       }
       i++;
     }
     parserData.cursor = i;
     return null;
-  }
-
-  private byte nextByte() {
-    ByteBufParserData parserData = dataThreadLocal.get();
-    if (parserData.byteBuf.readableBytes() > 1) {
-      byte b = parserData.byteBuf.readByte();
-      parserData.outputStream.write(b);
-      return b;
-    }
-    return -1;
   }
 
   private boolean match(int len, byte[] pattern) {
@@ -128,15 +110,20 @@ public class Rfc5425ByteBufSyslogParser implements IRfc5424SyslogParser<ByteBuf>
     return j == pattern.length;
   }
 
-  private byte[] copyOfOutputStream(int start, int end) {
-    return Arrays.copyOfRange(getBufOfOutputStream(), start, end);
+  private byte nextByte() {
+    ByteBufParserData parserData = dataThreadLocal.get();
+    if (parserData.byteBuf.readableBytes() > 0) {
+      byte b = parserData.byteBuf.readByte();
+      parserData.outputStream.write(b);
+      return b;
+    }
+    return -1;
   }
 
-  private byte[] getBufOfOutputStream() {
-    try {
-      return ((byte[]) byteArrayOutputStreamRef.get(dataThreadLocal.get().outputStream));
-    } catch (IllegalAccessException e) {
-      throw new RuntimeException(e);
-    }
+  private byte[] readAll() {
+    ByteBufParserData parserData = dataThreadLocal.get();
+    int cursor = parserData.cursor;
+    while (nextByte() != -1);
+    return parserData.outputStream.splice(cursor, parserData.outputStream.size());
   }
 }

@@ -17,5 +17,6 @@ public class SyslogProcessingHandler
     ByteBuf m = (ByteBuf) msg;
     Rfc5424SyslogEvent syslogEvent = parser.parse(m);
     m.release();
+    System.out.println(syslogEvent);
   }
 }

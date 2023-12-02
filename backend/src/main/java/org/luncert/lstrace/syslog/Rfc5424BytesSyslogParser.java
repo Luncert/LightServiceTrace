@@ -88,7 +88,7 @@ public class Rfc5424BytesSyslogParser implements IRfc5424SyslogParser<byte[]> {
   private boolean match(int len, byte[] pattern) {
     BytesParserData parserData = dataThreadLocal.get();
     int j = 0;
-    for (int i = parserData.cursor; i < parserData.raw.length; i++, j++) {
+    for (int i = parserData.cursor; i < parserData.raw.length && i < len; i++, j++) {
       if (parserData.raw[i] != pattern[j]) {
         break;
       }
