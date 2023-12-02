@@ -9,12 +9,12 @@ public class Rfc5424SyslogParser {
   private static final byte[] UTF_8_BOM = {(byte) 0xef, (byte) 0xbb, (byte) 0xbf};
 
 
-  private ThreadLocal<ParserData> dataThreadLocal = new ThreadLocal<>();
+  private final ThreadLocal<ParserData> dataThreadLocal = new ThreadLocal<>();
 
-  private class ParserData {
+  private static class ParserData {
 
     private int cursor = 0;
-    private byte[] raw;
+    private final byte[] raw;
 
     public ParserData(byte[] raw) {
       this.raw = raw;
@@ -29,7 +29,8 @@ public class Rfc5424SyslogParser {
     if (prioVersion == null) {
       throw new Rfc5424SyslogException("prioVersion missing");
     }
-    builder.prioVersion(prioVersion)
+    builder.raw(raw)
+        .prioVersion(prioVersion)
         .timestamp(token(' '))
         .host(token(' '))
         .appName(token(' '))
