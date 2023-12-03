@@ -1,4 +1,4 @@
-import * as parse from 'color-parse';
+import parse from 'color-parse';
 
 export const Mod = {
   Bold: 1,

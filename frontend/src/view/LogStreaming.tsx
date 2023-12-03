@@ -3,6 +3,7 @@ import { names } from "../mgrui/lib/components/utils";
 import { onCleanup, onMount } from "solid-js";
 import Xterm from "./xterm/Xterm";
 import getBackend from "../service/Backend";
+import processLog from "./xterm/logstream/LogProcessor";
 
 export default function LogStreaming() {
   const theme = useTheme();
@@ -13,8 +14,6 @@ export default function LogStreaming() {
 
   onMount(() => {
     term.attach(ref);
-    term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ');
-
     conn = getBackend().streaming(term);
   })
 

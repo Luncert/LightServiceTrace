@@ -1,9 +1,9 @@
 import { Registry, parseRawGrammar, INITIAL, IGrammar } from 'vscode-textmate';
 import { loadWASM, OnigScanner, OnigString } from 'vscode-oniguruma';
 import { styledString, getFontStyle } from '../Colors';
-// import wasmBin from 'vscode-oniguruma/release/main';
-import logLang from './log.lang.xml';
-import logColor from './log.color.json';
+import wasmBinUrl from 'vscode-oniguruma/release/onig.wasm?url';
+import logLang from './log-lang.xml?raw';
+import logColor from './log-color.json';
 
 interface ScopeStyleDef {
   scope: string;
@@ -19,10 +19,8 @@ function loadColorSchema(colorDefs: ScopeStyleDef[]) {
 // Create a registry that can create a grammar from a scope name.
 // https://github.com/textmate/javascript.tmbundle/blob/master/Syntaxes/JavaScript.plist
 function getRegistry() {
-  const vscodeOnigurumaLib = fetch(
-    "https://raw.githubusercontent.com/microsoft/vscode-oniguruma/main/out/onig.wasm"
-  ).then(res => res.arrayBuffer())
-  .then(buf => loadWASM(buf))
+  const vscodeOnigurumaLib = fetch(wasmBinUrl)
+  .then((wasmBin) => loadWASM(wasmBin))
   .then(() => {
     return {
       createOnigScanner(patterns: any) {
@@ -32,8 +30,6 @@ function getRegistry() {
         return new OnigString(s);
       },
     };
-  }).catch((err) => {
-    console.error(err);
   });
   return new Registry({
     onigLib: vscodeOnigurumaLib,
@@ -48,7 +44,7 @@ function getRegistry() {
   });
 }
 
-const PLISTS = {
+const PLISTS: any = {
   'text.log': logLang,
 };
 
@@ -58,14 +54,13 @@ const colorSchema: Map<string, TerminalStyle> = loadColorSchema(
 
 const registry = getRegistry();
 
-function getStyle(scopeNames: string[]): TerminalStyle | null {
+function getStyle(scopeNames: string[]): TerminalStyle | undefined {
   // eslint-disable-next-line no-restricted-syntax
   for (const scope of scopeNames) {
     if (colorSchema.has(scope)) {
       return colorSchema.get(scope);
     }
   }
-  return null;
 }
 
 let grammar: IGrammar | null;
@@ -100,7 +95,7 @@ export default async function highlight(
               line.substring(token.startIndex, token.endIndex),
               style.foreground,
               style.background,
-              getFontStyle(style.fontStyle)
+              getFontStyle(style.fontStyle || '')
             )
           );
           prevIndex = token.endIndex;

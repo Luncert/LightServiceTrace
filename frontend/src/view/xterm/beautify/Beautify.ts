@@ -1,34 +1,34 @@
 import { CharStreams, CodePointCharStream, CommonToken, CommonTokenStream, RuleContext, Token } from 'antlr4ts';
 import { Tree } from 'antlr4ts/tree/Tree';
-import { JSONLexer } from '../../../antlr/grammar/JSONLexer';
-import { JSONParser } from '../../../antlr/grammar/JSONParser';
-import { ToStringLexer } from '../../../antlr/grammar/ToStringLexer';
-import { ToStringParser } from '../../../antlr/grammar/ToStringParser';
+// import { JSONLexer } from '../../../antlr/grammar/JSONLexer';
+// import { JSONParser } from '../../../antlr/grammar/JSONParser';
+// import { ToStringLexer } from '../../../antlr/grammar/ToStringLexer';
+// import { ToStringParser } from '../../../antlr/grammar/ToStringParser';
 
-const beautifierProviders = [
-  () => new JsonBeautifyContext(),
-  () => new ToStringBeautifyContext()
-]
+// const beautifierProviders = [
+//   () => new JsonBeautifyContext(),
+//   () => new ToStringBeautifyContext()
+// ]
 
 export function beautify(s: string) {
-  for (const provider of beautifierProviders) {
-    try {
-      return provider().beautify(s);
-    } catch (err) {
-      // console.error(err)
-    }
-  }
+  // for (const provider of beautifierProviders) {
+  //   try {
+  //     return provider().beautify(s);
+  //   } catch (err) {
+  //     // console.error(err)
+  //   }
+  // }
   console.warn('beautify failed')
   return s;
 }
 
-function beautifyJson(s: string) {
-  return new JsonBeautifyContext().beautify(s);
-}
+// function beautifyJson(s: string) {
+//   return new JsonBeautifyContext().beautify(s);
+// }
 
-function beautifyToString(s: string) {
-  return new ToStringBeautifyContext().beautify(s);
-}
+// function beautifyToString(s: string) {
+//   return new ToStringBeautifyContext().beautify(s);
+// }
 
 interface ParseResult {
   tokens: Token[];
@@ -105,55 +105,55 @@ abstract class BeautifyContext {
   }
 }
 
-class JsonBeautifyContext extends BeautifyContext {
+// class JsonBeautifyContext extends BeautifyContext {
 
-  constructor() {
-    super();
-    this.addAction(() => this.appendToken().newline().indent(1), 1, 5)
-      .addAction(() => this.newline().indent(-1).appendToken(), 3, 6)
-      .addAction(() => this.appendToken().newline().indent(), 2)
-      .addAction(() => this.appendToken().space(), 4)
-  }
+//   constructor() {
+//     super();
+//     this.addAction(() => this.appendToken().newline().indent(1), 1, 5)
+//       .addAction(() => this.newline().indent(-1).appendToken(), 3, 6)
+//       .addAction(() => this.appendToken().newline().indent(), 2)
+//       .addAction(() => this.appendToken().space(), 4)
+//   }
 
-  protected parse(charStream: CodePointCharStream): ParseResult {
-    let parseErrorCount = 0;
-    const lexer = new JSONLexer(charStream);
-    lexer.removeErrorListeners();
-    const tokenStream = new CommonTokenStream(lexer);
-    const parser = new JSONParser(tokenStream);
-    lexer.addErrorListener({ syntaxError: () => parseErrorCount++ });
-    parser.removeErrorListeners();
-    parser.json();
-    // printParseTree(parser.data(), parser.ruleNames);
-    // console.log(parseErrorCount)
-    return { tokens: tokenStream.getTokens(), errorCount: parseErrorCount };
-  }
-}
+//   protected parse(charStream: CodePointCharStream): ParseResult {
+//     let parseErrorCount = 0;
+//     const lexer = new JSONLexer(charStream);
+//     lexer.removeErrorListeners();
+//     const tokenStream = new CommonTokenStream(lexer);
+//     const parser = new JSONParser(tokenStream);
+//     lexer.addErrorListener({ syntaxError: () => parseErrorCount++ });
+//     parser.removeErrorListeners();
+//     parser.json();
+//     printParseTree(parser.data(), parser.ruleNames);
+//     console.log(parseErrorCount)
+//     return { tokens: tokenStream.getTokens(), errorCount: parseErrorCount };
+//   }
+// }
 
-class ToStringBeautifyContext extends BeautifyContext {
-  constructor() {
-    super();
-    this.addAction(() => this.appendToken().newline().indent(1), 1, 5, 7)
-      .addAction(() => this.newline().indent(-1).appendToken(), 3, 6, 8)
-      .addAction(() => this.appendToken().newline().indent(), 2)
-      .addAction(() => this.space().appendToken().space(), 4)
-  }
+// class ToStringBeautifyContext extends BeautifyContext {
+//   constructor() {
+//     super();
+//     this.addAction(() => this.appendToken().newline().indent(1), 1, 5, 7)
+//       .addAction(() => this.newline().indent(-1).appendToken(), 3, 6, 8)
+//       .addAction(() => this.appendToken().newline().indent(), 2)
+//       .addAction(() => this.space().appendToken().space(), 4)
+//   }
 
-  protected parse(charStream: CodePointCharStream): ParseResult {
-    let parseErrorCount = 0;
-    const lexer = new ToStringLexer(charStream);
-    lexer.removeErrorListeners();
-    const tokenStream = new CommonTokenStream(lexer);
-    const parser = new ToStringParser(tokenStream);
-    lexer.addErrorListener({ syntaxError: () => parseErrorCount++ });
-    parser.removeErrorListeners();
-    parser.data();
-    // printTokens(tokenStream.getTokens())
-    // printParseTree(parser.data(), parser.ruleNames);
-    // console.log(parseErrorCount)
-    return { tokens: tokenStream.getTokens(), errorCount: parseErrorCount };
-  }
-}
+//   protected parse(charStream: CodePointCharStream): ParseResult {
+//     let parseErrorCount = 0;
+//     const lexer = new ToStringLexer(charStream);
+//     lexer.removeErrorListeners();
+//     const tokenStream = new CommonTokenStream(lexer);
+//     const parser = new ToStringParser(tokenStream);
+//     lexer.addErrorListener({ syntaxError: () => parseErrorCount++ });
+//     parser.removeErrorListeners();
+//     parser.data();
+//     // printTokens(tokenStream.getTokens())
+//     // printParseTree(parser.data(), parser.ruleNames);
+//     // console.log(parseErrorCount)
+//     return { tokens: tokenStream.getTokens(), errorCount: parseErrorCount };
+//   }
+// }
 
 function printTokens(tokens: Token[]) {
   for (const t of tokens) {

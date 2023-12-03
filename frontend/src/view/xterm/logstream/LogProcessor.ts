@@ -1,7 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import highlight from '../highlight/highlight';
 import { styledString } from '../Colors';
-import { beautify } from '../beautify/Beautify';
 
 interface LinkedData {
   value: string;
@@ -62,7 +61,7 @@ function replaceDataWithLink(source: string) {
         buf.push(source.substring(i, p[0]));
       }
       if (size < 500) {
-        buf.push(beautify(data));
+        buf.push(data); // TODO: beautify
       } else {
         const dataId = uuidv4();
         linkedData.set(dataId, {
@@ -131,7 +130,7 @@ export default async function processLog(
     }
 
     const log = JSON.parse(raw);
-    const config = LOG_TYPE_CONFIG[log.type];
+    const config = LOG_TYPE_CONFIG[log.type || 0];
     if (printLogType) {
       output(
         styledString(

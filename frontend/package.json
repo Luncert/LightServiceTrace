@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "",
   "scripts": {
-    "antlr": "antlr4ts -visitor src/antlr/grammar/JSON.g4 && antlr4ts -visitor src/antlr/grammar/ToString.g4",
+    "antlr": "antlr4ts -visitor src/antlr/grammar/JSON.g4 -o src/antlr/grammar && antlr4ts -visitor src/antlr/grammar/ToString.g4 -o src/antlr/grammar",
     "start": "vite",
     "dev": "vite",
     "build": "vite build",
