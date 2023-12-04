@@ -6,6 +6,8 @@ public interface Block<T extends BlockRecord> {
 
   int getId();
 
+  //long getSize();
+
   T append(T record);
 
   T get(int id);

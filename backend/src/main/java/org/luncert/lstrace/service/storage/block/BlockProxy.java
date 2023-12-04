@@ -7,15 +7,19 @@ public class BlockProxy<T extends BlockRecord> extends AbstractBlock<T> {
   private BlockType type;
   private Block<T> target;
 
-  public BlockProxy(BlockType type, int id) {
+  public BlockProxy(BlockType type, int id) throws IOException {
     super(id);
-    this.type = type;
+    switchType(type);
   }
 
   @Override
   public int getId() {
     if (!supportRead()) {
-      switchType(BlockType.ReadWrite);
+      try {
+        switchType(BlockType.ReadWrite);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
     }
     return target.getId();
   }
@@ -23,7 +27,11 @@ public class BlockProxy<T extends BlockRecord> extends AbstractBlock<T> {
   @Override
   public T append(T record) {
     if (!supportWrite()) {
-      switchType(BlockType.ReadWrite);
+      try {
+        switchType(BlockType.ReadWrite);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
     }
     return target.append(record);
   }
@@ -48,7 +56,7 @@ public class BlockProxy<T extends BlockRecord> extends AbstractBlock<T> {
         || type.equals(BlockType.ReadWrite);
   }
 
-  private void switchType(BlockType type) {
+  private void switchType(BlockType type) throws IOException {
     if (this.type.equals(type)) {
       return;
     }

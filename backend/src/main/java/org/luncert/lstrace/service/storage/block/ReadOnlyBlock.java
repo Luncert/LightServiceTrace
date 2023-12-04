@@ -1,5 +1,6 @@
 package org.luncert.lstrace.service.storage.block;
 
+import java.io.IOException;
 import org.luncert.lstrace.service.storage.StorageConfig;
 import org.luncert.lstrace.service.storage.io.ByteBufferReadOperator;
 import org.luncert.lstrace.service.storage.io.ReadOperator;
@@ -8,7 +9,7 @@ public class ReadOnlyBlock<T extends BlockRecord> extends RandomAccessBasedBlock
 
   private final ReadOperator readOperator;
 
-  public ReadOnlyBlock(int id) {
+  public ReadOnlyBlock(int id) throws IOException {
     super(id, "r");
     readOperator = new ByteBufferReadOperator(buffer);
   }

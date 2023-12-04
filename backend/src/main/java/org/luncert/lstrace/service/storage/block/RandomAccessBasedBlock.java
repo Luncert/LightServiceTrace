@@ -12,16 +12,12 @@ public abstract class RandomAccessBasedBlock<T extends BlockRecord> extends Abst
   protected RandomAccessFile handle;
   protected final ByteBuffer buffer;
 
-  public RandomAccessBasedBlock(int id, String mode) {
+  public RandomAccessBasedBlock(int id, String mode) throws IOException {
     super(id);
-    try {
-      handle = new RandomAccessFile(
-          Paths.get(StorageConfig.get().getDataPath(), String.valueOf(id)).toString(), mode);
-      buffer = handle.getChannel().map(FileChannel.MapMode.READ_WRITE,
-          0, StorageConfig.get().getBlockSize());
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    handle = new RandomAccessFile(
+        Paths.get(StorageConfig.get().getDataPath(), String.valueOf(id)).toString(), mode);
+    buffer = handle.getChannel().map(FileChannel.MapMode.READ_WRITE,
+        0, StorageConfig.get().getBlockSize());
   }
 
   public RandomAccessBasedBlock(int id, RandomAccessFile handle) {
@@ -32,6 +28,10 @@ public abstract class RandomAccessBasedBlock<T extends BlockRecord> extends Abst
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  @Override
+  public long getSize() {
   }
 
   @Override

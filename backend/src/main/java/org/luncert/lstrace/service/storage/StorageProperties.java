@@ -14,11 +14,22 @@ import org.luncert.lstrace.service.storage.io.RecordWriter;
 @Builder
 public class StorageProperties<T extends BlockRecord> {
 
-  private long blockSize;
+  /**
+   * Default 1MB.
+   */
+  @Builder.Default
+  private long blockSize = 1048576;
 
-  private long storageSizeLimit;
+  /**
+   * Default 1GB.
+   */
+  @Builder.Default
+  private long storageSizeLimit = 1073741824L;
 
   private String dataPath;
+
+  @Builder.Default
+  private int blockCacheSize = 128;
 
   private RecordWriter<T> writer;
 
