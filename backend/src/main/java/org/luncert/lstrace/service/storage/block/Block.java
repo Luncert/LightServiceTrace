@@ -8,9 +8,11 @@ public interface Block<T extends BlockRecord> {
 
   //long getSize();
 
-  T append(T record);
+  T append(T record) throws IOException;
 
   T get(int id);
+
+  void freeze();
 
   void release() throws IOException;
 }

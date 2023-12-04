@@ -4,12 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.ZonedDateTime;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.luncert.lstrace.model.SyslogDto;
+import org.luncert.lstrace.model.SyslogEvent;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
 @Slf4j
-public abstract class SyslogStreamingSubscriber implements Subscriber<SyslogDto> {
+public abstract class SyslogStreamingSubscriber implements Subscriber<SyslogEvent> {
 
   private static final ObjectMapper objectMapper = new ObjectMapper();
   private Subscription subscription;
@@ -34,7 +34,7 @@ public abstract class SyslogStreamingSubscriber implements Subscriber<SyslogDto>
   
   @Override
   @SneakyThrows
-  public void onNext(SyslogDto event) {
+  public void onNext(SyslogEvent event) {
     process(objectMapper.writeValueAsString(event));
   }
   

@@ -5,7 +5,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
-import org.luncert.lstrace.model.SyslogDto;
+import org.luncert.lstrace.model.SyslogEvent;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import org.springframework.lang.Nullable;
@@ -16,7 +16,7 @@ import org.springframework.lang.Nullable;
  * The channel implements reactivestreams api and can be subscribed for stream data process.
  */
 @Slf4j
-class LogStream implements Publisher<SyslogDto> {
+class LogStream implements Publisher<SyslogEvent> {
 
   private static final long LOG_STREAM_TTL = TimeUnit.HOURS.toMillis(24);
 
@@ -57,14 +57,14 @@ class LogStream implements Publisher<SyslogDto> {
     enabled = !createdOnSubscription;
   }
 
-  void publish(SyslogDto event) {
+  void publish(SyslogEvent event) {
     lastPublish = System.currentTimeMillis();
     enabled = true;
     channelMap.values().forEach(channel -> channel.publish(event));
   }
 
   @Override
-  public void subscribe(Subscriber<? super SyslogDto> subscriber) {
+  public void subscribe(Subscriber<? super SyslogEvent> subscriber) {
     String channelId = UUID.randomUUID().toString();
     LogStreamDistributionChannel channel = new LogStreamDistributionChannel(subscriber,
         () -> unsubscribe(channelId));

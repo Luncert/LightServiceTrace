@@ -32,6 +32,7 @@ public abstract class RandomAccessBasedBlock<T extends BlockRecord> extends Abst
 
   @Override
   public long getSize() {
+    return 0;
   }
 
   @Override
