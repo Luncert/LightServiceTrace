@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Slf4j
-class HttpSubscriber extends SyslogSubscriber {
+class HttpStreamingSubscriber extends SyslogStreamingSubscriber {
 
   public static final long LOG_TRANSPORT_INTERVAL = 50;
 
@@ -18,7 +18,7 @@ class HttpSubscriber extends SyslogSubscriber {
   private SseEmitter.SseEventBuilder eventBuilder;
   private int eventBuilderSize;
 
-  HttpSubscriber(String streamingChannel, SseEmitter emitter) {
+  HttpStreamingSubscriber(String streamingChannel, SseEmitter emitter) {
     this.streamingChannel = streamingChannel;
     this.emitter = emitter;
 
@@ -29,7 +29,7 @@ class HttpSubscriber extends SyslogSubscriber {
       @SneakyThrows
       @Override
       public void run() {
-        synchronized (HttpSubscriber.this) {
+        synchronized (HttpStreamingSubscriber.this) {
           if (eventBuilderSize > 0) {
             emitter.send(eventBuilder);
             resetEventBuilder();

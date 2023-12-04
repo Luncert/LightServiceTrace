@@ -3,8 +3,11 @@ package org.luncert.lstrace.service.streaming.impl;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.RequiredArgsConstructor;
+import org.luncert.lstrace.model.SyslogDto;
 import org.luncert.lstrace.service.streaming.ILogStreamService;
 import org.luncert.lstrace.syslog.server.SyslogServerEvent;
+import org.modelmapper.ModelMapper;
 import org.productivity.java.syslog4j.server.SyslogServerEventIF;
 import org.springframework.context.ApplicationListener;
 import org.springframework.lang.NonNull;
@@ -12,15 +15,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Service
+@RequiredArgsConstructor
 public class LogStreamServiceImpl implements ILogStreamService, ApplicationListener<SyslogServerEvent> {
 
   private final LogStream logStream = new LogStream();
-  private final Map<String, SyslogSubscriber> subscribers = new ConcurrentHashMap<>();
+  private final Map<String, SyslogStreamingSubscriber> subscribers = new ConcurrentHashMap<>();
+  private final ModelMapper modelMapper;
 
   @Override
   public String subscribe(String streamingChannel, @NonNull SseEmitter emitter) {
     String subscriptionId = UUID.randomUUID().toString();
-    SyslogSubscriber subscriber = new HttpSubscriber(streamingChannel, emitter);
+    SyslogStreamingSubscriber subscriber = new HttpStreamingSubscriber(streamingChannel, emitter);
     logStream.subscribe(subscriber);
     subscribers.put(subscriptionId, subscriber);
     return subscriptionId;
@@ -28,7 +33,7 @@ public class LogStreamServiceImpl implements ILogStreamService, ApplicationListe
 
   @Override
   public boolean unsubscribe(String subscriptionId) {
-    SyslogSubscriber subscriber = subscribers.remove(subscriptionId);
+    SyslogStreamingSubscriber subscriber = subscribers.remove(subscriptionId);
 
     if (subscriber != null) {
       subscriber.cancel();
@@ -41,6 +46,19 @@ public class LogStreamServiceImpl implements ILogStreamService, ApplicationListe
   @Override
   public void onApplicationEvent(SyslogServerEvent event) {
     SyslogServerEventIF source = (SyslogServerEventIF) event.getSource();
-    logStream.publish(source);
+    SyslogDto syslogDto = modelMapper.typeMap(SyslogServerEventIF.class, SyslogDto.class)
+        .setPreConverter(mappingContext -> {
+          long timestamp = mappingContext.getSource().getDate().getTime();
+          mappingContext.getDestination().setTimestamp(timestamp);
+          foldMessage(mappingContext.getSource(), mappingContext.getDestination());
+          return mappingContext.getDestination();
+        })
+        .map(source);
+    logStream.publish(syslogDto);
+  }
+
+  private void foldMessage(SyslogServerEventIF source, SyslogDto destination) {
+//    char[] chars = source.getMessage().toCharArray();
+    // TODO:
   }
 }

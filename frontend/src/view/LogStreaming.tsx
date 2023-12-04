@@ -3,7 +3,6 @@ import { names } from "../mgrui/lib/components/utils";
 import { onCleanup, onMount } from "solid-js";
 import Xterm from "./xterm/Xterm";
 import getBackend from "../service/Backend";
-import processLog from "./xterm/logstream/LogProcessor";
 
 export default function LogStreaming() {
   const theme = useTheme();
@@ -26,7 +25,8 @@ export default function LogStreaming() {
 
   return (
     <div class={names("box-border w-full h-full p-3", theme.palette.mode === 'light' ? "bg-zinc-300" : "bg-zinc-700")}>
-      <div ref={el => ref = el} class="relative flex flex-col w-full h-full flex-nowrap bg-zinc-100 rounded-md overflow-hidden">
+      <div ref={el => ref = el} class={names("relative flex flex-col w-full h-full flex-nowrap rounded-md overflow-hidden",
+        theme.palette.mode === 'light' ? "light bg-zinc-100" : "dark bg-terminal-dark")}>
       </div>
     </div>
   )

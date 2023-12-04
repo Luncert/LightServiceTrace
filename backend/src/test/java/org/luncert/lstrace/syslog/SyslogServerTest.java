@@ -8,6 +8,8 @@ public class SyslogServerTest {
 
   @Test
   public void test() {
-    log.info("SyslogServerTest");
+    for (int i = 0; i < 10; i++) {
+      log.info("SyslogServerTest {}", i);
+    }
   }
 }

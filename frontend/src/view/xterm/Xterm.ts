@@ -7,6 +7,7 @@ import 'xterm/css/xterm.css';
 type KeyListener = (key: string, domEvent: KeyboardEvent) => void;
 
 interface XtermOpt {
+  themeMode: 'light' | 'dark';
   linkHandler?: LinkHandler;
 }
 
@@ -25,11 +26,11 @@ export default class Xterm {
     this.term = new Terminal({
       theme: {
         foreground: 'rgb(200, 200, 200)',
-        background: 'rgb(244, 244, 245)',
       },
       allowTransparency: true,
       windowsMode: false,
       cursorStyle: 'underline',
+      cursorInactiveStyle: 'underline',
       disableStdin: false,
       fontFamily: 'Courier',
       convertEol: true, // support \n

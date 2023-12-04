@@ -45,9 +45,7 @@ class Backend {
     };
     streamConnection.addEventListener('streaming', (evt) => {
       const { data } = evt as any;
-      processLog(data, (s: any) => {
-        term.write(s);
-      }, false);
+      processLog(data, (s: any) => term.write(s));
     });
     streamConnection.onerror = () => {
       console.log('error occured, session terminated');

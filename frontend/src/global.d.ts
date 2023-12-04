@@ -40,4 +40,18 @@ declare global {
     background?: string;
     fontStyle?: string;
   }
+
+  interface Syslog {
+    prioVersion: string;
+    facility: number;
+    level: number;
+    version: number;
+    timestamp: number;
+    host: string;
+    appName: string;
+    procId: string;
+    msgId: string;
+    structuredData: string
+    message: string;
+  }
 }
