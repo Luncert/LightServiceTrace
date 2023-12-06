@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
@@ -20,13 +23,14 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class LogQueryService {
 
-  private final Directory memoryIndex;
+  private final Directory directory;
+  private final StandardAnalyzer analyzer;
 
-  public List<GetSyslogResponse> search(String inField, String queryString) throws IOException {
-    Query query = new QueryParser(inField, analyzer)
-        .parse(queryString);
+  public List<GetSyslogResponse> search(String inField, String queryString)
+      throws IOException, ParseException {
+    Query query = new QueryParser(inField, analyzer).parse(queryString);
 
-    IndexReader indexReader = DirectoryReader.open(memoryIndex);
+    IndexReader indexReader = DirectoryReader.open(directory);
     IndexSearcher searcher = new IndexSearcher(indexReader);
     TopDocs topDocs = searcher.search(query, 10);
     List<Document> documents = new ArrayList<>();

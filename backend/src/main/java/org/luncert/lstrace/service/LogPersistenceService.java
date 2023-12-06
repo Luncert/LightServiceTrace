@@ -20,18 +20,18 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class LogPersistenceService implements ApplicationListener<SyslogServerEvent> {
 
-  private final Directory memoryIndex;
+  private final Directory luceneDirectory;
   private final IndexWriterConfig indexWriterConfig;
-  private IndexWriter writter;
+  private IndexWriter writer;
 
   @PostConstruct
   public void init() throws IOException {
-    writter = new IndexWriter(memoryIndex, indexWriterConfig);
+    writer = new IndexWriter(luceneDirectory, indexWriterConfig);
   }
 
   @PreDestroy
   public void destory() throws IOException {
-    writter.close();
+    writer.close();
   }
 
   @Override
@@ -52,7 +52,7 @@ public class LogPersistenceService implements ApplicationListener<SyslogServerEv
     document.add(new TextField("message", source.getHost(), Field.Store.YES));
 
     try {
-      writter.addDocument(document);
+      writer.addDocument(document);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
