@@ -1,7 +1,11 @@
 package org.luncert.lstrace.http;
 
 import java.io.IOException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.luncert.lstrace.model.GetSyslogResponse;
+import org.luncert.lstrace.service.ILogQueryService;
 import org.luncert.lstrace.service.streaming.ILogStreamService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,10 +22,12 @@ public class LogController {
   private static final String ANONYMOUS_CHANNEL = "anonymous";
 
   private final ILogStreamService logStreamService;
+  private final ILogQueryService logQueryService;
 
-  @GetMapping("/")
-  public void getLogs(@RequestParam String criteria) {
-
+  @GetMapping
+  public List<GetSyslogResponse> getLogs(@RequestParam String criteria)
+      throws IOException, ParseException {
+    return logQueryService.search(criteria);
   }
 
   @GetMapping("/streaming")
