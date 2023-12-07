@@ -6,6 +6,7 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.RAMDirectory;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +22,8 @@ public class BeanConfig {
 
   @Bean
   public Directory luceneDirectory() throws IOException {
-    return FSDirectory.open(Path.of(new ClassPathResource("indexing").getPath()));
+//    return FSDirectory.open(Path.of(new ClassPathResource("indexing").getPath()));
+    return new RAMDirectory();
   }
 
   @Bean
@@ -31,6 +33,8 @@ public class BeanConfig {
 
   @Bean
   public IndexWriterConfig indexWriterConfig(StandardAnalyzer analyzer) {
-    return new IndexWriterConfig(analyzer);
+    IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
+    indexWriterConfig.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
+    return indexWriterConfig;
   }
 }
