@@ -22,8 +22,8 @@ public class BeanConfig {
 
   @Bean
   public Directory luceneDirectory() throws IOException {
-//    return FSDirectory.open(Path.of(new ClassPathResource("indexing").getPath()));
-    return new RAMDirectory();
+    return FSDirectory.open(Path.of(new ClassPathResource("indexing").getPath()));
+//    return new RAMDirectory();
   }
 
   @Bean

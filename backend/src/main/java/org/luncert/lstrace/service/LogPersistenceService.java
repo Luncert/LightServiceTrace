@@ -12,6 +12,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.IntPoint;
+import org.apache.lucene.document.LongPoint;
 import org.apache.lucene.document.NumericDocValuesField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
@@ -44,7 +46,7 @@ public class LogPersistenceService implements ApplicationListener<SyslogServerEv
   @PostConstruct
   public void init() throws IOException {
     writer = new IndexWriter(luceneDirectory, indexWriterConfig);
-    queryParser = new QueryParser("id", analyzer);
+    queryParser = new QueryParser("", analyzer);
   }
 
   @PreDestroy
@@ -57,11 +59,11 @@ public class LogPersistenceService implements ApplicationListener<SyslogServerEv
     SyslogEvent source = (SyslogEvent) event.getSource();
 
     Document document = new Document();
-    document.add(new NumericDocValuesField("id", 0L));
-    document.add(new NumericDocValuesField("facility", source.getFacility()));
-    document.add(new NumericDocValuesField("level", source.getLevel()));
-    document.add(new NumericDocValuesField("version", source.getVersion()));
-    document.add(new NumericDocValuesField("timestamp", source.getTimestamp()));
+    document.add(new LongPoint("id", 0L));
+    document.add(new IntPoint("facility", source.getFacility()));
+    document.add(new IntPoint("level", source.getLevel()));
+    document.add(new IntPoint("version", source.getVersion()));
+    document.add(new LongPoint("timestamp", source.getTimestamp()));
     whenNotEmpty(source.getHost(), v ->
         document.add(new TextField("host", v, Field.Store.YES)));
     whenNotEmpty(source.getAppName(), v ->
