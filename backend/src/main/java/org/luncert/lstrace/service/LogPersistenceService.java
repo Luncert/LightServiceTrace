@@ -13,17 +13,25 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.IntPoint;
+import org.apache.lucene.document.IntRange;
 import org.apache.lucene.document.LongPoint;
+import org.apache.lucene.document.LongRange;
 import org.apache.lucene.document.NumericDocValuesField;
+import org.apache.lucene.document.StoredField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.luncert.lstrace.model.GetSyslogResponse;
@@ -59,11 +67,14 @@ public class LogPersistenceService implements ApplicationListener<SyslogServerEv
     SyslogEvent source = (SyslogEvent) event.getSource();
 
     Document document = new Document();
-    document.add(new LongPoint("id", 0L));
     document.add(new IntPoint("facility", source.getFacility()));
+    document.add(new StoredField("facility", source.getFacility()));
     document.add(new IntPoint("level", source.getLevel()));
+    document.add(new StoredField("level", source.getLevel()));
     document.add(new IntPoint("version", source.getVersion()));
+    document.add(new StoredField("version", source.getVersion()));
     document.add(new LongPoint("timestamp", source.getTimestamp()));
+    document.add(new StoredField("timestamp", source.getTimestamp()));
     whenNotEmpty(source.getHost(), v ->
         document.add(new TextField("host", v, Field.Store.YES)));
     whenNotEmpty(source.getAppName(), v ->
@@ -96,7 +107,8 @@ public class LogPersistenceService implements ApplicationListener<SyslogServerEv
     try (IndexReader reader = DirectoryReader.open(writer)) {
       IndexSearcher searcher = new IndexSearcher(reader);
 
-      TopDocs topDocs = searcher.search(queryParser.parse(queryString), 10);
+      Query query = IntPoint.newExactQuery("facility", 16);
+      TopDocs topDocs = searcher.search(query, 10);
       List<Document> documents = new ArrayList<>();
       for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
         documents.add(searcher.doc(scoreDoc.doc));
