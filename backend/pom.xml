@@ -79,6 +79,18 @@
     </dependency>
 
     <dependency>
+      <groupId>org.lks.filters-query</groupId>
+      <artifactId>api</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.lks.filters-query</groupId>
+      <artifactId>lucene-impl</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
       <exclusions>
