@@ -7,9 +7,10 @@ import org.junit.Test;
 public class SyslogServerTest {
 
   @Test
-  public void test() {
+  public void test() throws InterruptedException {
     for (int i = 0; i < 10; i++) {
       log.info("SyslogServerTest {}", i);
+      Thread.sleep(10);
     }
   }
 }

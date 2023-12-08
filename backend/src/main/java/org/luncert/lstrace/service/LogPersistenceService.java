@@ -12,7 +12,9 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.IntPoint;
 import org.apache.lucene.document.LongPoint;
+import org.apache.lucene.document.NumericDocValuesField;
 import org.apache.lucene.document.StoredField;
+import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
@@ -53,25 +55,33 @@ public class LogPersistenceService extends LuceneFiltersQueryOrmEngine<SyslogEve
 
     Document document = new Document();
     document.add(new IntPoint("facility", source.getFacility()));
+    document.add(new NumericDocValuesField("facility", source.getFacility()));
     document.add(new StoredField("facility", source.getFacility()));
+
     document.add(new IntPoint("level", source.getLevel()));
+    document.add(new NumericDocValuesField("level", source.getLevel()));
     document.add(new StoredField("level", source.getLevel()));
+
     document.add(new IntPoint("version", source.getVersion()));
+    document.add(new NumericDocValuesField("version", source.getVersion()));
     document.add(new StoredField("version", source.getVersion()));
+
     document.add(new LongPoint("timestamp", source.getTimestamp()));
+    document.add(new NumericDocValuesField("timestamp", source.getTimestamp()));
     document.add(new StoredField("timestamp", source.getTimestamp()));
+
     whenNotEmpty(source.getHost(), v ->
-        document.add(new TextField("host", v, Field.Store.YES)));
+        document.add(new StringField("host", v, Field.Store.YES)));
     whenNotEmpty(source.getAppName(), v ->
-        document.add(new TextField("appName", v, Field.Store.YES)));
+        document.add(new StringField("appName", v, Field.Store.YES)));
     whenNotEmpty(source.getProcId(), v ->
-        document.add(new TextField("procId", v, Field.Store.YES)));
+        document.add(new StringField("procId", v, Field.Store.YES)));
     whenNotEmpty(source.getMsgId(), v ->
-        document.add(new TextField("msgId", v, Field.Store.YES)));
+        document.add(new StringField("msgId", v, Field.Store.YES)));
     whenNotEmpty(source.getStructuredData(), v ->
-        document.add(new TextField("structuredData", v, Field.Store.YES)));
+        document.add(new StringField("structuredData", v, Field.Store.YES)));
     whenNotEmpty(source.getMessage(), v ->
-        document.add(new TextField("message", v, Field.Store.YES)));
+        document.add(new StringField("message", v, Field.Store.YES)));
 
     try {
       writer.addDocument(document);
