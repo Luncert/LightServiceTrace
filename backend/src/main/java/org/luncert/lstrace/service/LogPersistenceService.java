@@ -15,7 +15,6 @@ import org.apache.lucene.document.LongPoint;
 import org.apache.lucene.document.NumericDocValuesField;
 import org.apache.lucene.document.StoredField;
 import org.apache.lucene.document.StringField;
-import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
@@ -27,6 +26,7 @@ import org.luncert.lstrace.model.Page;
 import org.luncert.lstrace.model.PageImpl;
 import org.luncert.lstrace.model.SyslogEvent;
 import org.luncert.lstrace.syslog.server.SyslogServerEvent;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +37,7 @@ public class LogPersistenceService extends LuceneFiltersQueryOrmEngine<SyslogEve
 
   private final Directory luceneDirectory;
   private final IndexWriterConfig indexWriterConfig;
+  private final ModelMapper modelMapper;
   private IndexWriter writer;
 
   @PostConstruct
@@ -101,20 +102,9 @@ public class LogPersistenceService extends LuceneFiltersQueryOrmEngine<SyslogEve
   public Page<GetSyslogResponse> search(String query) throws IOException {
     try (IndexReader reader = DirectoryReader.open(writer)) {
       long total = search(reader, query, Stream::count);
-      return PageImpl.of(total, search(reader, query, stream -> stream.map(doc ->
-              GetSyslogResponse.builder()
-                  .facility(doc.getField("facility").numericValue().intValue())
-                  .level(doc.getField("level").numericValue().intValue())
-                  .version(doc.getField("version").numericValue().intValue())
-                  .timestamp(doc.getField("timestamp").numericValue().intValue())
-                  .host(doc.get("host"))
-                  .appName(doc.get("appName"))
-                  .procId(doc.get("procId"))
-                  .msgId(doc.get("msgId"))
-                  .structuredData(doc.get("structuredData"))
-                  .message(doc.get("message"))
-                  .build())
-          .collect(Collectors.toList())));
+      return PageImpl.of(total, search(reader, query).stream()
+          .map(item -> modelMapper.map(item, GetSyslogResponse.class))
+          .collect(Collectors.toList()));
     }
   }
 }
