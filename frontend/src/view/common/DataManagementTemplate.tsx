@@ -1,9 +1,9 @@
 import { Paper, Stack, Typography, useTheme } from "@suid/material";
-import { JSX } from "solid-js";
+import { JSX, Show } from "solid-js";
 import { names } from "../../mgrui/lib/components/utils";
 
 export default function DataManagementTemplate(props: {
-  title: string;
+  title?: string;
   headers?: JSX.Element;
   fixedContentSizing?: boolean;
   children: JSX.Element;
@@ -14,7 +14,9 @@ export default function DataManagementTemplate(props: {
       <div class="flex flex-col w-full h-full flex-nowrap bg-zinc-100 rounded-md overflow-hidden">
         <Paper square class="p-5 shrink-0 drop-shadow z-10">
           <Stack spacing={2}>
-            <Typography variant="h5" component='div'>{props.title}</Typography>
+            <Show when={props.title}>
+              <Typography variant="h5" component='div'>{props.title}</Typography>
+            </Show>
             {props.headers}
           </Stack>
         </Paper>

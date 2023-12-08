@@ -29,7 +29,7 @@ export default function LogExplorer() {
   );
 
   return (
-    <DataManagementTemplate title={t('title')}
+    <DataManagementTemplate
     headers={
       <Filters onApply={logsAction.refetch}>
         <Filter id="timestamp-filter" type="date-range"

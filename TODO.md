@@ -1,0 +1,9 @@
+- change search button label
+- pagination label globalization
+- show total amount of table content
+- wrap filters to multiple lines
+- add switch filter to hide/show leading info of each log line
+- add disconnect button
+- support links
+- support data fold
+- add dashboard view

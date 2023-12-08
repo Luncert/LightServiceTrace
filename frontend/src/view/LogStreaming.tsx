@@ -33,7 +33,7 @@ export default function LogStreaming() {
   })
 
   return (
-    <DataManagementTemplate title={t('title')}
+    <DataManagementTemplate
       headers={
       <Filters onApply={() => {}}>
         <Filter id="host-filter" type="text"
