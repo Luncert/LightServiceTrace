@@ -25,7 +25,6 @@ declare global {
   }
 
   interface Log {
-    id: number;
     timestamp: number;
     host: string;
     appName: string;

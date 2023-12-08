@@ -3,6 +3,9 @@ import { names } from "../mgrui/lib/components/utils";
 import { onCleanup, onMount } from "solid-js";
 import Xterm from "./xterm/Xterm";
 import getBackend from "../service/Backend";
+import DataManagementTemplate from "./common/DataManagementTemplate";
+import { t } from "i18next";
+import { Filter, Filters, createFilterStore } from "../mgrui/lib/components/Filters";
 
 export default function LogStreaming() {
   const theme = useTheme();
@@ -10,6 +13,12 @@ export default function LogStreaming() {
   const term = new Xterm();
   let ref: HTMLDivElement;
   let conn: EventSource;
+
+  const [filters, filterActions] = createFilterStore({
+    host: { operator: "like", value: "" },
+    appName: { operator: "like", value: "" },
+    processId: { operator: "like", value: "" },
+  });
 
   onMount(() => {
     term.attach(ref);
@@ -24,10 +33,29 @@ export default function LogStreaming() {
   })
 
   return (
-    <div class={names("box-border w-full h-full p-3", theme.palette.mode === 'light' ? "bg-zinc-300" : "bg-zinc-700")}>
-      <div ref={el => ref = el} class={names("relative flex flex-col w-full h-full flex-nowrap rounded-md overflow-hidden",
-        theme.palette.mode === 'light' ? "light bg-zinc-100" : "dark bg-terminal-dark")}>
+    <DataManagementTemplate title={t('title')}
+      headers={
+      <Filters onApply={() => {}}>
+        <Filter id="host-filter" type="text"
+          label={t("model.log.host")}
+          onChange={filterActions.host}
+        />
+        <Filter id="appName-filter" type="text"
+          label={t("model.log.appName")}
+          onChange={filterActions.appName}
+        />
+        <Filter id="processId-filter" type="text"
+          label={t("model.log.processId")}
+          onChange={filterActions.processId}
+        />
+      </Filters>
+      }
+    >
+      <div class={names("box-border w-full h-full", theme.palette.mode === 'light' ? "bg-zinc-300" : "bg-zinc-700")}>
+        <div ref={el => ref = el} class={names("relative flex flex-col w-full h-full flex-nowrap rounded-md overflow-hidden",
+          theme.palette.mode === 'light' ? "light bg-zinc-100" : "dark bg-terminal-dark")}>
+        </div>
       </div>
-    </div>
+    </DataManagementTemplate>
   )
 }

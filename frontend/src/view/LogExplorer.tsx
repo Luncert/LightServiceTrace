@@ -7,13 +7,20 @@ import { Index, createResource } from "solid-js";
 import getBackend from "../service/Backend";
 import DataManagementTemplate from "./common/DataManagementTemplate";
 import { t } from "i18next";
+import { parseTimestamp } from "./common/Util";
 
 export default function LogExplorer() {
   const offset = createData(0);
   const pageSize = createData(10);
   
   const [filters, filterActions] = createFilterStore({
-    createdAt: { operator: "between", value: [undefined, undefined] },
+    timestamp: { operator: "between", value: [undefined, undefined] },
+    host: { operator: "like", value: "" },
+    appName: { operator: "like", value: "" },
+    processId: { operator: "like", value: "" },
+    messageId: { operator: "like", value: "" },
+    structuredData: { operator: "like", value: "" },
+    message: { operator: "like", value: "" },
   });
   
   const [logs, logsAction] = createResource(
@@ -25,10 +32,34 @@ export default function LogExplorer() {
     <DataManagementTemplate title={t('title')}
     headers={
       <Filters onApply={logsAction.refetch}>
-        <Filter id="order-created-at-filter" type="date-range"
+        <Filter id="timestamp-filter" type="date-range"
           label={t("model.log.timestamp")}
-          onStartChange={(d) => filterActions.createdAt([d?.getTime(), filters.createdAt.value[1]])}
-          onEndChange={(d) => filterActions.createdAt([filters.createdAt.value[0], d?.getTime()])} />
+          onStartChange={(d) => filterActions.timestamp([d?.getTime(), filters.timestamp.value[1]])}
+          onEndChange={(d) => filterActions.timestamp([filters.timestamp.value[0], d?.getTime()])} />
+        <Filter id="host-filter" type="text"
+          label={t("model.log.host")}
+          onChange={filterActions.host}
+        />
+        <Filter id="appName-filter" type="text"
+          label={t("model.log.appName")}
+          onChange={filterActions.appName}
+        />
+        <Filter id="processId-filter" type="text"
+          label={t("model.log.processId")}
+          onChange={filterActions.processId}
+        />
+        <Filter id="messageId-filter" type="text"
+          label={t("model.log.appName")}
+          onChange={filterActions.messageId}
+        />
+        <Filter id="structuredData-filter" type="text"
+          label={t("model.log.appName")}
+          onChange={filterActions.structuredData}
+        />
+        <Filter id="message-filter" type="text"
+          label={t("model.log.message")}
+          onChange={filterActions.message}
+        />
       </Filters>
     }>
       <div class="flex p-2">
@@ -48,8 +79,7 @@ export default function LogExplorer() {
         <Table class="w-full table-fixed break-all" aria-label="user-list" stickyHeader>
           <TableHead>
             <TableRow>
-              <TableCell align="center">{t("model.log.id")}</TableCell>
-              <TableCell align="center">{t("model.log.timestamp")}</TableCell>
+              <TableCell align="center" class="w-56">{t("model.log.timestamp")}</TableCell>
               <TableCell align="center">{t("model.log.host")}</TableCell>
               <TableCell align="center">{t("model.log.appName")}</TableCell>
               <TableCell align="center">{t("model.log.processId")}</TableCell>
@@ -63,8 +93,7 @@ export default function LogExplorer() {
               <TableRow
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
-                <TableCell align="center" component="th" scope="row">{log().id}</TableCell>
-                <TableCell align="center">{log().timestamp}</TableCell>
+                <TableCell align="center" component="th" scope="row">{parseTimestamp(log().timestamp)}</TableCell>
                 <TableCell align="center">{log().host}</TableCell>
                 <TableCell align="center">{log().appName}</TableCell>
                 <TableCell align="center">{log().processId}</TableCell>

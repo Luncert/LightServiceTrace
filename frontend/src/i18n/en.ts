@@ -9,7 +9,6 @@ export default ({
   },
   model: {
     log: {
-      id: "Id",
       timestamp: "Timestamp",
       host: "Host",
       appName: "App Name",
