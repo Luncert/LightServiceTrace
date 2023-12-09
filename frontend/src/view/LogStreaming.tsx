@@ -4,11 +4,11 @@ import { onCleanup, onMount } from "solid-js";
 import Xterm from "./xterm/Xterm";
 import getBackend, { StreamConnection } from "../service/Backend";
 import { t } from "i18next";
-import { Filter, Filters, createFilterStore } from "../mgrui/lib/components/Filters";
 import { styledString } from "./xterm/Colors";
 import { parseTimestamp } from "./common/Util";
 import highlight from "./xterm/highlight/highlight";
 import DataManagementTemplate from "../mgrui/lib/components/template/DataManagementTemplate";
+import { Filter, Filters, buildFilterBy, createFilterStore } from "../mgrui/lib/components/filters/Filters";
 
 const Levels = [
   "EMERGENCY",
@@ -83,7 +83,8 @@ export default function LogStreaming() {
     if (connected()) {
       conn.close();
     } else {
-      conn = getBackend().streaming(term, log => writeLog(term, log, showSource()));
+      conn = getBackend().streaming(buildFilterBy(filters),
+        term, log => writeLog(term, log, showSource()));
     }
     connected(!connected());
   }
@@ -97,7 +98,7 @@ export default function LogStreaming() {
   })
 
   return (
-    <DataManagementTemplate
+    <DataManagementTemplate disableInnerMargin
       headers={
       <Filters>
         <Filter id="show-source-switch" type="switch"
@@ -129,7 +130,7 @@ export default function LogStreaming() {
       }
     >
       <div class={names("box-border w-full h-full", theme.palette.mode === 'light' ? "bg-zinc-300" : "bg-zinc-700")}>
-        <div ref={el => ref = el} class={names("relative flex flex-col w-full h-full flex-nowrap rounded-md overflow-hidden",
+        <div ref={el => ref = el} class={names("relative flex flex-col w-full h-full flex-nowrap overflow-hidden",
           theme.palette.mode === 'light' ? "light bg-zinc-100" : "dark bg-terminal-dark")}>
         </div>
       </div>

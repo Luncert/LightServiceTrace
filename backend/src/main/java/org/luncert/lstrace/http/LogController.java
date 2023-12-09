@@ -31,10 +31,10 @@ public class LogController {
   }
 
   @GetMapping("/streaming")
-  public ResponseEntity<SseEmitter> streaming(@RequestParam String channel) throws IOException {
+  public ResponseEntity<SseEmitter> streaming(@RequestParam String channel, @RequestParam String criteria) throws IOException {
     SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
 
-    String streamId = logStreamService.subscribe(channel, emitter);
+    String streamId = logStreamService.subscribe(channel, emitter, criteria);
     emitter.onCompletion(() -> logStreamService.unsubscribe(streamId));
     // send empty event to let client receive response header immediately
     emitter.send(SseEmitter.event().name(ANONYMOUS_CHANNEL).data(""));

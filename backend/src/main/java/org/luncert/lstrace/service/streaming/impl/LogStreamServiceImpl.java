@@ -20,9 +20,9 @@ public class LogStreamServiceImpl implements ILogStreamService, ApplicationListe
   private final Map<String, SyslogStreamingSubscriber> subscribers = new ConcurrentHashMap<>();
 
   @Override
-  public String subscribe(String streamingChannel, @NonNull SseEmitter emitter) {
+  public String subscribe(String streamingChannel, @NonNull SseEmitter emitter, String criteria) {
     String subscriptionId = UUID.randomUUID().toString();
-    SyslogStreamingSubscriber subscriber = new HttpStreamingSubscriber(streamingChannel, emitter);
+    SyslogStreamingSubscriber subscriber = new HttpStreamingSubscriber(streamingChannel, emitter, criteria);
     logStream.subscribe(subscriber);
     subscribers.put(subscriptionId, subscriber);
     return subscriptionId;

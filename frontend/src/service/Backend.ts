@@ -24,7 +24,7 @@ class Backend {
       });
   }
 
-  public streaming(term: Xterm, onReceivedLog: (log: Syslog) => void): StreamConnection {
+  public streaming(criteria: string, term: Xterm, onReceivedLog: (log: Syslog) => void): StreamConnection {
     const streamConnection = new EventSource(
       `${config.backend.endpoint}/v1/logs/streaming?channel=streaming`
     );

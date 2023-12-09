@@ -1,13 +1,19 @@
 package org.luncert.lstrace.service.streaming.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.function.Predicate;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.lks.filtersquery.predicateimpl.PredicateFiltersQueryEngine;
+import org.luncert.lstrace.model.SyslogEvent;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Slf4j
 class HttpStreamingSubscriber extends SyslogStreamingSubscriber {
+
+  private static final ObjectMapper objectMapper = new ObjectMapper();
 
   public static final long LOG_TRANSPORT_INTERVAL = 50;
 
@@ -17,10 +23,12 @@ class HttpStreamingSubscriber extends SyslogStreamingSubscriber {
   private int counter;
   private SseEmitter.SseEventBuilder eventBuilder;
   private int eventBuilderSize;
+  private final Predicate<SyslogEvent> filter;
 
-  HttpStreamingSubscriber(String streamingChannel, SseEmitter emitter) {
+  HttpStreamingSubscriber(String streamingChannel, SseEmitter emitter, String criteria) {
     this.streamingChannel = streamingChannel;
     this.emitter = emitter;
+    filter = PredicateFiltersQueryEngine.buildQuery(criteria, SyslogEvent.class);
 
     resetEventBuilder();
 
@@ -43,14 +51,17 @@ class HttpStreamingSubscriber extends SyslogStreamingSubscriber {
     eventBuilderSize = 0;
     eventBuilder = SseEmitter.event().id(String.valueOf(counter++)).name(streamingChannel);
   }
-  
-  @SneakyThrows
+
   @Override
-  void process(String log) {
-    synchronized (this) {
-      // buffering to avoid taking up too much network resources
-      eventBuilderSize++;
-      eventBuilder.data(log);
+  @SneakyThrows
+  public void onNext(SyslogEvent event) {
+    if (filter.test(event)) {
+      synchronized (this) {
+        String log = objectMapper.writeValueAsString(event);
+        // buffering to avoid taking up too much network resources
+        eventBuilderSize++;
+        eventBuilder.data(log);
+      }
     }
   }
 

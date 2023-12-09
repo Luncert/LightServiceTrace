@@ -1,8 +1,6 @@
 package org.luncert.lstrace.service.streaming.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.ZonedDateTime;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.luncert.lstrace.model.SyslogEvent;
 import org.reactivestreams.Subscriber;
@@ -11,7 +9,6 @@ import org.reactivestreams.Subscription;
 @Slf4j
 public abstract class SyslogStreamingSubscriber implements Subscriber<SyslogEvent> {
 
-  private static final ObjectMapper objectMapper = new ObjectMapper();
   private Subscription subscription;
 
   private String getTime() {
@@ -31,12 +28,4 @@ public abstract class SyslogStreamingSubscriber implements Subscriber<SyslogEven
   public void onSubscribe(Subscription s) {
     subscription = s;
   }
-  
-  @Override
-  @SneakyThrows
-  public void onNext(SyslogEvent event) {
-    process(objectMapper.writeValueAsString(event));
-  }
-  
-  abstract void process(String log);
 }

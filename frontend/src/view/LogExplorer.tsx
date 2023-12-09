@@ -2,7 +2,7 @@ import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, 
 import TablePagination from "../mgrui/lib/components/table/TablePagination";
 import PageSizeSelector from "../mgrui/lib/components/table/PageSizeSelector";
 import { createData } from "../mgrui/lib/components/utils";
-import { Filter, Filters, buildFilterBy, createFilterStore, createSortStore } from "../mgrui/lib/components/Filters";
+import { Filter, Filters, buildFilterBy, createFilterStore } from "../mgrui/lib/components/filters/Filters";
 import { Index, createResource } from "solid-js";
 import getBackend from "../service/Backend";
 import { t } from "i18next";
@@ -30,7 +30,7 @@ export default function LogExplorer() {
   );
 
   return (
-    <DataManagementTemplate
+    <DataManagementTemplate disableInnerMargin
     headers={
       <Filters>
         <Filter id="timestamp-filter" type="date-range"

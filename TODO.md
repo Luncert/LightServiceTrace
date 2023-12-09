@@ -2,4 +2,3 @@
 - support links
 - support data fold
 - add dashboard view
-- filter streaming
