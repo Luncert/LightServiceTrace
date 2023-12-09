@@ -1,5 +1,5 @@
-- show total amount of table content
 - wrap filters to multiple lines
 - support links
 - support data fold
 - add dashboard view
+- filter streaming

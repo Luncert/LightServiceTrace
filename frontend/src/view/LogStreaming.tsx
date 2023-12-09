@@ -3,12 +3,12 @@ import { createData, names } from "../mgrui/lib/components/utils";
 import { onCleanup, onMount } from "solid-js";
 import Xterm from "./xterm/Xterm";
 import getBackend, { StreamConnection } from "../service/Backend";
-import DataManagementTemplate from "./common/DataManagementTemplate";
 import { t } from "i18next";
 import { Filter, Filters, createFilterStore } from "../mgrui/lib/components/Filters";
 import { styledString } from "./xterm/Colors";
 import { parseTimestamp } from "./common/Util";
 import highlight from "./xterm/highlight/highlight";
+import DataManagementTemplate from "../mgrui/lib/components/template/DataManagementTemplate";
 
 const Levels = [
   "EMERGENCY",

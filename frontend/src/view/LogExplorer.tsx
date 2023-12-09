@@ -5,9 +5,10 @@ import { createData } from "../mgrui/lib/components/utils";
 import { Filter, Filters, buildFilterBy, createFilterStore, createSortStore } from "../mgrui/lib/components/Filters";
 import { Index, createResource } from "solid-js";
 import getBackend from "../service/Backend";
-import DataManagementTemplate from "./common/DataManagementTemplate";
 import { t } from "i18next";
 import { parseTimestamp } from "./common/Util";
+import DataManagementTemplate from "../mgrui/lib/components/template/DataManagementTemplate";
+import Field from "../mgrui/lib/components/Field";
 
 export default function LogExplorer() {
   const offset = createData(0);
@@ -65,6 +66,7 @@ export default function LogExplorer() {
     }>
       <div class="flex p-2">
         <div class="flex ml-auto gap-2">
+          <Field label={t("labels.total")} value={logs().totalElements} />
           <TablePagination
             count={logs()?.totalElements || 100}
             rowsPerPage={logs()?.pageable?.pageSize || 10}

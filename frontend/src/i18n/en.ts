@@ -10,7 +10,8 @@ export default ({
     connect: "Connect",
     disconnect: "Disconnect",
     showSourceSwitch: "Show Source",
-    hideSourceSwitch: "Hide Source"
+    hideSourceSwitch: "Hide Source",
+    total:"Total"
   },
   model: {
     log: {
