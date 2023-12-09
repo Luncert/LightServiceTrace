@@ -19,7 +19,10 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
+import org.lks.filtersquery.luceneimpl.FiltersQueryBuilderLuceneImpl;
 import org.lks.filtersquery.luceneimpl.LuceneFiltersQueryOrmEngine;
 import org.luncert.lstrace.model.GetSyslogResponse;
 import org.luncert.lstrace.model.Page;
@@ -101,7 +104,7 @@ public class LogPersistenceService extends LuceneFiltersQueryOrmEngine<SyslogEve
   @Override
   public Page<GetSyslogResponse> search(String query) throws IOException {
     try (IndexReader reader = DirectoryReader.open(writer)) {
-      long total = search(reader, query, Stream::count);
+      long total = count(reader, query);
       return PageImpl.of(total, search(reader, query).stream()
           .map(item -> modelMapper.map(item, GetSyslogResponse.class))
           .collect(Collectors.toList()));

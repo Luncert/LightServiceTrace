@@ -2,3 +2,5 @@
 - support links
 - support data fold
 - add dashboard view
+- popup of message and structured data
+- more operator on filters

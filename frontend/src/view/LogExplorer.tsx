@@ -68,9 +68,12 @@ export default function LogExplorer() {
         <div class="flex ml-auto gap-2">
           <Field label={t("labels.total")} value={logs().totalElements} />
           <TablePagination
-            count={logs()?.totalElements || 100}
-            rowsPerPage={logs()?.pageable?.pageSize || 10}
-            onPageChange={logsAction.refetch}
+            count={logs().totalElements}
+            rowsPerPage={pageSize()}
+            onPageChange={(page, recordOffset) => {
+              offset(recordOffset);
+              logsAction.refetch();
+            }}
             style={{"margin-left": "auto"}} />
           <PageSizeSelector onChange={(size) => {
             pageSize(size);
