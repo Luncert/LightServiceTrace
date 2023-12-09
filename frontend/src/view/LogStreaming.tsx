@@ -1,4 +1,4 @@
-import { useTheme } from "@suid/material";
+import { Button, useTheme } from "@suid/material";
 import { names } from "../mgrui/lib/components/utils";
 import { onCleanup, onMount } from "solid-js";
 import Xterm from "./xterm/Xterm";
@@ -35,7 +35,7 @@ export default function LogStreaming() {
   return (
     <DataManagementTemplate
       headers={
-      <Filters onApply={() => {}}>
+      <Filters>
         <Filter id="host-filter" type="text"
           label={t("model.log.host")}
           onChange={filterActions.host}
@@ -48,6 +48,7 @@ export default function LogStreaming() {
           label={t("model.log.processId")}
           onChange={filterActions.processId}
         />
+        <Button variant="contained">{t("labels.connect")}</Button>
       </Filters>
       }
     >

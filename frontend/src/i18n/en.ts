@@ -6,6 +6,8 @@ export default ({
     "log-streaming": "Streaming"
   },
   labels: {
+    filter: "Filter",
+    connect: "Connect"
   },
   model: {
     log: {
