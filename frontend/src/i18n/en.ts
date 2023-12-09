@@ -7,7 +7,10 @@ export default ({
   },
   labels: {
     filter: "Filter",
-    connect: "Connect"
+    connect: "Connect",
+    disconnect: "Disconnect",
+    showSourceSwitch: "Show Source",
+    hideSourceSwitch: "Hide Source"
   },
   model: {
     log: {
@@ -18,6 +21,12 @@ export default ({
       messageId: "Message ID",
       structuredData: "Structured Data",
       message: "Message",
+    }
+  },
+  message: {
+    streaming: {
+      on: "streaming started",
+      off: "streaming stoped"
     }
   }
 });

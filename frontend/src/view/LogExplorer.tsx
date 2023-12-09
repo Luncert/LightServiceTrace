@@ -1,8 +1,8 @@
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
+import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
 import TablePagination from "../mgrui/lib/components/table/TablePagination";
 import PageSizeSelector from "../mgrui/lib/components/table/PageSizeSelector";
 import { createData } from "../mgrui/lib/components/utils";
-import { Filter, Filters, buildFilterBy, createFilterStore } from "../mgrui/lib/components/Filters";
+import { Filter, Filters, buildFilterBy, createFilterStore, createSortStore } from "../mgrui/lib/components/Filters";
 import { Index, createResource } from "solid-js";
 import getBackend from "../service/Backend";
 import DataManagementTemplate from "./common/DataManagementTemplate";
@@ -24,14 +24,14 @@ export default function LogExplorer() {
   });
   
   const [logs, logsAction] = createResource(
-    () => getBackend().getLogs(buildFilterBy(filters, offset(), pageSize())),
+    () => getBackend().getLogs(buildFilterBy(filters, { timestamp: { order: "desc", active: true }}, offset(), pageSize())),
     { initialValue: { pageable: {} } as Page<Log> }
   );
 
   return (
     <DataManagementTemplate
     headers={
-      <Filters onApply={logsAction.refetch}>
+      <Filters>
         <Filter id="timestamp-filter" type="date-range"
           label={t("model.log.timestamp")}
           onStartChange={(d) => filterActions.timestamp([d?.getTime(), filters.timestamp.value[1]])}
@@ -60,6 +60,7 @@ export default function LogExplorer() {
           label={t("model.log.message")}
           onChange={filterActions.message}
         />
+        <Button variant="contained" onClick={logsAction.refetch}>{t("labels.filter")}</Button>
       </Filters>
     }>
       <div class="flex p-2">

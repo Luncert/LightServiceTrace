@@ -2,7 +2,7 @@ import Axios from 'axios';
 import config from './config';
 import { Mod, styledString } from '../view/xterm/Colors';
 import Xterm from '../view/xterm/Xterm';
-import processLog from '../view/xterm/logstream/LogProcessor';
+import { t } from 'i18next';
 
 const axios = Axios.create({
   baseURL: config.backend.endpoint
@@ -24,16 +24,15 @@ class Backend {
       });
   }
 
-  public streaming(term: Xterm): EventSource {
+  public streaming(term: Xterm, onReceivedLog: (log: Syslog) => void): StreamConnection {
     const streamConnection = new EventSource(
       `${config.backend.endpoint}/v1/logs/streaming?channel=streaming`
     );
 
     streamConnection.onopen = () => {
-      console.log('streaming started');
       term.writeln(
         styledString(
-          '> streaming started',
+          '> ' + t("message.streaming.on"),
           colors.streamOpened,
           colors.bg,
           Mod.Bold
@@ -45,7 +44,15 @@ class Backend {
     };
     streamConnection.addEventListener('streaming', (evt) => {
       const { data } = evt as any;
-      processLog(data, (s: any) => term.write(s));
+      
+      for (const raw of data.split('\n')) {
+        if (!raw) {
+          continue;
+        }
+
+        const log = JSON.parse(raw) as Syslog;
+        onReceivedLog(log);
+      }
     });
     streamConnection.onerror = () => {
       console.log('error occured, session terminated');
@@ -59,8 +66,19 @@ class Backend {
       );
     };
 
-    return streamConnection;
+    return ({
+      close: () => {
+        term.writeln(styledString('> ' + t("message.streaming.off"), colors.streamClosed, colors.bg, Mod.Bold));
+        if (streamConnection.readyState !== streamConnection.CLOSED) {
+          streamConnection.close();
+        }
+      }
+    });
   }
+}
+
+export interface StreamConnection {
+  close(): void;
 }
 
 let instance: Backend;

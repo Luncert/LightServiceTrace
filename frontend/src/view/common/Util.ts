@@ -1,7 +1,7 @@
 
 export function parseTimestamp(timestamp: number) {
   const date = new Date(timestamp);
-  return `${wrapDateNumber(date.getFullYear())}-${wrapDateNumber(date.getMonth() + 1)}-${wrapDateNumber(date.getDate())}T${wrapDateNumber(date.getHours())}:${wrapDateNumber(date.getMinutes())}:${wrapDateNumber(date.getSeconds())}.${wrapDateNumber(date.getMilliseconds(), 3)}`;
+  return `${wrapDateNumber(date.getFullYear())}-${wrapDateNumber(date.getMonth() + 1)}-${wrapDateNumber(date.getDate())}T${wrapDateNumber(date.getHours())}:${wrapDateNumber(date.getMinutes())}:${wrapDateNumber(date.getSeconds())}.${wrapDateNumber(date.getMilliseconds(), 3)}Z`;
 }
 
 function wrapDateNumber(v: number, bits: number = 2) {
