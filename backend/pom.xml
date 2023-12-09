@@ -83,20 +83,20 @@
     </dependency>
 
     <dependency>
-      <groupId>org.lks.filters-query</groupId>
+      <groupId>org.luncert.filters-query</groupId>
       <artifactId>api</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
-      <groupId>org.lks.filters-query</groupId>
+      <groupId>org.luncert.filters-query</groupId>
       <artifactId>lucene-impl</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
 
 
     <dependency>
-      <groupId>org.lks.filters-query</groupId>
+      <groupId>org.luncert.filters-query</groupId>
       <artifactId>predicate-impl</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
@@ -104,17 +104,12 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-starter-logging</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-log4j2</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>

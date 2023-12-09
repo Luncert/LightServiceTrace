@@ -1,6 +1,6 @@
 package org.luncert.lstrace.http;
 
-import org.lks.filtersquery.api.exception.FiltersQueryException;
+import org.luncert.filtersquery.api.exception.FiltersQueryException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

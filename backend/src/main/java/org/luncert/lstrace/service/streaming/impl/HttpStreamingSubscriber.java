@@ -6,7 +6,7 @@ import java.util.TimerTask;
 import java.util.function.Predicate;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.lks.filtersquery.predicateimpl.PredicateFiltersQueryEngine;
+import org.luncert.filtersquery.predicateimpl.PredicateFiltersQueryEngine;
 import org.luncert.lstrace.model.SyslogEvent;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
