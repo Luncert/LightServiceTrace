@@ -12,14 +12,8 @@
   <packaging>jar</packaging>
 
   <name>backend</name>
-  <url>http://maven.apache.org</url>
 
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.version>17</java.version>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
-    <maven.compiler.version>3.8.3</maven.compiler.version>
     <org.modelmapper.version>2.3.9</org.modelmapper.version>
   </properties>
 
