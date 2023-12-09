@@ -17,7 +17,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RestController
 @RequestMapping("/v1/logs")
 @RequiredArgsConstructor
-public class LogController {
+public class GetLogsController {
 
   private static final String ANONYMOUS_CHANNEL = "anonymous";
 

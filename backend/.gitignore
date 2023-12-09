@@ -37,4 +37,4 @@ build/
 
 ### Mac OS ###
 .DS_Store
-resources/static/
+src/resources/static/
