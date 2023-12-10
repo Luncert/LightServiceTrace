@@ -126,6 +126,10 @@ export default function LogStreaming() {
           onClick={() => onClick()}>
           {t(connected() ? "labels.disconnect" : "labels.connect")}
         </Button>
+        <Button variant="contained" color="warning"
+          onClick={() => term.clear()}>
+          {t("labels.clear")}
+        </Button>
       </Filters>
       }
     >

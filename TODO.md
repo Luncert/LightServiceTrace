@@ -6,6 +6,5 @@
 - more operator on filters
 - add loader while loading data
 - support configuring columns to display
-- clear terminal button
 - overwrite severity if it's provided by message
 - fix date range input filter

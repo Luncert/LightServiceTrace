@@ -8,6 +8,7 @@ export default ({
   labels: {
     filter: "Filter",
     connect: "Connect",
+    clear: "Clear",
     disconnect: "Disconnect",
     showSourceSwitch: "Show Source",
     hideSourceSwitch: "Hide Source",
