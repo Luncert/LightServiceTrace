@@ -6,7 +6,8 @@
     "antlr": "antlr4ts -visitor src/antlr/grammar/JSON.g4 -o src/antlr/grammar && antlr4ts -visitor src/antlr/grammar/ToString.g4 -o src/antlr/grammar",
     "start": "vite",
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build --base=/content",
+    "preview": "vite build && vite preview",
     "serve": "vite preview"
   },
   "license": "MIT",
