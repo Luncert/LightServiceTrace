@@ -8,6 +8,5 @@
 - support configuring columns to display
 - clear terminal button
 - overwrite severity if it's provided by message
-- switch app theme
 - fix date range input filter
 - remove duplicated filters

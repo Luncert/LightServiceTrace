@@ -2,10 +2,8 @@
 import { render } from 'solid-js/web';
 
 import './index.css';
-import { Route, Router, Routes } from '@solidjs/router';
-import { ThemeProvider, createTheme } from '@suid/material';
 import initI18n from './i18n/config';
-import Home from './view/Home';
+import App from './view/App';
 
 initI18n('en');
 
@@ -17,24 +15,4 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   );
 }
 
-const lightTheme = createTheme({
-  palette: {
-  },
-})
-
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark'
-  },
-});
-
-render(() => 
-  <ThemeProvider theme={darkTheme}>
-    <Router>
-      <Routes>
-        {/* <Route path="/signin" component={Signin} /> */}
-        <Route path="/" component={Home} />
-      </Routes>
-    </Router>
-  </ThemeProvider>,
-root!);
+render(() => <App />, root!);

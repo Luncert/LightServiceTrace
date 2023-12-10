@@ -1,16 +1,24 @@
-import { Avatar, Paper } from "@suid/material";
+import { Avatar, FormControlLabel, IconButton, Menu, MenuItem, Paper, Switch as MuiSwitch, useTheme } from "@suid/material";
 import { Notification } from "../mgrui/lib/components/NotificationWrapper";
 import { createData, names } from "../mgrui/lib/components/utils";
 import logo from '../logo.svg';
 import { BackdropWrapper } from "../mgrui/lib/components/BackdropWrapper";
 import HomeSidebar from "./HomeSidebar";
 import config from '../config';
-import { For, Match, Switch, ValidComponent } from "solid-js";
+import { For, Match, Switch, ValidComponent, createEffect } from "solid-js";
 import { Dynamic } from "solid-js/web";
+import { IoSettingsSharp } from 'solid-icons/io';
+import { t } from "i18next";
+import { useApp } from "./App";
 
 export default function Home() {
+  const app = useApp();
   const activeContent = createData(config.defaultMenu);
-  
+  const useDarkTheme = createData(false);
+  const settingAnchorEl = createData<null | HTMLElement>(null);
+  const openSettingMenu = () => Boolean(settingAnchorEl());
+  const closeSettingMenu = () => settingAnchorEl(null);
+
   return (
     <Notification>
       <BackdropWrapper>
@@ -23,6 +31,31 @@ export default function Home() {
               }} />
               
             <span class='font-bold text-shadow'>Light Service Trace</span>
+            <div class="ml-auto">
+              <IconButton id="settings-button"
+                onClick={(event) => {
+                  settingAnchorEl(event.currentTarget);
+                }}>
+                <IoSettingsSharp />
+              </IconButton>
+              <Menu
+                id="settings-menu"
+                anchorEl={settingAnchorEl()}
+                open={openSettingMenu()}
+                onClose={closeSettingMenu}
+                MenuListProps={{ "aria-labelledby": "settings-button" }}
+              >
+                <MenuItem>
+                  <FormControlLabel
+                    control={<MuiSwitch checked={useDarkTheme()} onChange={(evt, value) => {
+                      useDarkTheme(value);
+                      app.theme(value ? 'dark' : 'light');
+                    }} />}
+                    label={t(useDarkTheme() ? "labels.darkTheme" : "labels.lightTheme")}
+                  />
+                </MenuItem>
+              </Menu>
+            </div>
           </div>
           <div class="flex flex-nowrap w-full" style={{ height: "calc(100% - 40px)"}}>
             <HomeSidebar onSelected={(name) => activeContent(name)}/>

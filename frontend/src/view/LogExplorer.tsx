@@ -50,11 +50,11 @@ export default function LogExplorer() {
           onChange={filterActions.processId}
         />
         <Filter id="messageId-filter" type="text"
-          label={t("model.log.appName")}
+          label={t("model.log.messageId")}
           onChange={filterActions.messageId}
         />
         <Filter id="structuredData-filter" type="text"
-          label={t("model.log.appName")}
+          label={t("model.log.structuredData")}
           onChange={filterActions.structuredData}
         />
         <Filter id="message-filter" type="text"

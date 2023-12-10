@@ -11,7 +11,9 @@ export default ({
     disconnect: "Disconnect",
     showSourceSwitch: "Show Source",
     hideSourceSwitch: "Hide Source",
-    total:"Total"
+    total: "Total",
+    lightTheme: "Light",
+    darkTheme: "Dark",
   },
   model: {
     log: {
