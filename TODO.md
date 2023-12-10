@@ -4,3 +4,10 @@
 - add dashboard view
 - popup of message and structured data
 - more operator on filters
+- add loader while loading data
+- support configuring columns to display
+- clear terminal button
+- overwrite severity if it's provided by message
+- switch app theme
+- fix date range input filter
+- remove duplicated filters
