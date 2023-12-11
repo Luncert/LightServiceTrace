@@ -3,8 +3,9 @@
 - support data fold
 - add dashboard view
 - popup of message and structured data
+- overwrite severity if it's provided by message
+
 - more operator on filters
 - add loader while loading data
 - support configuring columns to display
-- overwrite severity if it's provided by message
 - fix date range input filter
