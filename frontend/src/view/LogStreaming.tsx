@@ -74,7 +74,7 @@ export default function LogStreaming() {
 
   const connected = createData(false);
   const showSource = createData(false);
-  const [filters, filterActions] = createFilterStore({
+  const filterStore = createFilterStore({
     host: { operator: "like", value: "" },
     appName: { operator: "like", value: "" },
     processId: { operator: "like", value: "" },
@@ -84,7 +84,7 @@ export default function LogStreaming() {
     if (connected()) {
       conn.close();
     } else {
-      conn = getBackend().streaming(buildFilterBy(filters),
+      conn = getBackend().streaming(buildFilterBy(filterStore.accessor),
         term, log => writeLog(term, log, showSource()));
     }
     connected(!connected());

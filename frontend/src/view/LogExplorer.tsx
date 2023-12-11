@@ -9,35 +9,47 @@ import { t } from "i18next";
 import { parseTimestamp } from "./common/Util";
 import DataManagementTemplate from "../mgrui/lib/components/template/DataManagementTemplate";
 import Field from "../mgrui/lib/components/Field";
-import { buildFilterBy, createColumnControlStore, createFilterStore } from "../mgrui/lib/components/filters/Functions";
+import { buildFilterBy, createFilterStore } from "../mgrui/lib/components/filters/Functions";
 import { FilterSettings } from "../mgrui/lib/components/filters/FilterSettings";
 
 export default function LogExplorer() {
   const offset = createData(0);
   const pageSize = createData(10);
   
-  const [filters, filterActions] = createFilterStore({
-    timestamp: { operator: "between", value: [undefined, undefined] },
-    host: { operator: "like", value: "" },
-    appName: { operator: "like", value: "" },
-    processId: { operator: "like", value: "" },
-    messageId: { operator: "like", value: "" },
-    structuredData: { operator: "like", value: "" },
-    message: { operator: "like", value: "" },
-  });
-
-  const columnControl = createColumnControlStore({
-    timestamp: { visible: true },
-    host: { visible: true },
-    appName: { visible: false },
-    processId: { visible: false },
-    messageId: { visible: false },
-    structuredData: { visible: true },
-    message: { visible: true },
+  const filterStore = createFilterStore({
+    timestamp: {
+      match: { operator: "between", value: [undefined, undefined] },
+      columnControl: { visible: true },
+      sort: { order: "desc", active: true }
+    },
+    host: { 
+      match: { operator: "like", value: [undefined, undefined] },
+      columnControl: { visible: true }
+     },
+    appName: {
+      match: { operator: "like", value: [undefined, undefined] },
+      columnControl: { visible: true }
+    },
+    processId: {
+      match: { operator: "like", value: [undefined, undefined] },
+      columnControl: { visible: true }
+    },
+    messageId: {
+      match: { operator: "like", value: [undefined, undefined] },
+      columnControl: { visible: true }
+    },
+    structuredData: {
+      match: { operator: "like", value: [undefined, undefined] },
+      columnControl: { visible: true }
+    },
+    message: {
+      match: { operator: "like", value: [undefined, undefined] },
+      columnControl: { visible: true }
+    },
   });
   
   const [logs, logsAction] = createResource(
-    () => getBackend().getLogs(buildFilterBy(filters, { timestamp: { order: "desc", active: true }}, offset(), pageSize())),
+    () => getBackend().getLogs(''), // buildFilterBy(filterStore.accessor, offset(), pageSize())
     { initialValue: { pageable: {} } as Page<Log> }
   );
 
@@ -47,34 +59,34 @@ export default function LogExplorer() {
       <Filters>
         <Filter id="timestamp-filter" type="date-range"
           label={t("model.log.timestamp")}
-          onStartChange={(d) => filterActions.timestamp.value([d?.getTime(), filters.timestamp.value[1]])}
-          onEndChange={(d) => filterActions.timestamp.value([filters.timestamp.value[0], d?.getTime()])} />
+          onStartChange={(d) => filterStore.modifier.timestamp.match.value([d?.getTime(), filterStore.accessor.timestamp.match.value[1]])}
+          onEndChange={(d) => filterStore.modifier.timestamp.match.value([filterStore.accessor.timestamp.match.value[0], d?.getTime()])} />
         <Filter id="host-filter" type="text"
           label={t("model.log.host")}
-          onChange={filterActions.host.value}
+          onChange={filterStore.modifier.host.match.value}
         />
         <Filter id="appName-filter" type="text"
           label={t("model.log.appName")}
-          onChange={filterActions.appName.value}
+          onChange={filterStore.modifier.appName.match.value}
         />
         <Filter id="processId-filter" type="text"
           label={t("model.log.processId")}
-          onChange={filterActions.processId.value}
+          onChange={filterStore.modifier.processId.match.value}
         />
         <Filter id="messageId-filter" type="text"
           label={t("model.log.messageId")}
-          onChange={filterActions.messageId.value}
+          onChange={filterStore.modifier.messageId.match.value}
         />
         <Filter id="structuredData-filter" type="text"
           label={t("model.log.structuredData")}
-          onChange={filterActions.structuredData.value}
+          onChange={filterStore.modifier.structuredData.match.value}
         />
         <Filter id="message-filter" type="text"
           label={t("model.log.message")}
-          onChange={filterActions.message.value}
+          onChange={filterStore.modifier.message.match.value}
         />
         <Button variant="contained" onClick={logsAction.refetch}>{t("labels.filter")}</Button>
-        <FilterSettings columnControl={columnControl} />
+        <FilterSettings store={filterStore} enableColumnControl />
       </Filters>
     }>
       <div class="flex p-2">
@@ -98,23 +110,25 @@ export default function LogExplorer() {
         <Table class="w-full table-fixed break-all" aria-label="user-list" stickyHeader>
           <TableHead>
             <TableRow>
-              <TableCell align="center" class="w-56">{t("model.log.timestamp")}</TableCell>
-              <Show when={columnControl[0].host.visible}>
+              <Show when={filterStore.accessor.timestamp.columnControl?.visible}>
+                <TableCell align="center" class="w-56">{t("model.log.timestamp")}</TableCell>
+              </Show>
+              <Show when={filterStore.accessor.host.columnControl?.visible}>
                 <TableCell align="center">{t("model.log.host")}</TableCell>
               </Show>
-              <Show when={columnControl[0].appName.visible}>
+              <Show when={filterStore.accessor.appName.columnControl?.visible}>
                 <TableCell align="center">{t("model.log.appName")}</TableCell>
               </Show>
-              <Show when={columnControl[0].processId.visible}>
+              <Show when={filterStore.accessor.processId.columnControl?.visible}>
                 <TableCell align="center">{t("model.log.processId")}</TableCell>
               </Show>
-              <Show when={columnControl[0].messageId.visible}>
+              <Show when={filterStore.accessor.messageId.columnControl?.visible}>
                 <TableCell align="center">{t("model.log.messageId")}</TableCell>
               </Show>
-              <Show when={columnControl[0].structuredData.visible}>
+              <Show when={filterStore.accessor.structuredData.columnControl?.visible}>
                 <TableCell align="center">{t("model.log.structuredData")}</TableCell>
               </Show>
-              <Show when={columnControl[0].message.visible}>
+              <Show when={filterStore.accessor.message.columnControl?.visible}>
                 <TableCell align="center">{t("model.log.message")}</TableCell>
               </Show>
             </TableRow>
