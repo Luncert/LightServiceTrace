@@ -32,5 +32,15 @@ export default ({
       on: "streaming started",
       off: "streaming stoped"
     }
+  },
+  "filter-settings": {
+    title: "Filter Settings",
+    tabs: {
+      "column-control": "Column Control"
+    },
+    "column-control": {
+      "field-name": "Column",
+      visible: "Visible"
+    }
   }
 });

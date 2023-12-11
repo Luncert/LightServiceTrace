@@ -8,7 +8,8 @@ import { styledString } from "./xterm/Colors";
 import { parseTimestamp } from "./common/Util";
 import highlight from "./xterm/highlight/highlight";
 import DataManagementTemplate from "../mgrui/lib/components/template/DataManagementTemplate";
-import { Filter, Filters, buildFilterBy, createFilterStore } from "../mgrui/lib/components/filters/Filters";
+import { Filter, Filters } from "../mgrui/lib/components/filters/Filters";
+import { buildFilterBy, createFilterStore } from "../mgrui/lib/components/filters/Functions";
 
 const Levels = [
   "EMERGENCY",
@@ -109,17 +110,17 @@ export default function LogStreaming() {
         />
         <Filter id="host-filter" type="text"
           label={t("model.log.host")}
-          onChange={filterActions.host}
+          onChange={filterActions.host.value}
           disabled={connected()}
         />
         <Filter id="appName-filter" type="text"
           label={t("model.log.appName")}
-          onChange={filterActions.appName}
+          onChange={filterActions.appName.value}
           disabled={connected()}
         />
         <Filter id="processId-filter" type="text"
           label={t("model.log.processId")}
-          onChange={filterActions.processId}
+          onChange={filterActions.processId.value}
           disabled={connected()}
         />
         <Button variant="contained"
