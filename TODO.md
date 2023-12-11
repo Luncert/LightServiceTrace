@@ -5,7 +5,8 @@
 - popup of message and structured data
 - overwrite severity if it's provided by message
 
-- more operator on filters
-- add loader while loading data
-- support configuring columns to display
-- fix date range input filter
+- more operator on filters /
+- add loader while loading data /
+- support configuring columns to display /
+- fix date range input filter /
+- support config sorts /
