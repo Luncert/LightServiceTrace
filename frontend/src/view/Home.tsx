@@ -1,11 +1,11 @@
-import { Avatar, FormControlLabel, IconButton, Menu, MenuItem, Paper, Switch as MuiSwitch, useTheme } from "@suid/material";
+import { Avatar, FormControlLabel, IconButton, Menu, MenuItem, Paper, Switch as MuiSwitch } from "@suid/material";
 import { Notification } from "../mgrui/lib/components/NotificationWrapper";
 import { createData, names } from "../mgrui/lib/components/utils";
 import logo from '../logo.svg';
 import { BackdropWrapper } from "../mgrui/lib/components/BackdropWrapper";
 import HomeSidebar from "./HomeSidebar";
 import config from '../config';
-import { For, Match, Switch, ValidComponent, createEffect } from "solid-js";
+import { For, Match, Switch, ValidComponent } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { IoSettingsSharp } from 'solid-icons/io';
 import { t } from "i18next";
@@ -15,7 +15,12 @@ import GlobalizationWrapper from "../mgrui/lib/components/GlobalizationWrapper";
 export default function Home() {
   const app = useApp();
   const activeContent = createData(config.defaultMenu);
-  const useDarkTheme = createData(false);
+  const useDarkTheme = createData(false, {
+    localStorageName: 'useDarkTheme',
+    beforeUpdate: (newValue) => {
+      app.theme(newValue ? 'dark' : 'light');
+    }
+  });
   const settingAnchorEl = createData<null | HTMLElement>(null);
   const openSettingMenu = () => Boolean(settingAnchorEl());
   const closeSettingMenu = () => settingAnchorEl(null);
@@ -48,10 +53,7 @@ export default function Home() {
                 >
                   <MenuItem>
                     <FormControlLabel
-                      control={<MuiSwitch checked={useDarkTheme()} onChange={(evt, value) => {
-                        useDarkTheme(value);
-                        app.theme(value ? 'dark' : 'light');
-                      }} />}
+                      control={<MuiSwitch checked={useDarkTheme()} onChange={(evt, value) => useDarkTheme(value)} />}
                       label={t(useDarkTheme() ? "labels.darkTheme" : "labels.lightTheme")}
                     />
                   </MenuItem>

@@ -1,5 +1,4 @@
 - release index files when disk is not sufficient
-- save config in browser
 
 - wrap filters to multiple lines
 - add dashboard view
