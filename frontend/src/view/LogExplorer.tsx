@@ -1,9 +1,9 @@
 import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
 import TablePagination from "../mgrui/lib/components/table/TablePagination";
 import PageSizeSelector from "../mgrui/lib/components/table/PageSizeSelector";
-import { conditionalValue, createData } from "../mgrui/lib/components/utils";
+import { createData } from "../mgrui/lib/components/utils";
 import { Filter, Filters  } from "../mgrui/lib/components/filters/Filters";
-import { Index, Show, createResource } from "solid-js";
+import { Index, createResource } from "solid-js";
 import getBackend from "../service/Backend";
 import { t } from "i18next";
 import { parseTimestamp } from "./common/Util";
@@ -12,8 +12,10 @@ import Field from "../mgrui/lib/components/Field";
 import { buildFilterBy, createFilterStore } from "../mgrui/lib/components/filters/Functions";
 import { FilterSettings } from "../mgrui/lib/components/filters/FilterSettings";
 import ColumnControl from "../mgrui/lib/components/filters/ColumnControl";
+import { useBackdrop } from "../mgrui/lib/components/BackdropWrapper";
 
 export default function LogExplorer() {
+  const backdrop = useBackdrop();
   const offset = createData(0);
   const pageSize = createData(10);
   
@@ -50,7 +52,11 @@ export default function LogExplorer() {
   });
   
   const [logs, logsAction] = createResource(
-    () => getBackend().getLogs(buildFilterBy(filterStore, offset(), pageSize())),
+    async () => {
+      backdrop.loading(true);
+      return getBackend().getLogs(buildFilterBy(filterStore, offset(), pageSize()))
+        .finally(() => backdrop.loading(false));
+    },
     { initialValue: { pageable: {} } as Page<Log> }
   );
 
@@ -139,13 +145,27 @@ export default function LogExplorer() {
               <TableRow
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
-                <TableCell align="center" component="th" scope="row">{parseTimestamp(log().timestamp)}</TableCell>
-                <TableCell align="center">{log().host}</TableCell>
-                <TableCell align="center">{log().appName}</TableCell>
-                <TableCell align="center">{log().processId}</TableCell>
-                <TableCell align="center">{log().messageId}</TableCell>
-                <TableCell align="center">{log().structuredData}</TableCell>
-                <TableCell align="center">{log().message}</TableCell>
+                <ColumnControl attr={filterStore.timestamp}>
+                  <TableCell align="center" component="th" scope="row">{parseTimestamp(log().timestamp)}</TableCell>
+                </ColumnControl>
+                <ColumnControl attr={filterStore.host}>
+                  <TableCell align="center">{log().host}</TableCell>
+                </ColumnControl>
+                <ColumnControl attr={filterStore.appName}>
+                  <TableCell align="center">{log().appName}</TableCell>
+                </ColumnControl>
+                <ColumnControl attr={filterStore.processId}>
+                  <TableCell align="center">{log().processId}</TableCell>
+                </ColumnControl>
+                <ColumnControl attr={filterStore.messageId}>
+                  <TableCell align="center">{log().messageId}</TableCell>
+                </ColumnControl>
+                <ColumnControl attr={filterStore.structuredData}>
+                  <TableCell align="center">{log().structuredData}</TableCell>
+                </ColumnControl>
+                <ColumnControl attr={filterStore.message}>
+                  <TableCell align="center">{log().message}</TableCell>
+                </ColumnControl>
               </TableRow>
             )}
             </Index>

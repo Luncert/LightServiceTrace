@@ -13,6 +13,7 @@
   <modules>
     <module>frontend</module>
     <module>backend</module>
+    <module>log-generator</module>
   </modules>
 
   <properties>

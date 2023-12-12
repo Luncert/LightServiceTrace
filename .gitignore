@@ -1,3 +1,6 @@
 manifest.yaml
 .idea/
+*/.idea/
 indexing
+target/
+*/target
