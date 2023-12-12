@@ -1,7 +1,7 @@
 import { Avatar, FormControlLabel, IconButton, Menu, MenuItem, Paper, Switch as MuiSwitch, useTheme } from "@suid/material";
 import { Notification } from "../mgrui/lib/components/NotificationWrapper";
 import { createData, names } from "../mgrui/lib/components/utils";
-import logo from '../logo.svg';
+import logo from '../logo.ico';
 import { BackdropWrapper } from "../mgrui/lib/components/BackdropWrapper";
 import HomeSidebar from "./HomeSidebar";
 import config from '../config';
