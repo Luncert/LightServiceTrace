@@ -49,16 +49,33 @@ async function writeLog(term: Xterm, log: Syslog, printSource: boolean) {
       'white', '#2196f3') + ' ');
   }
 
-  const toBePrint: string[] = [];
-  toBePrint.push(Levels[log.level]);
-  toBePrint.push(parseTimestamp(log.timestamp));
 
-  let { message } = log;
-  if (message.length > 0) {
-    toBePrint.push(message);
+  const toBePrint: string[] = [];
+  const { message } = log;
+
+  try {
+    const msg = JSON.parse(message) as LogbackMessage;
+    toBePrint.push(msg.level);
+    toBePrint.push(msg.written_at);
+    toBePrint.push(msg.logger);
+    toBePrint.push('[' + msg.thread + ']');
+
+    toBePrint.push(msg.msg);
+  } catch (e) {
+    toBePrint.push(Levels[log.level]);
+    toBePrint.push(parseTimestamp(log.timestamp));
+
+    if (message.length > 0) {
+      toBePrint.push(message);
+    }
   }
 
-  await highlight(toBePrint.join(' ') + '\n', s => term.write(s));
+  let raw = toBePrint.join(' ');
+  if (!raw.endsWith('\n')) {
+    raw += '\n';
+  }
+
+  await highlight(raw, s => term.write(s));
 }
 
 function wrapNull(v: any) {

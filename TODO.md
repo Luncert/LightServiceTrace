@@ -1,6 +1,8 @@
 - wrap filters to multiple lines
+- add dashboard view
+- release index files when disk is not sufficient
+- save config in browser
+
 - support links
 - support data fold
-- add dashboard view
 - popup of message and structured data
-- overwrite severity if it's provided by message

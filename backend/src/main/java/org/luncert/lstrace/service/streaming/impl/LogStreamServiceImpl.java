@@ -42,6 +42,7 @@ public class LogStreamServiceImpl implements ILogStreamService, ApplicationListe
 
   @Override
   public void onApplicationEvent(SyslogServerEvent event) {
-    logStream.publish((SyslogEvent) event.getSource());
+    SyslogEvent source = (SyslogEvent) event.getSource();
+    logStream.publish(source);
   }
 }

@@ -10,7 +10,6 @@ import org.luncert.lstrace.model.mapper.SyslogEventMapper;
 import org.luncert.lstrace.syslog.rfc5424.IRfc5424SyslogParser;
 import org.luncert.lstrace.syslog.rfc5424.Rfc5424SyslogEvent;
 import org.luncert.lstrace.syslog.rfc5424.Rfc5425ByteBufSyslogParser;
-import org.productivity.java.syslog4j.server.SyslogServerEventIF;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
@@ -24,17 +23,12 @@ public class SyslogProcessingHandler
   private final SyslogEventMapper syslogEventMapper;
 
   @Override
-  public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+  public void channelRead(ChannelHandlerContext ctx, Object msg) {
     DatagramPacket m = (DatagramPacket) msg;
     Rfc5424SyslogEvent source = parser.parse(m.content());
     m.release();
 
     SyslogEvent syslogEvent = syslogEventMapper.toSyslogEvent(source);
     applicationEventPublisher.publishEvent(new SyslogServerEvent(syslogEvent));
-  }
-
-  private void foldMessage(SyslogServerEventIF source, SyslogEvent destination) {
-//    char[] chars = source.getMessage().toCharArray();
-    // TODO:
   }
 }

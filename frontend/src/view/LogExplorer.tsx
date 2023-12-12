@@ -53,9 +53,12 @@ export default function LogExplorer() {
   
   const [logs, logsAction] = createResource(
     async () => {
-      backdrop.loading(true);
+      const t = setTimeout(() => backdrop.loading(true), 10);
       return getBackend().getLogs(buildFilterBy(filterStore, offset(), pageSize()))
-        .finally(() => backdrop.loading(false));
+        .finally(() => {
+          clearTimeout(t);
+          backdrop.loading(false);
+        });
     },
     { initialValue: { pageable: {} } as Page<Log> }
   );
