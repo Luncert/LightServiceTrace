@@ -1,5 +1,6 @@
 - release index files when disk is not sufficient
 - save config in browser
+- fullscreen of streaming
 
 - wrap filters to multiple lines
 - add dashboard view
