@@ -55,6 +55,7 @@ async function writeLog(term: Xterm, log: Syslog, printSource: boolean) {
 
   try {
     const msg = JSON.parse(message) as LogbackMessage;
+    toBePrint.push(msg.type?.toUpperCase());
     toBePrint.push(msg.level);
     toBePrint.push(msg.written_at);
     toBePrint.push(msg.logger);
