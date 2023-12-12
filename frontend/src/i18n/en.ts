@@ -36,7 +36,13 @@ export default ({
   "filter-settings": {
     title: "Filter Settings",
     tabs: {
-      "column-control": "Column Control"
+      "column-control": "Column Control",
+      "sorts": "Sorts"
+    },
+    sorts: {
+      "field-name": "Column",
+      order: "Order",
+      active: "Active"
     },
     "column-control": {
       "field-name": "Column",

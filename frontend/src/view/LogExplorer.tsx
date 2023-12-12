@@ -11,6 +11,7 @@ import DataManagementTemplate from "../mgrui/lib/components/template/DataManagem
 import Field from "../mgrui/lib/components/Field";
 import { buildFilterBy, createFilterStore } from "../mgrui/lib/components/filters/Functions";
 import { FilterSettings } from "../mgrui/lib/components/filters/FilterSettings";
+import ColumnControl from "../mgrui/lib/components/filters/ColumnControl";
 
 export default function LogExplorer() {
   const offset = createData(0);
@@ -23,33 +24,33 @@ export default function LogExplorer() {
       sort: { order: "desc", active: true }
     },
     host: { 
-      match: { operator: "like", value: [undefined, undefined] },
+      match: { operator: "like", value: '' },
       columnControl: { visible: true }
-     },
+    },
     appName: {
-      match: { operator: "like", value: [undefined, undefined] },
-      columnControl: { visible: true }
+      match: { operator: "like", value: '' },
+      columnControl: { visible: false }
     },
     processId: {
-      match: { operator: "like", value: [undefined, undefined] },
-      columnControl: { visible: true }
+      match: { operator: "like", value: '' },
+      columnControl: { visible: false }
     },
     messageId: {
-      match: { operator: "like", value: [undefined, undefined] },
-      columnControl: { visible: true }
+      match: { operator: "like", value: '' },
+      columnControl: { visible: false }
     },
     structuredData: {
-      match: { operator: "like", value: [undefined, undefined] },
+      match: { operator: "like", value: '' },
       columnControl: { visible: true }
     },
     message: {
-      match: { operator: "like", value: [undefined, undefined] },
+      match: { operator: "like", value: '' },
       columnControl: { visible: true }
     },
   });
   
   const [logs, logsAction] = createResource(
-    () => getBackend().getLogs(''), // buildFilterBy(filterStore.accessor, offset(), pageSize())
+    () => getBackend().getLogs(buildFilterBy(filterStore, offset(), pageSize())),
     { initialValue: { pageable: {} } as Page<Log> }
   );
 
@@ -59,34 +60,34 @@ export default function LogExplorer() {
       <Filters>
         <Filter id="timestamp-filter" type="date-range"
           label={t("model.log.timestamp")}
-          onStartChange={(d) => filterStore.modifier.timestamp.match.value([d?.getTime(), filterStore.accessor.timestamp.match.value[1]])}
-          onEndChange={(d) => filterStore.modifier.timestamp.match.value([filterStore.accessor.timestamp.match.value[0], d?.getTime()])} />
+          onStartChange={filterStore.timestamp}
+          onEndChange={filterStore.timestamp} />
         <Filter id="host-filter" type="text"
           label={t("model.log.host")}
-          onChange={filterStore.modifier.host.match.value}
+          onChange={filterStore.host}
         />
         <Filter id="appName-filter" type="text"
           label={t("model.log.appName")}
-          onChange={filterStore.modifier.appName.match.value}
+          onChange={filterStore.appName}
         />
         <Filter id="processId-filter" type="text"
           label={t("model.log.processId")}
-          onChange={filterStore.modifier.processId.match.value}
+          onChange={filterStore.processId}
         />
         <Filter id="messageId-filter" type="text"
           label={t("model.log.messageId")}
-          onChange={filterStore.modifier.messageId.match.value}
+          onChange={filterStore.messageId}
         />
         <Filter id="structuredData-filter" type="text"
           label={t("model.log.structuredData")}
-          onChange={filterStore.modifier.structuredData.match.value}
+          onChange={filterStore.structuredData}
         />
         <Filter id="message-filter" type="text"
           label={t("model.log.message")}
-          onChange={filterStore.modifier.message.match.value}
+          onChange={filterStore.message}
         />
         <Button variant="contained" onClick={logsAction.refetch}>{t("labels.filter")}</Button>
-        <FilterSettings store={filterStore} enableColumnControl />
+        <FilterSettings store={filterStore} enableSorts enableColumnControl />
       </Filters>
     }>
       <div class="flex p-2">
@@ -110,27 +111,27 @@ export default function LogExplorer() {
         <Table class="w-full table-fixed break-all" aria-label="user-list" stickyHeader>
           <TableHead>
             <TableRow>
-              <Show when={filterStore.accessor.timestamp.columnControl?.visible}>
+              <ColumnControl attr={filterStore.timestamp}>
                 <TableCell align="center" class="w-56">{t("model.log.timestamp")}</TableCell>
-              </Show>
-              <Show when={filterStore.accessor.host.columnControl?.visible}>
+              </ColumnControl>
+              <ColumnControl attr={filterStore.host}>
                 <TableCell align="center">{t("model.log.host")}</TableCell>
-              </Show>
-              <Show when={filterStore.accessor.appName.columnControl?.visible}>
+              </ColumnControl>
+              <ColumnControl attr={filterStore.appName}>
                 <TableCell align="center">{t("model.log.appName")}</TableCell>
-              </Show>
-              <Show when={filterStore.accessor.processId.columnControl?.visible}>
+              </ColumnControl>
+              <ColumnControl attr={filterStore.processId}>
                 <TableCell align="center">{t("model.log.processId")}</TableCell>
-              </Show>
-              <Show when={filterStore.accessor.messageId.columnControl?.visible}>
+              </ColumnControl>
+              <ColumnControl attr={filterStore.messageId}>
                 <TableCell align="center">{t("model.log.messageId")}</TableCell>
-              </Show>
-              <Show when={filterStore.accessor.structuredData.columnControl?.visible}>
+              </ColumnControl>
+              <ColumnControl attr={filterStore.structuredData}>
                 <TableCell align="center">{t("model.log.structuredData")}</TableCell>
-              </Show>
-              <Show when={filterStore.accessor.message.columnControl?.visible}>
+              </ColumnControl>
+              <ColumnControl attr={filterStore.message}>
                 <TableCell align="center">{t("model.log.message")}</TableCell>
-              </Show>
+              </ColumnControl>
             </TableRow>
           </TableHead>
           <TableBody>

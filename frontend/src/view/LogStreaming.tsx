@@ -75,16 +75,16 @@ export default function LogStreaming() {
   const connected = createData(false);
   const showSource = createData(false);
   const filterStore = createFilterStore({
-    host: { operator: "like", value: "" },
-    appName: { operator: "like", value: "" },
-    processId: { operator: "like", value: "" },
+    host: { match: { operator: "like", value: "" } },
+    appName: { match: { operator: "like", value: "" } },
+    processId: { match: { operator: "like", value: "" } },
   });
 
   const onClick = () => {
     if (connected()) {
       conn.close();
     } else {
-      conn = getBackend().streaming(buildFilterBy(filterStore.accessor),
+      conn = getBackend().streaming(buildFilterBy(filterStore),
         term, log => writeLog(term, log, showSource()));
     }
     connected(!connected());
@@ -110,17 +110,17 @@ export default function LogStreaming() {
         />
         <Filter id="host-filter" type="text"
           label={t("model.log.host")}
-          onChange={filterActions.host.value}
+          onChange={filterStore.host}
           disabled={connected()}
         />
         <Filter id="appName-filter" type="text"
           label={t("model.log.appName")}
-          onChange={filterActions.appName.value}
+          onChange={filterStore.appName}
           disabled={connected()}
         />
         <Filter id="processId-filter" type="text"
           label={t("model.log.processId")}
-          onChange={filterActions.processId.value}
+          onChange={filterStore.processId}
           disabled={connected()}
         />
         <Button variant="contained"
