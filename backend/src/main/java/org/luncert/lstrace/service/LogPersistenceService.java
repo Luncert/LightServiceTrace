@@ -5,8 +5,8 @@ import jakarta.annotation.PreDestroy;
 import java.io.IOException;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -19,8 +19,6 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.luncert.filtersquery.luceneimpl.FiltersQueryBuilderLuceneImpl;
 import org.luncert.filtersquery.luceneimpl.LuceneFiltersQueryOrmEngine;
@@ -33,6 +31,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class LogPersistenceService extends LuceneFiltersQueryOrmEngine<SyslogEvent>
@@ -90,6 +89,20 @@ public class LogPersistenceService extends LuceneFiltersQueryOrmEngine<SyslogEve
     try {
       writer.addDocument(document);
       writer.flush();
+    } catch (IOException e) {
+      // release indexes
+      log.error("failed to write document", e);
+      releaseOldDocuments(writer);
+    }
+  }
+
+  private void releaseOldDocuments(IndexWriter writer) {
+    int toDelete = writer.numDocs() / 3;
+    FiltersQueryBuilderLuceneImpl.ResultImpl result = buildQuery("filter by () sort by timestamp asc offset 0 limit " + toDelete, SyslogEvent.class);
+    try {
+      writer.deleteDocuments(result.getQuery());
+      writer.commit();
+      writer.forceMergeDeletes();
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
