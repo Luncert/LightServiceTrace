@@ -17,7 +17,9 @@ import { useBackdrop } from "../mgrui/lib/components/BackdropWrapper";
 export default function LogExplorer() {
   const backdrop = useBackdrop();
   const offset = createData(0);
-  const pageSize = createData(10);
+  const pageSize = createData(10, {
+    localStorageName: "LogExplorer.pageSize"
+  });
   
   const filterStore = createFilterStore({
     timestamp: {
