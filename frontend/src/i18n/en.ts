@@ -13,8 +13,10 @@ export default ({
     showSourceSwitch: "Show Source",
     hideSourceSwitch: "Hide Source",
     total: "Total",
-    lightTheme: "Light",
-    darkTheme: "Dark",
+    themeSwitch: "Use dark theme",
+    deserializeJsonMessageSwitch: "Deserialize JSON message",
+    loggingFormat: "Logging Format",
+    validate: "Validate"
   },
   model: {
     log: {

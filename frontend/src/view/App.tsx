@@ -9,6 +9,8 @@ type PaletteMode = "light" | "dark";
 
 interface AppContextDef {
   theme: UpdateAndGetFunc<PaletteMode>;
+  deserializeJsonMessage: UpdateAndGetFunc<boolean>;
+  loggingFormat: UpdateAndGetFunc<string>;
 }
 
 const AppContext = createContext<AppContextDef>();
@@ -19,13 +21,17 @@ export function useApp() {
 
 export default function App() {
   const themeMode = createData<PaletteMode>("light");
+  const deserializeJsonMessage = createData(false);
+  const loggingFormat = createData('');
   const palette = createMemo(() => {
     return createPalette({ mode: themeMode() });
   });
   const theme = createTheme({ palette: palette });
   return (
     <AppContext.Provider value={{
-      theme: themeMode
+      theme: themeMode,
+      deserializeJsonMessage,
+      loggingFormat
     }}>
       <ThemeProvider theme={theme}>
         <Router>

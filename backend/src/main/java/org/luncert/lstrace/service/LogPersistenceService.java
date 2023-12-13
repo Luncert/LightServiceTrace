@@ -20,7 +20,6 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
-import org.luncert.filtersquery.luceneimpl.FiltersQueryBuilderLuceneImpl;
 import org.luncert.filtersquery.luceneimpl.LuceneFiltersQueryOrmEngine;
 import org.luncert.lstrace.model.GetSyslogResponse;
 import org.luncert.lstrace.model.Page;
@@ -102,13 +101,18 @@ public class LogPersistenceService extends LuceneFiltersQueryOrmEngine<SyslogEve
   }
 
   private void releaseOldDocuments(IndexWriter writer) {
-    int toDelete = writer.numDocs() / 3;
-    FiltersQueryBuilderLuceneImpl.ResultImpl result = buildQuery("filter by () sort by timestamp asc offset 0 limit " + toDelete, SyslogEvent.class);
     try {
-      writer.deleteDocuments(result.getQuery());
-      writer.commit();
-      writer.forceMergeDeletes();
+      // drop all index
+      destroy();
+      init();
+      //int toDelete = writer.numDocs() / 3;
+      //FiltersQueryBuilderLuceneImpl.ResultImpl result = buildQuery(
+      //    "filter by () sort by timestamp asc offset 0 limit " + toDelete, SyslogEvent.class);
+      //writer.deleteDocuments(result.getQuery());
+      //writer.commit();
+      //writer.forceMergeDeletes();
     } catch (IOException e) {
+      log.info("failed to release old documents", e);
       throw new RuntimeException(e);
     }
   }
