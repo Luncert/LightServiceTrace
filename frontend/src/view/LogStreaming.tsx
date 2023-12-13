@@ -4,97 +4,11 @@ import { createMemo, onCleanup, onMount } from "solid-js";
 import Xterm from "./xterm/Xterm";
 import getBackend, { StreamConnection } from "../service/Backend";
 import { t } from "i18next";
-import { styledString } from "./xterm/Colors";
-import { parseTimestamp } from "./common/Util";
-import highlight from "./xterm/highlight/highlight";
 import DataManagementTemplate from "../mgrui/lib/components/template/DataManagementTemplate";
 import { Filter, Filters } from "../mgrui/lib/components/filters/Filters";
 import { buildFilterBy, createFilterStore } from "../mgrui/lib/components/filters/Functions";
-import { AppContextDef, useApp } from "./App";
-
-const Levels = [
-  "EMERGENCY",
-  "ALERT",
-  "CRITICAL",
-  "ERROR",
-  "WARNING",
-  "NOTICE",
-  "INFO",
-  "DEBUG",
-];
-
-const FacilityCodes = [
-  "kern",
-  "user",
-  "mail",
-  "daemon",
-  "auth",
-  "syslog",
-  "lpr",
-  "news",
-  "uucp",
-  "cron",
-  "authpriv",
-  "ftp",
-  "ntp",
-  "security",
-  "console",
-  "solaris-cron"
-  // 16–23 local0 – local7 Locally used facilities
-];
-
-type SyslogFormatter = (log: Syslog) => string;
-
-const defaultLogFormatter = (log: Syslog) => {
-  const r = [];
-  r.push(Levels[log.level]);
-  r.push(parseTimestamp(log.timestamp));
-
-  if (log.message.length > 0) {
-    r.push(log.message);
-  }
-  return r.join(' ');
-}
-
-function createFormatter(format: string) {
-  return (log: Syslog) => {
-    try {
-      const r = [];
-      const msg = JSON.parse(log.message) as LogbackMessage;
-      r.push(msg.type?.toUpperCase());
-      r.push(msg.level);
-      r.push(msg.written_at);
-      r.push(msg.logger);
-      r.push('[' + msg.thread + ']');
-  
-      r.push(msg.msg);
-      return r.join(' ');
-    } catch (e) {
-      return defaultLogFormatter(log);
-    }
-  }
-}
-
-function writeLog(log: Syslog, formatter: SyslogFormatter, printSource: boolean) {
-  let raw = '';
-  if (printSource) {
-    const facility = log.facility >= 16 ? `local${log.facility - 16}` : FacilityCodes[log.facility];
-    raw += styledString(`${facility}[${wrapNull(log.host)}/${wrapNull(log.procId)}]`,
-      'white', '#2196f3') + ' ';
-  }
-
-  raw += formatter(log);
-
-  if (!raw.endsWith('\n')) {
-    raw += '\n';
-  }
-
-  return highlight(raw);
-}
-
-function wrapNull(v: any) {
-  return v ? v : "";
-}
+import { useApp } from "./App";
+import { createPrinter } from "./LogFormatter";
 
 export default function LogStreaming() {
   const theme = useTheme();
@@ -112,11 +26,8 @@ export default function LogStreaming() {
     processId: { match: { operator: "like", value: "" } },
   });
 
-  const formatter = createMemo(() => {
-    if (app.deserializeJsonMessage()) {
-      return createFormatter(app.loggingFormat());
-    }
-    return defaultLogFormatter;
+  const printer = createMemo(() => {
+    return createPrinter(app.deserializeJsonMessage(), app.loggingFormat());
   });
 
   const onClick = () => {
@@ -124,8 +35,7 @@ export default function LogStreaming() {
       conn.close();
     } else {
       conn = getBackend().streaming(buildFilterBy(filterStore),
-        term, log => writeLog(log, formatter(), showSource())
-          .then(s => term.write(s)));
+        term, log => printer()(log, showSource()).then(s => term.write(s)));
     }
     connected(!connected());
   }
