@@ -15,7 +15,7 @@ export default ({
     hideSourceSwitch: "Hide Source",
     total: "Total",
     themeSwitch: "Use dark theme",
-    deserializeJsonMessageSwitch: "Deserialize JSON message",
+    deserializeJsonMessageCheckbox: "Deserialize JSON message",
     loggingFormat: "Logging Format",
     validate: "Validate"
   },
@@ -50,6 +50,16 @@ export default ({
     "column-control": {
       "field-name": "Column",
       visible: "Visible"
+    }
+  },
+  configuration: {
+    streaming: {
+      loggingFormat: {
+        title: "Logging Format",
+        conditionField: "Host",
+        script: "Script",
+        format: "Format"
+      }
     }
   }
 });
