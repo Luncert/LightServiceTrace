@@ -65,10 +65,7 @@ function getStyle(scopeNames: string[]): TerminalStyle | undefined {
 
 let grammar: IGrammar | null;
 
-export default async function highlight(
-  source: string,
-  output: (s: string) => void
-) {
+export default async function highlight(source: string) {
   if (!grammar) {
     grammar = await registry.loadGrammar('text.log');
   }
@@ -111,5 +108,5 @@ export default async function highlight(
     buf.push('\n');
   }
 
-  output(buf.slice(0, buf.length - 1).join(''));
+  return buf.slice(0, buf.length - 1).join('');
 }

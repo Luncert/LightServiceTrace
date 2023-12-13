@@ -7,7 +7,7 @@ import { createContext, createMemo } from 'solid-js';
 
 type PaletteMode = "light" | "dark";
 
-interface AppContextDef {
+export interface AppContextDef {
   theme: UpdateAndGetFunc<PaletteMode>;
   deserializeJsonMessage: UpdateAndGetFunc<boolean>;
   loggingFormat: UpdateAndGetFunc<string>;

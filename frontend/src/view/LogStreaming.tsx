@@ -1,6 +1,6 @@
 import { Button, useTheme } from "@suid/material";
 import { createData, names } from "../mgrui/lib/components/utils";
-import { onCleanup, onMount } from "solid-js";
+import { createMemo, onCleanup, onMount } from "solid-js";
 import Xterm from "./xterm/Xterm";
 import getBackend, { StreamConnection } from "../service/Backend";
 import { t } from "i18next";
@@ -10,6 +10,7 @@ import highlight from "./xterm/highlight/highlight";
 import DataManagementTemplate from "../mgrui/lib/components/template/DataManagementTemplate";
 import { Filter, Filters } from "../mgrui/lib/components/filters/Filters";
 import { buildFilterBy, createFilterStore } from "../mgrui/lib/components/filters/Functions";
+import { AppContextDef, useApp } from "./App";
 
 const Levels = [
   "EMERGENCY",
@@ -42,41 +43,53 @@ const FacilityCodes = [
   // 16–23 local0 – local7 Locally used facilities
 ];
 
-async function writeLog(term: Xterm, log: Syslog, printSource: boolean) {
-  if (printSource) {
-    const facility = log.facility >= 16 ? `local${log.facility - 16}` : FacilityCodes[log.facility];
-    term.write(styledString(`${facility}[${wrapNull(log.host)}/${wrapNull(log.procId)}]`,
-      'white', '#2196f3') + ' ');
+type SyslogFormatter = (log: Syslog) => string;
+
+const defaultLogFormatter = (log: Syslog) => {
+  const r = [];
+  r.push(Levels[log.level]);
+  r.push(parseTimestamp(log.timestamp));
+
+  if (log.message.length > 0) {
+    r.push(log.message);
   }
+  return r.join(' ');
+}
 
-
-  const toBePrint: string[] = [];
-  const { message } = log;
-
-  try {
-    const msg = JSON.parse(message) as LogbackMessage;
-    toBePrint.push(msg.type?.toUpperCase());
-    toBePrint.push(msg.level);
-    toBePrint.push(msg.written_at);
-    toBePrint.push(msg.logger);
-    toBePrint.push('[' + msg.thread + ']');
-
-    toBePrint.push(msg.msg);
-  } catch (e) {
-    toBePrint.push(Levels[log.level]);
-    toBePrint.push(parseTimestamp(log.timestamp));
-
-    if (message.length > 0) {
-      toBePrint.push(message);
+function createFormatter(format: string) {
+  return (log: Syslog) => {
+    try {
+      const r = [];
+      const msg = JSON.parse(log.message) as LogbackMessage;
+      r.push(msg.type?.toUpperCase());
+      r.push(msg.level);
+      r.push(msg.written_at);
+      r.push(msg.logger);
+      r.push('[' + msg.thread + ']');
+  
+      r.push(msg.msg);
+      return r.join(' ');
+    } catch (e) {
+      return defaultLogFormatter(log);
     }
   }
+}
 
-  let raw = toBePrint.join(' ');
+function writeLog(log: Syslog, formatter: SyslogFormatter, printSource: boolean) {
+  let raw = '';
+  if (printSource) {
+    const facility = log.facility >= 16 ? `local${log.facility - 16}` : FacilityCodes[log.facility];
+    raw += styledString(`${facility}[${wrapNull(log.host)}/${wrapNull(log.procId)}]`,
+      'white', '#2196f3') + ' ';
+  }
+
+  raw += formatter(log);
+
   if (!raw.endsWith('\n')) {
     raw += '\n';
   }
 
-  await highlight(raw, s => term.write(s));
+  return highlight(raw);
 }
 
 function wrapNull(v: any) {
@@ -85,6 +98,7 @@ function wrapNull(v: any) {
 
 export default function LogStreaming() {
   const theme = useTheme();
+  const app = useApp();
 
   const term = new Xterm();
   let ref: HTMLDivElement;
@@ -98,12 +112,20 @@ export default function LogStreaming() {
     processId: { match: { operator: "like", value: "" } },
   });
 
+  const formatter = createMemo(() => {
+    if (app.deserializeJsonMessage()) {
+      return createFormatter(app.loggingFormat());
+    }
+    return defaultLogFormatter;
+  });
+
   const onClick = () => {
     if (connected()) {
       conn.close();
     } else {
       conn = getBackend().streaming(buildFilterBy(filterStore),
-        term, log => writeLog(term, log, showSource()));
+        term, log => writeLog(log, formatter(), showSource())
+          .then(s => term.write(s)));
     }
     connected(!connected());
   }
