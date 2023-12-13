@@ -91,8 +91,13 @@ public class LogPersistenceService extends LuceneFiltersQueryOrmEngine<SyslogEve
       writer.flush();
     } catch (IOException e) {
       // release indexes
-      log.error("failed to write document", e);
       releaseOldDocuments(writer);
+      try {
+        writer.addDocument(document);
+        writer.flush();
+      } catch (IOException ex) {
+        throw new RuntimeException(ex);
+      }
     }
   }
 
