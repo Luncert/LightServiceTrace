@@ -49,7 +49,7 @@ export default function LogExplorer() {
       match: { operator: "like", value: '' },
       columnControl: { visible: true }
     },
-  });
+  }, 'LogExplorer.filters');
   
   const [logs, logsAction] = createResource(
     async () => {
