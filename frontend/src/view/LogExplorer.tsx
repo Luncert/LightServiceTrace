@@ -18,7 +18,7 @@ export default function LogExplorer() {
   const backdrop = useBackdrop();
   const offset = createData(0);
   const pageSize = createData(10, {
-    localStorageName: "LogExplorer.pageSize"
+    localStorageName: "logExplorer.pageSize"
   });
   
   const filterStore = createFilterStore({
@@ -51,7 +51,7 @@ export default function LogExplorer() {
       match: { operator: "like", value: '' },
       columnControl: { visible: true }
     },
-  }, 'LogExplorer.filters');
+  }, 'logExplorer.filters');
   
   const [logs, logsAction] = createResource(
     async () => {

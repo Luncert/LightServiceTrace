@@ -54,7 +54,6 @@ export function validateLoggingFormat(format: string): Promise<string | true> {
 }
 
 export function createPrinter(deserializeJsonMessage?: boolean, format?: string): SyslogPrinter {
-  console.log(deserializeJsonMessage, format)
   if (!format) {
     return createPrinterFromFormatter(defaultLogFormatter);
   }

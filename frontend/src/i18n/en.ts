@@ -15,7 +15,6 @@ export default ({
     hideSourceSwitch: "Hide Source",
     total: "Total",
     themeSwitch: "Use dark theme",
-    deserializeJsonMessageCheckbox: "Deserialize JSON message",
     loggingFormat: "Logging Format",
     validate: "Validate"
   },
@@ -57,6 +56,7 @@ export default ({
       sync: "Sync"
     },
     streaming: {
+      deserializeJsonMessageCheckbox: "Deserialize JSON message",
       loggingFormat: {
         title: "Logging Format",
         conditionField: "Host",
