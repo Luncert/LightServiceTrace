@@ -30,7 +30,7 @@ public class App implements ApplicationRunner {
   @Override
   public void run(ApplicationArguments args) throws Exception {
     SyslogServerConfig config = createConfig(args);
-    //new SyslogUdpServer(config, syslogProcessingHandler).run();
+    new SyslogUdpServer(config, syslogProcessingHandler).run();
   }
 
   private final Map<String, BiConsumer<SyslogServerConfigBuilder, List<String>>>

@@ -76,7 +76,7 @@ export function createPrinter(loggingFormatScript?: string): SyslogPrinter {
 
   return createPrinterFromFormatter(async (log: Syslog) => {
     return userFormatter.then(() => {
-      return sandbox.connection.remote.format('hello from host');
+      return sandbox.connection.remote.format(log);
     }).catch((e) => {
       console.error("failed to call formatter script", e);
       return ;

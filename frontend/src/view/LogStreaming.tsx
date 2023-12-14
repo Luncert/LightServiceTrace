@@ -52,6 +52,9 @@ export default function LogStreaming() {
   })
 
   onCleanup(() => {
+    if (connected()) {
+      conn.close();
+    }
     term.dettach();
   })
 
