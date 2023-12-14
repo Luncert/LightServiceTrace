@@ -44,13 +44,6 @@ export default function LogStreaming() {
 
   onMount(() => {
     term.attach(ref);
-    term.write(`
-    return (
-      <DataManagementTemplate
-        disableOuterMargin disableInnerMargin
-        headers={
-        <Filters>
-          <Filter id=`)
   })
 
   onCleanup(() => {
