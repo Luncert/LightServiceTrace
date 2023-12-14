@@ -56,7 +56,7 @@ export default ({
       sync: "Sync"
     },
     streaming: {
-      deserializeJsonMessageCheckbox: "Deserialize JSON message",
+      useCustomLoggingFormatter: "Use custom logging formatter",
       loggingFormat: {
         title: "Logging Formatter Script",
         conditionField: "Host",

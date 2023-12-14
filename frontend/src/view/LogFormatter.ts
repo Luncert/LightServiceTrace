@@ -1,6 +1,7 @@
 import { parseTimestamp } from "./common/Util";
 import { styledString } from "./xterm/Colors";
 import highlight from "./xterm/highlight/highlight";
+import Sandbox from 'websandbox';
 
 const Levels = [
   "EMERGENCY",
@@ -35,17 +36,17 @@ const FacilityCodes = [
 
 type SyslogPrinter = (log: Syslog, printSource?: boolean) => Promise<string>;
 
-type SyslogFormatter = (log: Syslog) => string;
+type SyslogFormatter = (log: Syslog) => Promise<string>;
 
 const defaultLogFormatter = (log: Syslog) => {
-  const r = [];
+  const r: string[] = [];
   r.push(Levels[log.level]);
   r.push(parseTimestamp(log.timestamp));
 
   if (log.message.length > 0) {
     r.push(log.message);
   }
-  return r.join(' ');
+  return new Promise<string>((resolve) => resolve(r.join(' ')));
 }
 
 export function validateLoggingFormat(format: string): Promise<string | true> {
@@ -53,59 +54,38 @@ export function validateLoggingFormat(format: string): Promise<string | true> {
   return new Promise((resolve) => {resolve(true)})
 }
 
-export function createPrinter(format?: string): SyslogPrinter {
-  if (!format) {
+export function createPrinter(loggingFormatScript?: string): SyslogPrinter {
+  if (!loggingFormatScript) {
     return createPrinterFromFormatter(defaultLogFormatter);
   }
 
-  let resolveReference = false;
-  let pattern = '';
-  let prev = '';
-  const patterns: (SyslogFormatter | string)[] = [];
-  for (let c of format) {
-    if (resolveReference) {
-      if (c === '}') {
-        const paths = pattern.split(".");
-        pattern = '';
-
-        patterns.push((log) => {
-          let obj: any = log;
-          for (let path of paths) {
-            if (path in obj) {
-              obj = obj[path];
-            } else {
-              console.error(`invalid reference ${paths.join('.')}, source: ${log}`)
-              return '';
-            }
-          }
-          return obj;
-        });
-        resolveReference = false;
-      } else {
-        pattern += c;
-      }
-    } else if (c === '{' && prev !== '\\') {
-      resolveReference = true;
-
-      patterns.push(pattern);
-      pattern = '';
-    } else {
-      pattern += c;
-    }
-  }
-  if (pattern) {
-    patterns.push(pattern);
+  let container = document.getElementById("websandbox-iframe");
+  if (container === null) {
+    container = document.createElement("iframe");
+    container.style.display = 'none';
+    document.body.appendChild(container);
+    // FIXME: clean this element?
   }
 
-  const formatter = (log: Syslog) => {
-    return patterns.map((p) => typeof(p) === 'string' ? p : p(log)).join('');
-  }
+  const sandbox = Sandbox.create({}, { frameContainer: container });
+  const userFormatter = sandbox.promise
+    .then(() => {
+        console.log('Sandbox is created. Trying to run code inside');
+        return sandbox.run(loggingFormatScript);
+    });
 
-  return createPrinterFromFormatter(formatter);
+  return createPrinterFromFormatter(async (log: Syslog) => {
+    return userFormatter.then(() => {
+      return sandbox.connection.remote.format('hello from host');
+    }).catch((e) => {
+      console.error("failed to call formatter script", e);
+      return ;
+    })
+  });
 }
 
 function createPrinterFromFormatter(formatter: SyslogFormatter): SyslogPrinter {
-  return (log: Syslog, printSource?: boolean) => {
+  return async (log: Syslog, printSource?: boolean) => {
     let raw = '';
     if (printSource) {
       const facility = log.facility >= 16 ? `local${log.facility - 16}` : FacilityCodes[log.facility];
@@ -113,13 +93,13 @@ function createPrinterFromFormatter(formatter: SyslogFormatter): SyslogPrinter {
         'white', '#2196f3') + ' ';
     }
 
-    raw += formatter(log);
-
-    if (!raw.endsWith('\n')) {
-      raw += '\n';
-    }
-
-    return highlight(raw);
+    return formatter(log).then(formatted => {
+      formatted = raw + formatted;
+      if (!formatted.endsWith('\n')) {
+        formatted += '\n';
+      }
+      return formatted;
+    }).then(highlight);
   };
 }
 

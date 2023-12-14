@@ -10,6 +10,7 @@ type PaletteMode = "light" | "dark";
 
 export interface AppContextDef {
   theme: UpdateAndGetFunc<PaletteMode>;
+  useCustomLoggingFormatter: UpdateAndGetFunc<boolean>;
   loggingFormatScript: UpdateAndGetFunc<string>;
   import(config: string): void;
   export(): string;
@@ -25,6 +26,9 @@ export default function App() {
   const themeMode = createData<PaletteMode>("light", {
     localStorageName: 'config.theme',
   });
+  const useCustomLoggingFormatter = createData(false, {
+    localStorageName: 'config.useCustomLoggingFormatter'
+  });
   const loggingFormatScript = createData('', {
     localStorageName: 'config.loggingFormatScript'
   });
@@ -35,11 +39,13 @@ export default function App() {
   return (
     <AppContext.Provider value={{
       theme: themeMode,
+      useCustomLoggingFormatter,
       loggingFormatScript,
       import: (raw: string) => {
         try {
           const config = JSON.parse(raw);
           themeMode(config.theme);
+          useCustomLoggingFormatter(config.useCustomLoggingFormatter);
           loggingFormatScript(config.loggingFormatScript);
         } catch (e) {
           console.log(e)
@@ -48,6 +54,7 @@ export default function App() {
       export: () => {
         const config = {
           theme: themeMode(),
+          useCustomLoggingFormatter: useCustomLoggingFormatter(),
           loggingFormatScript: loggingFormatScript()
         }
         return JSON.stringify(config, undefined, 2);

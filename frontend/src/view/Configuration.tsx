@@ -91,10 +91,26 @@ function StreamingConfig() {
 
   return (
     <Stack class="gap-2" direction="column">
+      <div>
+        <FormControlLabel
+          control={
+            <Checkbox
+              size="small"
+              checked={app.useCustomLoggingFormatter()}
+              onChange={(event, checked) => {
+                app.useCustomLoggingFormatter(checked);
+              }}
+              inputProps={{ "aria-label": "controlled" }}
+            />}
+          label={t("configuration.streaming.useCustomLoggingFormatter")}
+          labelPlacement="start"
+          sx={{ marginLeft: 0 }} />
+      </div>
       <Stack class="gap-2 items-center" direction="row">
-        <Typography class="inline-block" variant="h6">{t("configuration.streaming.loggingFormat.title")}</Typography>
+        <Typography class="inline-block">{t("configuration.streaming.loggingFormat.title")}</Typography>
         <Box>
-          <IconButton size="small" onClick={() => app.loggingFormatScript(loggingFormatterTemplate)}
+          <IconButton disabled={!app.useCustomLoggingFormatter()}
+            size="small" onClick={() => app.loggingFormatScript(loggingFormatterTemplate)}
             onMouseEnter={(e) => anchorEl(e.currentTarget)}
             onMouseLeave={() => anchorEl(null)}>
             <BiRegularReset />
@@ -119,6 +135,7 @@ function StreamingConfig() {
         </Box>
       </Stack>
       <TextField class="w-full custom-scrollbar"
+        disabled={!app.useCustomLoggingFormatter()}
         size="small" value={app.loggingFormatScript()}
         multiline maxRows={64}
         onChange={(evt, value) => app.loggingFormatScript(value)} />
