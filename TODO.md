@@ -5,7 +5,6 @@
 - support search in terminal
 - support filter by message fields if above feature is turned on (frontend filter)
 
-- fullscreen of streaming
 - don't close streaming while switch to explorer page
 
 - wrap filters to multiple lines

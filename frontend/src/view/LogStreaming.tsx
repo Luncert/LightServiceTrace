@@ -9,6 +9,7 @@ import { Filter, Filters } from "../mgrui/lib/components/filters/Filters";
 import { buildFilterBy, createFilterStore } from "../mgrui/lib/components/filters/Functions";
 import { useApp } from "./App";
 import { createPrinter } from "./LogFormatter";
+import LogStreamingSearchBar from "./LogStreamingSearchbar";
 
 export default function LogStreaming() {
   const theme = useTheme();
@@ -89,6 +90,7 @@ export default function LogStreaming() {
         <div ref={el => ref = el} class={names("relative flex flex-col w-full h-full flex-nowrap overflow-hidden",
           theme.palette.mode === 'light' ? "light bg-zinc-100" : "dark bg-terminal-dark")}>
         </div>
+        <LogStreamingSearchBar />
       </div>
     </DataManagementTemplate>
   )

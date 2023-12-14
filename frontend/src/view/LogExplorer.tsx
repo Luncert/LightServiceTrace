@@ -120,7 +120,7 @@ export default function LogExplorer() {
         </div>
       </div>
       <TableContainer class="custom-scrollbar" component={Paper}>
-        <Table class="w-full table-fixed break-all" aria-label="user-list" stickyHeader>
+        <Table class="break-all" aria-label="user-list" stickyHeader>
           <TableHead>
             <TableRow>
               <ColumnControl attr={filterStore.timestamp}>
