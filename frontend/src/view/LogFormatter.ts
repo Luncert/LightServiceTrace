@@ -93,13 +93,15 @@ function createPrinterFromFormatter(formatter: SyslogFormatter): SyslogPrinter {
         'white', '#2196f3') + ' ';
     }
 
-    return formatter(log).then(formatted => {
+    return formatter(log)
+    .then(highlight)
+    .then(formatted => {
       formatted = raw + formatted;
       if (!formatted.endsWith('\n')) {
         formatted += '\n';
       }
       return formatted;
-    }).then(highlight);
+    });
   };
 }
 

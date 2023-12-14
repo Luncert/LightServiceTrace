@@ -18,6 +18,8 @@ export default class Xterm {
 
   private searchAddon: SearchAddon;
 
+  private observer: ResizeObserver = new ResizeObserver(() => this.fitAddon.fit());
+
   private internalKeyListener: KeyListener | undefined;
   private keyListener: KeyListener | undefined;
   private dataListener: Callback | undefined;
@@ -70,12 +72,11 @@ export default class Xterm {
   public attach(elem: HTMLElement) {
     this.term.open(elem);
     this.fitAddon.fit();
-    elem.onresize = () => this.fitAddon.fit();
-    window.onresize = () => this.fitAddon.fit();
+    this.observer.observe(elem);
   }
 
-  public dettach() {
-    window.onresize = null;
+  public dettach(elem: HTMLElement) {
+    this.observer.unobserve(elem);
   }
 
   public write(data: string | Uint8Array) {

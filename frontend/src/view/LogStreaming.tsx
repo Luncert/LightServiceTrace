@@ -49,13 +49,31 @@ export default function LogStreaming() {
         showSearchBar(true);
       }
     })
+    term.write(`
+    <div class={names("box-border w-full h-full", theme.palette.mode === 'light' ? "bg-zinc-300" : "bg-zinc-700")}>    <div ref={el => ref = el} class={names("relative w-full h-full overflow-hidden",
+      theme.palette.mode === 'light' ? "light bg-zinc-100" : "dark bg-terminal-dark")}>
+    </div>
+    <Show when={showSearchBar()}>
+      <LogStreamingSearchBar
+        findNext={(text: string) =>
+          term.findNext(text, { caseSensitive: false })
+        }
+        findPrevious={(text: string) =>
+          term.findPrevious(text, { caseSensitive: false })
+        }
+        onClose={() => showSearchBar(false)}/>
+    </Show>
+  </div>
+</DataManagementTemplate>
+)
+}`)
   })
 
   onCleanup(() => {
     if (connected()) {
       conn.close();
     }
-    term.dettach();
+    term.dettach(ref);
   })
 
   return (
@@ -96,7 +114,7 @@ export default function LogStreaming() {
       }
     >
       <div class={names("box-border w-full h-full", theme.palette.mode === 'light' ? "bg-zinc-300" : "bg-zinc-700")}>
-        <div ref={el => ref = el} class={names("relative flex flex-col w-full h-full flex-nowrap overflow-hidden",
+        <div ref={el => ref = el} class={names("relative w-full h-full overflow-hidden",
           theme.palette.mode === 'light' ? "light bg-zinc-100" : "dark bg-terminal-dark")}>
         </div>
         <Show when={showSearchBar()}>
