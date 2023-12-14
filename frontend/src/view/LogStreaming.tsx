@@ -9,7 +9,7 @@ import { Filter, Filters } from "../mgrui/lib/components/filters/Filters";
 import { buildFilterBy, createFilterStore } from "../mgrui/lib/components/filters/Functions";
 import { useApp } from "./App";
 import { createPrinter } from "./LogFormatter";
-import LogStreamingSearchBar from "./LogStreamingSearchbar";
+import LogStreamingSearchBar from "./LogStreamingSearchBar";
 
 export default function LogStreaming() {
   const theme = useTheme();
@@ -19,6 +19,7 @@ export default function LogStreaming() {
   let ref: HTMLDivElement;
   let conn: StreamConnection;
 
+  const showSearchBar = createData(false);
   const connected = createData(false);
   const showSource = createData(false);
   const filterStore = createFilterStore({
@@ -43,6 +44,13 @@ export default function LogStreaming() {
 
   onMount(() => {
     term.attach(ref);
+    term.write(`
+    return (
+      <DataManagementTemplate
+        disableOuterMargin disableInnerMargin
+        headers={
+        <Filters>
+          <Filter id=`)
   })
 
   onCleanup(() => {
@@ -90,7 +98,14 @@ export default function LogStreaming() {
         <div ref={el => ref = el} class={names("relative flex flex-col w-full h-full flex-nowrap overflow-hidden",
           theme.palette.mode === 'light' ? "light bg-zinc-100" : "dark bg-terminal-dark")}>
         </div>
-        <LogStreamingSearchBar />
+        <LogStreamingSearchBar
+          findNext={(text: string) =>
+            term.findNext(text, { caseSensitive: false })
+          }
+          findPrevious={(text: string) =>
+            term.findPrevious(text, { caseSensitive: false })
+          }
+          onClose={() => showSearchBar(false)}/>
       </div>
     </DataManagementTemplate>
   )
