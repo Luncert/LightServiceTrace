@@ -53,6 +53,9 @@ export default ({
     }
   },
   configuration: {
+    general: {
+      sync: "Sync"
+    },
     streaming: {
       loggingFormat: {
         title: "Logging Format",

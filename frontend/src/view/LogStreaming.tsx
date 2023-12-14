@@ -49,7 +49,8 @@ export default function LogStreaming() {
   })
 
   return (
-    <DataManagementTemplate disableInnerMargin
+    <DataManagementTemplate
+      disableOuterMargin disableInnerMargin
       headers={
       <Filters>
         <Filter id="show-source-switch" type="switch"

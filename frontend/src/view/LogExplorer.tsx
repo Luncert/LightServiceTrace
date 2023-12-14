@@ -66,7 +66,8 @@ export default function LogExplorer() {
   );
 
   return (
-    <DataManagementTemplate disableInnerMargin
+    <DataManagementTemplate
+    disableOuterMargin disableInnerMargin
     headers={
       <Filters>
         <Filter id="timestamp-filter" type="date-range"
