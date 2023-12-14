@@ -58,7 +58,7 @@ export default ({
     streaming: {
       deserializeJsonMessageCheckbox: "Deserialize JSON message",
       loggingFormat: {
-        title: "Logging Format",
+        title: "Logging Formatter Script",
         conditionField: "Host",
         script: "Script",
         format: "Format"

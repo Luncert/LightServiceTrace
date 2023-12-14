@@ -10,8 +10,7 @@ type PaletteMode = "light" | "dark";
 
 export interface AppContextDef {
   theme: UpdateAndGetFunc<PaletteMode>;
-  deserializeJsonMessage: UpdateAndGetFunc<boolean>;
-  loggingFormats: StoreObject<LoggingFormat[]>;
+  loggingFormatScript: UpdateAndGetFunc<string>;
   import(config: string): void;
   export(): string;
 }
@@ -26,10 +25,9 @@ export default function App() {
   const themeMode = createData<PaletteMode>("light", {
     localStorageName: 'config.theme',
   });
-  const deserializeJsonMessage = createData(false, {
-    localStorageName: 'config.deserializeJsonMessage',
+  const loggingFormatScript = createData('', {
+    localStorageName: 'config.loggingFormatScript'
   });
-  const [loggingFormats, loggingFormatsStore] = createLoggingFormatStore();
   const palette = createMemo(() => {
     return createPalette({ mode: themeMode() });
   });
@@ -37,14 +35,12 @@ export default function App() {
   return (
     <AppContext.Provider value={{
       theme: themeMode,
-      deserializeJsonMessage,
-      loggingFormats: loggingFormatsStore,
+      loggingFormatScript,
       import: (raw: string) => {
         try {
           const config = JSON.parse(raw);
           themeMode(config.theme);
-          deserializeJsonMessage(config.deserializeJsonMessage);
-          importLoggingFormats(config.loggingFormats, loggingFormatsStore);
+          loggingFormatScript(config.loggingFormatScript);
         } catch (e) {
           console.log(e)
         }
@@ -52,8 +48,7 @@ export default function App() {
       export: () => {
         const config = {
           theme: themeMode(),
-          deserializeJsonMessage: deserializeJsonMessage(),
-          loggingFormats
+          loggingFormatScript: loggingFormatScript()
         }
         return JSON.stringify(config, undefined, 2);
       }

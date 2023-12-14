@@ -53,7 +53,7 @@ export function validateLoggingFormat(format: string): Promise<string | true> {
   return new Promise((resolve) => {resolve(true)})
 }
 
-export function createPrinter(deserializeJsonMessage?: boolean, format?: string): SyslogPrinter {
+export function createPrinter(format?: string): SyslogPrinter {
   if (!format) {
     return createPrinterFromFormatter(defaultLogFormatter);
   }
@@ -98,13 +98,6 @@ export function createPrinter(deserializeJsonMessage?: boolean, format?: string)
   }
 
   const formatter = (log: Syslog) => {
-    if (deserializeJsonMessage) {
-      try {
-        log.message = JSON.parse(log.message);
-      } catch (e) {
-        // ignore
-      }
-    }
     return patterns.map((p) => typeof(p) === 'string' ? p : p(log)).join('');
   }
 

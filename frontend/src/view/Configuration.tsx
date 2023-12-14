@@ -1,24 +1,22 @@
-import { FormControlLabel, Switch as MuiSwitch, Stack, TextField, Button, Box, Divider, Checkbox, Typography, Grid, IconButton } from "@suid/material";
+import { FormControlLabel, Switch as MuiSwitch, Stack, TextField, Button, Box, Divider, Checkbox, Typography, Grid, IconButton, Popover } from "@suid/material";
 import { Tab, Tabs } from "../mgrui/lib/components/navigation/Tabs";
 import { For, Match, Switch } from "solid-js";
 import { t } from "i18next";
-import { StoreObject, createData, createStoreObject } from "../mgrui/lib/components/utils";
+import { createData } from "../mgrui/lib/components/utils";
 import { useApp } from "./App";
-import { FaSolidPlus } from 'solid-icons/fa'
-import { AiFillEdit } from 'solid-icons/ai';
-import { BiSolidSave } from 'solid-icons/bi';
 import { FiDownload, FiUpload } from 'solid-icons/fi';
+import { BiRegularReset } from 'solid-icons/bi';
 
 export default function Configuration() {
   const activeContent = createData('');
 
   return (
-    <div class="p-5">
+    <div class="flex flex-col border-box w-full h-full p-5 overflow-hidden">
       <Tabs value="streaming" onChangeTab={activeContent}>
         <Tab label="general">General</Tab>
         <Tab label="streaming">Streaming</Tab>
       </Tabs>
-      <Box class="p-2">
+      <Box class="border-box custom-scrollbar p-2 overflow-x-hidden overflow-y-auto">
         <Switch>
           <Match when={activeContent() === 'general'}>
             <GeneralConfig />
@@ -83,78 +81,111 @@ function GeneralConfig() {
   )
 }
 
+/**
+ * @pa
+ * @returns 
+ */
 function StreamingConfig() {
   const app = useApp();
+  const anchorEl = createData<Element | null>(null);
 
   return (
     <Stack class="gap-2" direction="column">
-      <div>
-        <FormControlLabel
-          control={
-            <Checkbox
-              size="small"
-              checked={app.deserializeJsonMessage()}
-              onChange={(event, checked) => {
-                app.deserializeJsonMessage(checked);
-              }}
-              inputProps={{ "aria-label": "controlled" }}
-            />}
-          label={t("configuration.streaming.deserializeJsonMessageCheckbox")}
-          labelPlacement="start"
-          sx={{ marginLeft: 0 }} />
-      </div>
-      <LoggingFormatConfig />
+      <Stack class="gap-2 items-center" direction="row">
+        <Typography class="inline-block" variant="h6">{t("configuration.streaming.loggingFormat.title")}</Typography>
+        <Box>
+          <IconButton size="small" onClick={() => app.loggingFormatScript(loggingFormatterTemplate)}
+            onMouseEnter={(e) => anchorEl(e.currentTarget)}
+            onMouseLeave={() => anchorEl(null)}>
+            <BiRegularReset />
+          </IconButton>
+          <Popover
+            sx={{ pointerEvents: "none" }}
+            open={anchorEl() !== null}
+            anchorEl={anchorEl()}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "left",
+            }}
+            onClose={() => anchorEl(null)}
+            disableRestoreFocus
+          >
+            <Typography sx={{ p: 1 }}>Reset to template</Typography>
+          </Popover>
+        </Box>
+      </Stack>
+      <TextField class="w-full custom-scrollbar"
+        size="small" value={app.loggingFormatScript()}
+        multiline maxRows={64}
+        onChange={(evt, value) => app.loggingFormatScript(value)} />
     </Stack>
   )
 }
 
-function LoggingFormatConfig() {
-  const app = useApp();
-  const editting = createData(false);
+const loggingFormatterTemplate =
+`
+const Levels = [
+  "EMERGENCY",
+  "ALERT",
+  "CRITICAL",
+  "ERROR",
+  "WARNING",
+  "NOTICE",
+  "INFO",
+  "DEBUG",
+];
 
-  return (
-    <>
-      <Stack class="gap-2 items-center" direction="row">
-        <Typography class="inline-block" variant="h6">{t("configuration.streaming.loggingFormat.title")}</Typography>
-        <Box>
-          <Switch>
-            <Match when={!editting()}>
-              <IconButton size="small" onClick={() => editting(true)}>
-                <AiFillEdit />
-              </IconButton>
-            </Match>
-            <Match when={editting()}>
-              <IconButton size="small">
-                <FaSolidPlus />
-              </IconButton>
-              <IconButton size="small">
-                <BiSolidSave />
-              </IconButton>
-            </Match>
-          </Switch>
-        </Box>
-      </Stack>
-      <For each={Object.keys(app.loggingFormats)}>{key => {
-        const item = app.loggingFormats[key as any];
-        return (
-          <Grid container spacing={2}>
-            <Grid item xs={6} md={4}>
-              <TextField class="w-full"
-                label={t("configuration.streaming.loggingFormat.conditionField")}
-                placeholder="Regexp"
-                size="small" value={item.host()}
-                onChange={(evt, value) => item.host(value)} />
-            </Grid>
-            <Grid item xs={6} md={8}>
-              <TextField class="w-full custom-scrollbar"
-                label={t("configuration.streaming.loggingFormat." + item.type())}
-                size="small" value={item.value()} multiline maxRows={16}
-                onChange={(evt, value) => item.value(value)} />
-            </Grid>
-          </Grid>
-        );
-      }}
-      </For>
-    </>
-  )
+/*
+interface Syslog {
+  prioVersion: string;
+  facility: number;
+  level: number;
+  version: number;
+  timestamp: number;
+  host: string;
+  appName: string;
+  procId: string;
+  msgId: string;
+  structuredData: string
+  message: string;
 }
+*/
+
+Websandbox.connection.setLocalApi({
+  /**
+   * Format syslog to string.
+   * @param syslog log object
+   * @returns string formatted log
+   */
+  format: function(log) {
+    // write your logic here
+    return Levels[log.level] + ' ' + parseTimestamp(log.timestamp) + ' ' + log.message;
+  }
+});
+
+// utilities
+
+function parseTimestamp(timestamp) {
+  const date = new Date(timestamp);
+  return '' + wrapNumber(date.getFullYear()) + '-' + wrapNumber(date.getMonth() + 1) + '-' + wrapNumber(date.getDate())
+    + 'T' + wrapNumber(date.getHours()) + ':' + wrapNumber(date.getMinutes()) + ':' + wrapNumber(date.getSeconds())
+    + wrapNumber(date.getMilliseconds(), 3) + 'Z';
+}
+
+function wrapNumber(v, bits = 2) {
+  if (v == 0) {
+    return '0'.repeat(bits);
+  }
+  
+  let n = v;
+  while (n > 0) {
+    n = Math.floor(n / 10);
+    bits--;
+  }
+  return bits > 0 ? '0'.repeat(bits) + v : v;
+}
+`;

@@ -29,7 +29,7 @@ export default function LogStreaming() {
   });
 
   const printer = createMemo(() => {
-    return createPrinter(app.deserializeJsonMessage(), 'app.loggingFormats');
+    return createPrinter('app.loggingFormats');
   });
 
   const onClick = () => {
