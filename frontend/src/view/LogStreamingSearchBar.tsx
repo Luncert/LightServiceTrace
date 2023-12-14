@@ -20,6 +20,7 @@ export default function LogStreamingSearchBar(props: {
       e.preventDefault();
     }}>
       <TextField id="log-streaming-search-input" size="small" placeholder="Search"
+        autoComplete="off"
         onChange={(evt, v) => text(v)}
         InputProps={{
           endAdornment: (
@@ -41,7 +42,9 @@ export default function LogStreamingSearchBar(props: {
                   }}>
                   <IoArrowDown />
                 </IconButton>
-                <IconButton color="error">
+                <IconButton color="error" onClick={() => {
+                  props.onClose();
+                }}>
                   <IoClose />
                 </IconButton>
               </ButtonGroup>

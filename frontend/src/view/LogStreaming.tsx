@@ -1,6 +1,6 @@
 import { Button, useTheme } from "@suid/material";
 import { createData, names } from "../mgrui/lib/components/utils";
-import { createMemo, onCleanup, onMount } from "solid-js";
+import { Show, createMemo, onCleanup, onMount } from "solid-js";
 import Xterm from "./xterm/Xterm";
 import getBackend, { StreamConnection } from "../service/Backend";
 import { t } from "i18next";
@@ -44,6 +44,11 @@ export default function LogStreaming() {
 
   onMount(() => {
     term.attach(ref);
+    term.on('key', (key, evt) => {
+      if (evt.ctrlKey && evt.key === 'f') {
+        showSearchBar(true);
+      }
+    })
   })
 
   onCleanup(() => {
@@ -91,14 +96,16 @@ export default function LogStreaming() {
         <div ref={el => ref = el} class={names("relative flex flex-col w-full h-full flex-nowrap overflow-hidden",
           theme.palette.mode === 'light' ? "light bg-zinc-100" : "dark bg-terminal-dark")}>
         </div>
-        <LogStreamingSearchBar
-          findNext={(text: string) =>
-            term.findNext(text, { caseSensitive: false })
-          }
-          findPrevious={(text: string) =>
-            term.findPrevious(text, { caseSensitive: false })
-          }
-          onClose={() => showSearchBar(false)}/>
+        <Show when={showSearchBar()}>
+          <LogStreamingSearchBar
+            findNext={(text: string) =>
+              term.findNext(text, { caseSensitive: false })
+            }
+            findPrevious={(text: string) =>
+              term.findPrevious(text, { caseSensitive: false })
+            }
+            onClose={() => showSearchBar(false)}/>
+        </Show>
       </div>
     </DataManagementTemplate>
   )
