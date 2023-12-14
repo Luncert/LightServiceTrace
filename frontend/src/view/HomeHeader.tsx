@@ -6,7 +6,7 @@ export default function HomeHeader() {
   const backdrop = useBackdrop();
 
   return (
-    <div class="flex w-full h-10 shrink-0 items-center p-3 gap-2">
+    <div class="flex w-full h-10 shrink-0 items-center py-3 px-2 gap-2">
       <Avatar alt="Yan Puppy Logo" src={logo}
         sx={{
           width: 24,
