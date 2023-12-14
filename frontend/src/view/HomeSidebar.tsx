@@ -9,7 +9,7 @@ import { Dynamic } from 'solid-js/web';
 
 export default function HomeSidebar(props: { onSelected: (name: string) => void }) {
   return (
-    <Sidebar enableCollapse onSelected={props.onSelected} defaultItem={config.defaultMenu}>
+    <Sidebar class="shrink-0" enableCollapse onSelected={props.onSelected} defaultItem={config.defaultMenu}>
       <For each={config.menus as MenuItem[]}>{(item) => (
         <SidebarItem name={item.name} class='font-large'>
           <Stack spacing={1} direction="row" class="px-1 py-0.5 items-center">

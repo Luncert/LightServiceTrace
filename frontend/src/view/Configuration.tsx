@@ -87,55 +87,70 @@ function GeneralConfig() {
  */
 function StreamingConfig() {
   const app = useApp();
-  const anchorEl = createData<Element | null>(null);
+  const popover = createData<[Element, string] | null>(null);
 
   return (
     <Stack class="gap-2" direction="column">
+      <Popover
+        sx={{ pointerEvents: "none" }}
+        open={popover() !== null}
+        anchorEl={popover()?.[0]}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+        onClose={() => popover()}
+        disableRestoreFocus
+      >
+        <Typography sx={{ p: 1 }}>{popover()?.[1]}</Typography>
+      </Popover>
       <div>
         <FormControlLabel
           control={
             <Checkbox
               size="small"
-              checked={app.useCustomLoggingFormatter()}
-              onChange={(event, checked) => {
-                app.useCustomLoggingFormatter(checked);
-              }}
+              checked={app.enableCustomFilter()}
+              onChange={(event, checked) => app.enableCustomFilter(checked)}
               inputProps={{ "aria-label": "controlled" }}
             />}
-          label={t("configuration.streaming.useCustomLoggingFormatter")}
+          label={t("configuration.streaming.enableCustomFilter")}
           labelPlacement="start"
+          onMouseEnter={(e) => popover([e.currentTarget, t("configuration.streaming.enableCustomFilterTips")])}
+          onMouseLeave={() => popover(null)}
+          sx={{ marginLeft: 0 }} />
+      </div>
+      <div>
+        <FormControlLabel
+          control={
+            <Checkbox
+              size="small"
+              checked={app.enableCustomLoggingFormatter()}
+              onChange={(event, checked) => app.enableCustomLoggingFormatter(checked)}
+              inputProps={{ "aria-label": "controlled" }}
+            />}
+          label={t("configuration.streaming.enableCustomLoggingFormatter")}
+          labelPlacement="start"
+          onMouseEnter={(e) => popover([e.currentTarget, t("configuration.streaming.enableCustomLoggingFormatterTips")])}
+          onMouseLeave={() => popover(null)}
           sx={{ marginLeft: 0 }} />
       </div>
       <Stack class="gap-2 items-center" direction="row">
-        <Typography class="inline-block">{t("configuration.streaming.loggingFormat.title")}</Typography>
+        <Typography class="inline-block">{t("configuration.streaming.loggingFormatter")}</Typography>
         <Box>
-          <IconButton disabled={!app.useCustomLoggingFormatter()}
+          <IconButton disabled={!app.enableCustomLoggingFormatter()}
             size="small" onClick={() => app.loggingFormatScript(loggingFormatterTemplate)}
-            onMouseEnter={(e) => anchorEl(e.currentTarget)}
-            onMouseLeave={() => anchorEl(null)}>
+            onMouseEnter={(e) => popover([e.currentTarget, t("configuration.streaming.resetLoggingFormatter")])}
+            onMouseLeave={() => popover(null)}>
             <BiRegularReset />
           </IconButton>
-          <Popover
-            sx={{ pointerEvents: "none" }}
-            open={anchorEl() !== null}
-            anchorEl={anchorEl()}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "left",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "left",
-            }}
-            onClose={() => anchorEl(null)}
-            disableRestoreFocus
-          >
-            <Typography sx={{ p: 1 }}>Reset to template</Typography>
-          </Popover>
         </Box>
       </Stack>
       <TextField class="w-full custom-scrollbar"
-        disabled={!app.useCustomLoggingFormatter()}
+        disabled={!app.enableCustomLoggingFormatter()}
         size="small" value={app.loggingFormatScript()}
         multiline maxRows={64}
         onChange={(evt, value) => app.loggingFormatScript(value)} />
@@ -174,12 +189,21 @@ interface Syslog {
 
 Websandbox.connection.setLocalApi({
   /**
+   * Filter out syslog.
+   * @param log syslog object
+   * @param parameter string value provided by custom filter in log streaming page
+   * @returns boolean format and print this log if true
+   */
+  accept: function(log, parameter) {
+    return true;
+  },
+
+  /**
    * Format syslog to string.
-   * @param syslog log object
+  * @param log syslog object
    * @returns string formatted log
    */
   format: function(log) {
-    // write your logic here
     return Levels[log.level] + ' ' + parseTimestamp(log.timestamp) + ' ' + log.message;
   }
 });

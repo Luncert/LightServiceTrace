@@ -34,19 +34,25 @@ const FacilityCodes = [
   // 16–23 local0 – local7 Locally used facilities
 ];
 
-type SyslogPrinter = (log: Syslog, printSource?: boolean) => Promise<string>;
+type SyslogPrinter = (log: Syslog, printSource?: boolean, custsomParameter?: string) => Promise<string>;
 
-type SyslogFormatter = (log: Syslog) => Promise<string>;
+interface LoggingFormatter {
+  accept(log: Syslog, customParameter?: string): Promise<boolean>;
+  format(log: Syslog): Promise<string>;
+}
 
-const defaultLogFormatter = (log: Syslog) => {
-  const r: string[] = [];
-  r.push(Levels[log.level]);
-  r.push(parseTimestamp(log.timestamp));
-
-  if (log.message.length > 0) {
-    r.push(log.message);
+const defaultLogFormatter: LoggingFormatter = {
+  accept: async () => true,
+  format: async (log: Syslog) => {
+    const r: string[] = [];
+    r.push(Levels[log.level]);
+    r.push(parseTimestamp(log.timestamp));
+  
+    if (log.message.length > 0) {
+      r.push(log.message);
+    }
+    return r.join(' ');
   }
-  return new Promise<string>((resolve) => resolve(r.join(' ')));
 }
 
 export function validateLoggingFormat(format: string): Promise<string | true> {
@@ -74,18 +80,25 @@ export function createPrinter(loggingFormatScript?: string): SyslogPrinter {
         return sandbox.run(loggingFormatScript);
     });
 
-  return createPrinterFromFormatter(async (log: Syslog) => {
-    return userFormatter.then(() => {
-      return sandbox.connection.remote.format(log);
-    }).catch((e) => {
-      console.error("failed to call formatter script", e);
-      return ;
-    })
+  return createPrinterFromFormatter({
+    accept: (log: Syslog, customParameter?: string) => {
+      return userFormatter.then(() => {
+        return sandbox.connection.remote.accept(log, customParameter);
+      });
+    },
+    format: async (log: Syslog) => {
+      return userFormatter.then(() => {
+        return sandbox.connection.remote.format(log);
+      }).catch((e) => {
+        console.error("failed to call formatter script", e);
+        return ;
+      })
+    }
   });
 }
 
-function createPrinterFromFormatter(formatter: SyslogFormatter): SyslogPrinter {
-  return async (log: Syslog, printSource?: boolean) => {
+function createPrinterFromFormatter(formatter: LoggingFormatter): SyslogPrinter {
+  return async (log: Syslog, printSource?: boolean, custsomParameter?: string) => {
     let raw = '';
     if (printSource) {
       const facility = log.facility >= 16 ? `local${log.facility - 16}` : FacilityCodes[log.facility];
@@ -93,15 +106,21 @@ function createPrinterFromFormatter(formatter: SyslogFormatter): SyslogPrinter {
         'white', '#2196f3') + ' ';
     }
 
-    return formatter(log)
-    .then(highlight)
-    .then(formatted => {
-      formatted = raw + formatted;
-      if (!formatted.endsWith('\n')) {
-        formatted += '\n';
-      }
-      return formatted;
-    });
+    return formatter.accept(log, custsomParameter)
+      .then((accepted) => {
+        if (accepted) {
+          return formatter.format(log)
+            .then(highlight)
+            .then(formatted => {
+              formatted = raw + formatted;
+              if (!formatted.endsWith('\n')) {
+                formatted += '\n';
+              }
+              return formatted;
+            });
+        }
+        return '';
+      })
   };
 }
 

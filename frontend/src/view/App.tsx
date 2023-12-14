@@ -10,7 +10,8 @@ type PaletteMode = "light" | "dark";
 
 export interface AppContextDef {
   theme: UpdateAndGetFunc<PaletteMode>;
-  useCustomLoggingFormatter: UpdateAndGetFunc<boolean>;
+  enableCustomLoggingFormatter: UpdateAndGetFunc<boolean>;
+  enableCustomFilter: UpdateAndGetFunc<boolean>;
   loggingFormatScript: UpdateAndGetFunc<string>;
   import(config: string): void;
   export(): string;
@@ -26,8 +27,11 @@ export default function App() {
   const themeMode = createData<PaletteMode>("light", {
     localStorageName: 'config.theme',
   });
-  const useCustomLoggingFormatter = createData(false, {
-    localStorageName: 'config.useCustomLoggingFormatter'
+  const enableCustomLoggingFormatter = createData(false, {
+    localStorageName: 'config.enableCustomLoggingFormatter'
+  });
+  const enableCustomFilter = createData(false, {
+    localStorageName: 'config.enableCustomFilter'
   });
   const loggingFormatScript = createData('', {
     localStorageName: 'config.loggingFormatScript'
@@ -39,13 +43,15 @@ export default function App() {
   return (
     <AppContext.Provider value={{
       theme: themeMode,
-      useCustomLoggingFormatter,
+      enableCustomLoggingFormatter,
+      enableCustomFilter,
       loggingFormatScript,
       import: (raw: string) => {
         try {
           const config = JSON.parse(raw);
           themeMode(config.theme);
-          useCustomLoggingFormatter(config.useCustomLoggingFormatter);
+          enableCustomLoggingFormatter(config.enableCustomLoggingFormatter);
+          enableCustomFilter(config.enableCustomFilter);
           loggingFormatScript(config.loggingFormatScript);
         } catch (e) {
           console.log(e)
@@ -54,7 +60,8 @@ export default function App() {
       export: () => {
         const config = {
           theme: themeMode(),
-          useCustomLoggingFormatter: useCustomLoggingFormatter(),
+          enableCustomLoggingFormatter: enableCustomLoggingFormatter(),
+          enableCustomFilter: enableCustomFilter(),
           loggingFormatScript: loggingFormatScript()
         }
         return JSON.stringify(config, undefined, 2);

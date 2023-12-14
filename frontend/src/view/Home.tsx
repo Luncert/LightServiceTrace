@@ -21,7 +21,7 @@ export default function Home() {
             <HomeHeader />
             <div class="flex flex-nowrap w-full" style={{ height: "calc(100% - 40px)"}}>
               <HomeSidebar onSelected={(name) => activeContent(name)}/>
-              <div class={names("relative box-border h-full grow")}>
+              <div class="relative box-border h-full grow" style={{ "flex-shrink": 100 }}>
                 <Switch>
                   <For each={resolveViews(config.menus)}>{({name, component}) => (
                     <Match when={activeContent() === name}>

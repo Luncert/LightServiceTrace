@@ -51,18 +51,20 @@ export default ({
       visible: "Visible"
     }
   },
+  streaming: {
+    customFilter: "Custom Filter"
+  },
   configuration: {
     general: {
       sync: "Sync"
     },
     streaming: {
-      useCustomLoggingFormatter: "Use custom logging formatter",
-      loggingFormat: {
-        title: "Logging Formatter Script",
-        conditionField: "Host",
-        script: "Script",
-        format: "Format"
-      }
+      enableCustomFilter: "Enable custom filter",
+      enableCustomFilterTips: "Enable custom filter in Streaming view, and consume filter value in your formatter",
+      enableCustomLoggingFormatter: "Enable custom logging formatter",
+      enableCustomLoggingFormatterTips: "Enable custom logging formatter in Streaming view",
+      loggingFormatter: "Logging Formatter Script",
+      resetLoggingFormatter: "Reset to template"
     }
   }
 });

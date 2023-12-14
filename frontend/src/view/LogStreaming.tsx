@@ -1,5 +1,5 @@
 import { Button, useTheme } from "@suid/material";
-import { createData, names } from "../mgrui/lib/components/utils";
+import { conditionalValue, createData, names } from "../mgrui/lib/components/utils";
 import { Show, createMemo, onCleanup, onMount } from "solid-js";
 import Xterm from "./xterm/Xterm";
 import getBackend, { StreamConnection } from "../service/Backend";
@@ -27,9 +27,10 @@ export default function LogStreaming() {
     appName: { match: { operator: "like", value: "" } },
     processId: { match: { operator: "like", value: "" } },
   });
+  const customFilter = createData('');
 
   const printer = createMemo(() => {
-    return createPrinter(app.useCustomLoggingFormatter() ? app.loggingFormatScript() : undefined);
+    return createPrinter(conditionalValue(app.enableCustomLoggingFormatter(), app.loggingFormatScript()));
   });
 
   const onClick = () => {
@@ -37,7 +38,8 @@ export default function LogStreaming() {
       conn.close();
     } else {
       conn = getBackend().streaming(buildFilterBy(filterStore),
-        term, log => printer()(log, showSource()).then(s => term.write(s)));
+        term, log => printer()(log, showSource(), conditionalValue(app.enableCustomFilter(), customFilter()))
+        .then(s => term.write(s)));
     }
     connected(!connected());
   }
@@ -49,24 +51,6 @@ export default function LogStreaming() {
         showSearchBar(true);
       }
     })
-    term.write(`
-    <div class={names("box-border w-full h-full", theme.palette.mode === 'light' ? "bg-zinc-300" : "bg-zinc-700")}>    <div ref={el => ref = el} class={names("relative w-full h-full overflow-hidden",
-      theme.palette.mode === 'light' ? "light bg-zinc-100" : "dark bg-terminal-dark")}>
-    </div>
-    <Show when={showSearchBar()}>
-      <LogStreamingSearchBar
-        findNext={(text: string) =>
-          term.findNext(text, { caseSensitive: false })
-        }
-        findPrevious={(text: string) =>
-          term.findPrevious(text, { caseSensitive: false })
-        }
-        onClose={() => showSearchBar(false)}/>
-    </Show>
-  </div>
-</DataManagementTemplate>
-)
-}`)
   })
 
   onCleanup(() => {
@@ -81,27 +65,34 @@ export default function LogStreaming() {
       disableOuterMargin disableInnerMargin
       headers={
       <Filters>
-        <Filter id="show-source-switch" type="switch"
+        <Filter id="streaming-show-source-switch" type="switch"
           label={showSource() ? t("labels.showSourceSwitch") : t("labels.hideSourceSwitch")}
           onChange={(value) => showSource(value)}
           labelPlacement="start"
           disabled={connected()}
         />
-        <Filter id="host-filter" type="text"
+        <Filter id="streaming-host-filter" type="text"
           label={t("model.log.host")}
           onChange={filterStore.host}
           disabled={connected()}
         />
-        <Filter id="appName-filter" type="text"
+        <Filter id="streaming-appName-filter" type="text"
           label={t("model.log.appName")}
           onChange={filterStore.appName}
           disabled={connected()}
         />
-        <Filter id="processId-filter" type="text"
+        <Filter id="streaming-processId-filter" type="text"
           label={t("model.log.processId")}
           onChange={filterStore.processId}
           disabled={connected()}
         />
+        <Show when={app.enableCustomFilter()}>
+          <Filter id="streaming-custom-filter" type="text"
+            label={t("streaming.customFilter")}
+            onChange={customFilter}
+            disabled={connected()}
+          />
+        </Show>
         <Button variant="contained"
           onClick={() => onClick()}>
           {t(connected() ? "labels.disconnect" : "labels.connect")}
