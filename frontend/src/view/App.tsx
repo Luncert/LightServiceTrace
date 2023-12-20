@@ -2,17 +2,16 @@
 import { Route, Router, Routes } from '@solidjs/router';
 import { ThemeProvider, createPalette, createTheme } from '@suid/material';
 import Home from './Home';
-import { StoreObject, createData, createStoreObject, useCtx } from '../mgrui/lib/components/utils';
+import { createBucket, useCtx } from '../mgrui/lib/components/utils';
 import { createContext, createMemo } from 'solid-js';
-import { createStore } from 'solid-js/store';
 
 type PaletteMode = "light" | "dark";
 
 export interface AppContextDef {
-  theme: UpdateAndGetFunc<PaletteMode>;
-  enableCustomLoggingFormatter: UpdateAndGetFunc<boolean>;
-  enableCustomFilter: UpdateAndGetFunc<boolean>;
-  loggingFormatScript: UpdateAndGetFunc<string>;
+  theme: Bucket<PaletteMode>;
+  enableCustomLoggingFormatter: Bucket<boolean>;
+  enableCustomFilter: Bucket<boolean>;
+  loggingFormatScript: Bucket<string>;
   import(config: string): void;
   export(): string;
 }
@@ -24,16 +23,16 @@ export function useApp() {
 }
 
 export default function App() {
-  const themeMode = createData<PaletteMode>("light", {
+  const themeMode = createBucket<PaletteMode>("light", {
     localStorageName: 'config.theme',
   });
-  const enableCustomLoggingFormatter = createData(false, {
+  const enableCustomLoggingFormatter = createBucket(false, {
     localStorageName: 'config.enableCustomLoggingFormatter'
   });
-  const enableCustomFilter = createData(false, {
+  const enableCustomFilter = createBucket(false, {
     localStorageName: 'config.enableCustomFilter'
   });
-  const loggingFormatScript = createData('', {
+  const loggingFormatScript = createBucket('', {
     localStorageName: 'config.loggingFormatScript'
   });
   const palette = createMemo(() => {
@@ -76,32 +75,4 @@ export default function App() {
       </ThemeProvider>
     </AppContext.Provider>
   );
-}
-
-function createLoggingFormatStore(): [Object, StoreObject<LoggingFormat[]>] {
-  const [v, setV] = createStore([
-    {
-      host: "xx.com",
-      type: 'script',
-      value: "asd"
-    }
-  ]);
-  return [v, createStoreObject(v, setV, "config.loggingFormats") as any];
-}
-
-const importLoggingFormats = (obj: any, store: any) => {
-  for (let key of Object.keys(obj)) {
-    const v = obj[key];
-    if (typeof(v) === 'object') {
-      importLoggingFormats(v, store[key]);
-    } else {
-      store[key](v);
-    }
-  }
-}
-
-interface LoggingFormat {
-  host: UpdateAndGetFunc<string>;
-  type: UpdateAndGetFunc<'format' | 'script'>;
-  value: UpdateAndGetFunc<string>;
 }

@@ -7,7 +7,7 @@ import config from '../config';
 import mock from '../mock';
 import { Dynamic } from 'solid-js/web';
 
-export default function HomeSidebar(props: { selected: UpdateAndGetFunc<string> }) {
+export default function HomeSidebar(props: { selected: Bucket<string> }) {
   return (
     <Sidebar class="shrink-0" enableCollapse selected={props.selected}>
       <For each={config.menus as MenuItem[]}>{(item) => (

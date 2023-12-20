@@ -2,13 +2,13 @@ import { FormControlLabel, Switch as MuiSwitch, Stack, TextField, Button, Box, D
 import { Tab, Tabs } from "../mgrui/lib/components/navigation/Tabs";
 import { For, Match, Switch } from "solid-js";
 import { t } from "i18next";
-import { createData } from "../mgrui/lib/components/utils";
+import { createBucket } from "../mgrui/lib/components/utils";
 import { useApp } from "./App";
 import { FiDownload, FiUpload } from 'solid-icons/fi';
 import { BiRegularReset } from 'solid-icons/bi';
 
 export default function Configuration() {
-  const activeContent = createData('');
+  const activeContent = createBucket('');
 
   return (
     <div class="flex flex-col border-box w-full h-full p-5 overflow-hidden">
@@ -87,7 +87,7 @@ function GeneralConfig() {
  */
 function StreamingConfig() {
   const app = useApp();
-  const popover = createData<[Element, string] | null>(null);
+  const popover = createBucket<[Element, string] | null>(null);
 
   return (
     <Stack class="gap-2" direction="column">

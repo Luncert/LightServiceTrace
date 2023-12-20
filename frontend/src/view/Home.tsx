@@ -1,6 +1,6 @@
 import { Paper } from "@suid/material";
 import { Notification } from "../mgrui/lib/components/NotificationWrapper";
-import { createData, names } from "../mgrui/lib/components/utils";
+import { createBucket, names } from "../mgrui/lib/components/utils";
 import { BackdropWrapper } from "../mgrui/lib/components/BackdropWrapper";
 import HomeSidebar from "./HomeSidebar";
 import config from '../config';
@@ -11,7 +11,7 @@ import GlobalizationWrapper from "../mgrui/lib/components/GlobalizationWrapper";
 import HomeHeader from "./HomeHeader";
 
 export default function Home() {
-  const activeContent = createData(config.defaultMenu);
+  const activeContent = createBucket(config.defaultMenu);
 
   return (
     <Notification>

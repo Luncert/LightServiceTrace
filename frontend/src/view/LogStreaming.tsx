@@ -1,5 +1,5 @@
 import { Button, useTheme } from "@suid/material";
-import { conditionalValue, createData, names } from "../mgrui/lib/components/utils";
+import { conditionalValue, createBucket, names } from "../mgrui/lib/components/utils";
 import { Show, createMemo, onCleanup, onMount } from "solid-js";
 import Xterm from "./xterm/Xterm";
 import getBackend, { StreamConnection } from "../service/Backend";
@@ -19,15 +19,15 @@ export default function LogStreaming() {
   let ref: HTMLDivElement;
   let conn: StreamConnection;
 
-  const showSearchBar = createData(false);
-  const connected = createData(false);
-  const showSource = createData(false);
+  const showSearchBar = createBucket(false);
+  const connected = createBucket(false);
+  const showSource = createBucket(false);
   const filterStore = createFilterStore({
     host: { match: { operator: "like", value: "" } },
     appName: { match: { operator: "like", value: "" } },
     processId: { match: { operator: "like", value: "" } },
   });
-  const customFilter = createData('');
+  const customFilter = createBucket('');
 
   const printer = createMemo(() => {
     return createPrinter(conditionalValue(app.enableCustomLoggingFormatter(), app.loggingFormatScript()));

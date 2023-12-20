@@ -1,7 +1,7 @@
 import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
 import TablePagination from "../mgrui/lib/components/table/TablePagination";
 import PageSizeSelector from "../mgrui/lib/components/table/PageSizeSelector";
-import { createData } from "../mgrui/lib/components/utils";
+import { createBucket } from "../mgrui/lib/components/utils";
 import { Filter, Filters  } from "../mgrui/lib/components/filters/Filters";
 import { Index, createResource } from "solid-js";
 import getBackend from "../service/Backend";
@@ -16,8 +16,8 @@ import { useBackdrop } from "../mgrui/lib/components/BackdropWrapper";
 
 export default function LogExplorer() {
   const backdrop = useBackdrop();
-  const offset = createData(0);
-  const pageSize = createData(10, {
+  const offset = createBucket(0);
+  const pageSize = createBucket(10, {
     localStorageName: "logExplorer.pageSize"
   });
   
