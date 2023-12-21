@@ -1,14 +1,8 @@
 
-
-
-- wrap filters to multiple lines
-
+- popup of message and structured data
 - support links
 - support data fold
-- popup of message and structured data
-
 - add dashboard view
-
 
 Issues:
 - release index files when disk is not sufficient
