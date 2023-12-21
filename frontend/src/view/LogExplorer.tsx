@@ -1,4 +1,4 @@
-import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
+import { Box, Button, Modal, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useTheme } from "@suid/material";
 import TablePagination from "../mgrui/lib/components/table/TablePagination";
 import PageSizeSelector from "../mgrui/lib/components/table/PageSizeSelector";
 import { createBucket } from "../mgrui/lib/components/utils";
@@ -13,13 +13,18 @@ import { buildFilterBy, createFilterStore } from "../mgrui/lib/components/filter
 import { FilterSettings } from "../mgrui/lib/components/filters/FilterSettings";
 import ColumnControl from "../mgrui/lib/components/filters/ColumnControl";
 import { useBackdrop } from "../mgrui/lib/components/BackdropWrapper";
+import { editor } from "monaco-editor";
 
 export default function LogExplorer() {
+  const theme = useTheme();
   const backdrop = useBackdrop();
   const offset = createBucket(0);
   const pageSize = createBucket(10, {
     localStorageName: "logExplorer.pageSize"
   });
+  const openMessageModal = createBucket(false);
+  let monacoEditorContainer: HTMLDivElement;
+  let monacoEditor: editor.IStandaloneCodeEditor;
   
   const filterStore = createFilterStore({
     timestamp: {
@@ -64,6 +69,17 @@ export default function LogExplorer() {
     },
     { initialValue: { pageable: {} } as Page<Log> }
   );
+
+  const showMessage = (msg: string) => {
+    openMessageModal(true);
+    monacoEditor = editor.create(monacoEditorContainer, {
+      value: msg,
+      language: "json",
+      theme: theme.palette.mode === 'dark' ? "vs-dark" : "vs",
+      minimap: { enabled: false },
+      readOnly: true
+    });
+  }
 
   return (
     <DataManagementTemplate
@@ -170,7 +186,7 @@ export default function LogExplorer() {
                   <TableCell align="center">{log().structuredData}</TableCell>
                 </ColumnControl>
                 <ColumnControl attr={filterStore.message}>
-                  <TableCell align="center">{log().message}</TableCell>
+                  <TableCell align="center" onClick={() => showMessage(log().message)}>{log().message}</TableCell>
                 </ColumnControl>
               </TableRow>
             )}
@@ -178,6 +194,36 @@ export default function LogExplorer() {
           </TableBody>
         </Table>
       </TableContainer>
+      <Modal
+        open={openMessageModal()}
+        onClose={() => {
+          if (monacoEditor) {
+            monacoEditor.dispose();
+          }
+          openMessageModal(false);
+        }}
+        aria-labelledby="message-modal-title"
+        aria-describedby="message-modal-description"
+      >
+        <Paper class="flex flex-col"
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: "80%",
+            height: "80%",
+            border: "2px solid #000",
+            boxShadow: "24px",
+            p: 4,
+          }}
+        >
+          <Typography id="message-modal-title" class="shrink-0" variant="h6" component="h2">
+            Message
+          </Typography>
+          <div class="shrink w-full h-full" ref={el => monacoEditorContainer = el}></div>
+        </Paper>
+      </Modal>
     </DataManagementTemplate>
   )
 }
