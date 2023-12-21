@@ -3,7 +3,7 @@ import TablePagination from "../mgrui/lib/components/table/TablePagination";
 import PageSizeSelector from "../mgrui/lib/components/table/PageSizeSelector";
 import { createBucket } from "../mgrui/lib/components/utils";
 import { Filter, Filters  } from "../mgrui/lib/components/filters/Filters";
-import { Index, createResource } from "solid-js";
+import { Index, createEffect, createResource } from "solid-js";
 import getBackend from "../service/Backend";
 import { t } from "i18next";
 import { parseTimestamp } from "./common/Util";
@@ -20,10 +20,7 @@ export default function LogExplorer() {
   const backdrop = useBackdrop();
   const offset = createBucket(0);
   const pageSize = createBucket(10, {
-    localStorageName: "logExplorer.pageSize",
-    afterUpdate: () => {
-      logsAction.refetch();
-    }
+    localStorageName: "logExplorer.pageSize"
   });
   const openMessageModal = createBucket(false);
   let monacoEditorContainer: HTMLDivElement;
@@ -72,6 +69,11 @@ export default function LogExplorer() {
     },
     { initialValue: { pageable: {} } as Page<Log> }
   );
+
+  createEffect(() => {
+    pageSize();
+    logsAction.refetch();
+  });
 
   const showMessage = (msg: string) => {
     openMessageModal(true);
