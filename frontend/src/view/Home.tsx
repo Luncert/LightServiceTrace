@@ -4,7 +4,7 @@ import { createBucket, names } from "../mgrui/lib/components/utils";
 import { BackdropWrapper } from "../mgrui/lib/components/BackdropWrapper";
 import HomeSidebar from "./HomeSidebar";
 import config from '../config';
-import { For, Match, Switch, ValidComponent } from "solid-js";
+import { For, ValidComponent } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { t } from "i18next";
 import GlobalizationWrapper from "../mgrui/lib/components/GlobalizationWrapper";
@@ -22,14 +22,12 @@ export default function Home() {
             <div class="flex flex-nowrap w-full" style={{ height: "calc(100% - 40px)"}}>
               <HomeSidebar selected={activeContent}/>
               <div class="relative box-border h-full grow" style={{ "flex-shrink": 100 }}>
-                <Switch>
-                  <For each={resolveViews(config.menus)}>{({name, component}) => (
-                    <Match when={activeContent() === name}>
-                      <Dynamic component={component} />
-                    </Match>
-                  )}
-                  </For>
-                </Switch>
+                <For each={resolveViews(config.menus)}>{({name, component}) => (
+                  <div class={names("w-full h-full", activeContent() === name ? "block" : "hidden")}>
+                    <Dynamic component={component} />
+                  </div>
+                )}
+                </For>
               </div>
             </div>
           </Paper>

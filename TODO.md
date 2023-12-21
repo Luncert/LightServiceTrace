@@ -12,4 +12,3 @@
 
 Issues:
 - release index files when disk is not sufficient
-- don't close streaming while switch to explorer page -> in fact connection is not closed

@@ -12,7 +12,7 @@ export default function Configuration() {
 
   return (
     <div class="flex flex-col border-box w-full h-full p-5 overflow-hidden">
-      <Tabs value="streaming" onChangeTab={activeContent}>
+      <Tabs value="general" onChangeTab={activeContent}>
         <Tab label="general">General</Tab>
         <Tab label="streaming">Streaming</Tab>
       </Tabs>

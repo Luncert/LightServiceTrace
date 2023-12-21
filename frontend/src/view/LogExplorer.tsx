@@ -45,7 +45,7 @@ export default function LogExplorer() {
     },
     structuredData: {
       match: { operator: "like", value: '' },
-      columnControl: { visible: true }
+      columnControl: { visible: false }
     },
     message: {
       match: { operator: "like", value: '' },

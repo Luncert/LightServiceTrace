@@ -7,7 +7,7 @@ import Configuration from "./view/Configuration";
 import { t } from "i18next";
 
 export default ({
-  defaultMenu: "log-streaming",
+  defaultMenu: "log-explorer",
   menus: [
     {
       name: "log-explorer",
