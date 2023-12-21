@@ -4,3 +4,4 @@ manifest.yaml
 indexing
 target/
 */target
+deploy.sh
