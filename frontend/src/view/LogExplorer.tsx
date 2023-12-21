@@ -20,7 +20,10 @@ export default function LogExplorer() {
   const backdrop = useBackdrop();
   const offset = createBucket(0);
   const pageSize = createBucket(10, {
-    localStorageName: "logExplorer.pageSize"
+    localStorageName: "logExplorer.pageSize",
+    afterUpdate: () => {
+      logsAction.refetch();
+    }
   });
   const openMessageModal = createBucket(false);
   let monacoEditorContainer: HTMLDivElement;
@@ -129,10 +132,7 @@ export default function LogExplorer() {
               logsAction.refetch();
             }}
             style={{"margin-left": "auto"}} />
-          <PageSizeSelector onChange={(size) => {
-            pageSize(size);
-            logsAction.refetch();
-          }} />
+          <PageSizeSelector pageSize={pageSize} />
         </div>
       </div>
       <TableContainer class="custom-scrollbar" component={Paper}>
