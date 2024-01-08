@@ -4,16 +4,49 @@ import { styledString, getFontStyle } from '../Colors';
 import wasmBinUrl from 'vscode-oniguruma/release/onig.wasm?url';
 import logLang from './log-lang.xml?raw';
 import logColor from './log-color.json';
+import yaml from "yaml";
 
 interface ScopeStyleDef {
   scope: string;
   style: TerminalStyle;
 }
 
-function loadColorSchema(colorDefs: ScopeStyleDef[]) {
+function loadTextMateColorSchema(colorDefs: ScopeStyleDef[]) {
   const schema: Map<string, TerminalStyle> = new Map();
   colorDefs.forEach((colorDef) => schema.set(colorDef.scope, colorDef.style));
   return schema;
+}
+
+let colorSchema: Map<string, TerminalStyle> = loadTextMateColorSchema(
+  logColor.textMateRules
+);
+
+export function loadGoghColorSchema(source: string) {
+  const schema = {
+    "textMateRules": [] as ScopeStyleDef[],
+    "customPatterns": []
+  };
+  const bind = (scopeName: string, foreground: string) => {
+    schema.textMateRules.push({
+      scope: scopeName,
+      style: {
+        foreground: foreground
+      }
+    })
+  }
+  const src = yaml.parse(source);
+  bind("log.constant", src.color_12);
+  bind("log.date", src.color_05);
+  bind("log.debug", "rgb(105, 114, 233)");
+  bind("log.error", src.color_02);
+  bind("log.exception", src.color_10);
+  bind("log.exceptiontype", src.color_10);
+  bind("log.info", src.color_11);
+  bind("log.string", src.color_13);
+  bind("log.verbose", src.color_14);
+  bind("log.warning", src.color_04);
+  bind("log.dataLink", src.color_15);
+  colorSchema = loadTextMateColorSchema(schema.textMateRules);
 }
 
 // Create a registry that can create a grammar from a scope name.
@@ -47,10 +80,6 @@ function getRegistry() {
 const PLISTS: any = {
   'text.log': logLang,
 };
-
-const colorSchema: Map<string, TerminalStyle> = loadColorSchema(
-  logColor.textMateRules
-);
 
 const registry = getRegistry();
 
