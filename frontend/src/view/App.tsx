@@ -11,6 +11,7 @@ export interface AppContextDef {
   theme: Bucket<PaletteMode>;
   enableCustomLoggingFormatter: Bucket<boolean>;
   enableCustomFilter: Bucket<boolean>;
+  loggingColorSchema: Bucket<string>;
   loggingFormatScript: Bucket<string>;
   import(config: string): void;
   export(): string;
@@ -32,7 +33,10 @@ export default function App() {
   const enableCustomFilter = createBucket(false, {
     localStorageName: 'config.enableCustomFilter'
   });
-  const loggingFormatScript = createBucket('', {
+  const loggingColorSchema = createBucket("", {
+    localStorageName: "config.loggingColorSchema"
+  });
+  const loggingFormatScript = createBucket("", {
     localStorageName: 'config.loggingFormatScript'
   });
   const palette = createMemo(() => {
@@ -44,6 +48,7 @@ export default function App() {
       theme: themeMode,
       enableCustomLoggingFormatter,
       enableCustomFilter,
+      loggingColorSchema,
       loggingFormatScript,
       import: (raw: string) => {
         try {
@@ -51,6 +56,7 @@ export default function App() {
           themeMode(config.theme);
           enableCustomLoggingFormatter(config.enableCustomLoggingFormatter);
           enableCustomFilter(config.enableCustomFilter);
+          loggingColorSchema(config.loggingColorSchema);
           loggingFormatScript(config.loggingFormatScript);
         } catch (e) {
           console.log(e)
@@ -61,6 +67,7 @@ export default function App() {
           theme: themeMode(),
           enableCustomLoggingFormatter: enableCustomLoggingFormatter(),
           enableCustomFilter: enableCustomFilter(),
+          loggingColorSchema: loggingColorSchema(),
           loggingFormatScript: loggingFormatScript()
         }
         return JSON.stringify(config, undefined, 2);

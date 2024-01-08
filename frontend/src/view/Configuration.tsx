@@ -138,6 +138,11 @@ function StreamingConfig() {
           onMouseLeave={() => popover(null)}
           sx={{ marginLeft: 0 }} />
       </div>
+      <Typography class="inline-block">{t("configuration.streaming.loggingColorSchema")}</Typography>
+      <TextField class="w-full custom-scrollbar"
+        size="small" value={app.loggingColorSchema()}
+        multiline maxRows={16}
+        onChange={(evt, value) => app.loggingColorSchema(value)} />
       <Stack class="gap-2 items-center" direction="row">
         <Typography class="inline-block">{t("configuration.streaming.loggingFormatter")}</Typography>
         <Box>

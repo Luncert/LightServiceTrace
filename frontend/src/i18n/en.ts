@@ -63,6 +63,7 @@ export default ({
       enableCustomFilterTips: "Enable custom filter in Streaming view, and consume filter value in your formatter",
       enableCustomLoggingFormatter: "Enable custom logging formatter",
       enableCustomLoggingFormatterTips: "Enable custom logging formatter in Streaming view",
+      loggingColorSchema: "Logging Color Schema",
       loggingFormatter: "Logging Formatter Script",
       resetLoggingFormatter: "Reset to template"
     }

@@ -30,7 +30,7 @@ export default function LogStreaming() {
   const customFilter = createBucket('');
 
   const printer = createMemo(() => {
-    return createPrinter(conditionalValue(app.enableCustomLoggingFormatter(), app.loggingFormatScript()));
+    return createPrinter(conditionalValue(app.enableCustomLoggingFormatter(), app.loggingFormatScript()), app.loggingColorSchema());
   });
 
   const onClick = () => {
