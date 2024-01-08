@@ -2,14 +2,23 @@
 <Configuration>
   <Appenders>
     <Syslog name="Syslog" format="RFC5424" host="localhost" port="7522"
-            protocol="UDP" appName="test" facility="LOCAL0" />
+            protocol="UDP" appName="test" facility="LOCAL0">
+      <LoggerFields>
+        <KeyValuePair key="thread" value="%t"/>
+        <KeyValuePair key="priority" value="%p"/>
+        <KeyValuePair key="category" value="%c"/>
+        <KeyValuePair key="exception" value="%ex{full}"/>
+      </LoggerFields>
+      <ExceptionPattern>%ex{full}</ExceptionPattern>
+    </Syslog>
     <Console name="ConsoleAppender" target="SYSTEM_OUT">
-      <PatternLayout pattern="%style{%date{DEFAULT}}{yellow} %highlight{%-5level}{FATAL=bg_red, ERROR=red, WARN=yellow, INFO=green} %message"/>
+      <PatternLayout pattern="[%d] %-5p %m%n%throwable"/>
     </Console>
   </Appenders>
   <Loggers>
     <Root level="info">
       <AppenderRef ref="Syslog"/>
+      <AppenderRef ref="ConsoleAppender"/>
     </Root>
   </Loggers>
 </Configuration>

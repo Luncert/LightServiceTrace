@@ -9,5 +9,6 @@ public class App {
       log.info("Syslog Test {}", i);
       Thread.sleep(10);
     }
+    log.error("exception", new Exception("test"));
   }
 }

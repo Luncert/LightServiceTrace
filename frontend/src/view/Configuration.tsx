@@ -160,6 +160,31 @@ function StreamingConfig() {
 
 const loggingFormatterTemplate =
 `
+Websandbox.connection.setLocalApi({
+  /**
+   * Format syslog to string.
+   * @param syslog log object
+   * @returns string formatted log
+   */
+  accept: function(log) {
+    return true;
+  },
+  format: function(log) {
+    // write your logic here
+    try {
+      const msg = JSON.parse(log.message);
+      let r = msg.written_at + " " + msg.type.toUpperCase() + " " + msg.logger + " " + msg.level + " " + msg.msg;
+      if (msg.stacktrace) {
+        r += " " + msg.stacktrace.join("\\n").replaceAll("\t", "  ");
+      }
+      return r;
+    } catch (e) {
+      console.error(e);
+    }
+    return Levels[log.level] + ' ' + parseTimestamp(log.timestamp) + ' ' + log.message;
+  }
+});
+
 const Levels = [
   "EMERGENCY",
   "ALERT",
@@ -170,45 +195,6 @@ const Levels = [
   "INFO",
   "DEBUG",
 ];
-
-/*
-interface Syslog {
-  prioVersion: string;
-  facility: number;
-  level: number;
-  version: number;
-  timestamp: number;
-  host: string;
-  appName: string;
-  procId: string;
-  msgId: string;
-  structuredData: string
-  message: string;
-}
-*/
-
-Websandbox.connection.setLocalApi({
-  /**
-   * Filter out syslog.
-   * @param log syslog object
-   * @param parameter string value provided by custom filter in log streaming page
-   * @returns boolean format and print this log if true
-   */
-  accept: function(log, parameter) {
-    return true;
-  },
-
-  /**
-   * Format syslog to string.
-  * @param log syslog object
-   * @returns string formatted log
-   */
-  format: function(log) {
-    return Levels[log.level] + ' ' + parseTimestamp(log.timestamp) + ' ' + log.message;
-  }
-});
-
-// utilities
 
 function parseTimestamp(timestamp) {
   const date = new Date(timestamp);
