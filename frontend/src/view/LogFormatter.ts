@@ -112,7 +112,7 @@ function createPrinterFromFormatter(formatter: LoggingFormatter): SyslogPrinter 
       if (source !== prevLoggedSource) {
         prevLoggedSource = source;
         const facility = log.facility >= 16 ? `local${log.facility - 16}` : FacilityCodes[log.facility];
-        raw += styledString(`facility: ${facility} host: ${wrapNull(log.host)} procId: ${wrapNull(log.procId)}`, "#6f6f6f", undefined, Mod.Italic) + '\n';
+        raw += styledString(`facility: ${facility} host: ${wrapNull(log.host)} procId: ${wrapNull(log.procId)}`, "#000000", "#53c44d", Mod.Italic) + '\n';
       }
     }
 
