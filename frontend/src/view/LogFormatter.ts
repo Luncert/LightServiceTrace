@@ -1,5 +1,5 @@
 import { parseTimestamp } from "./common/Util";
-import { styledString } from "./xterm/Colors";
+import { Mod, styledString } from "./xterm/Colors";
 import highlight, { loadGoghColorSchema } from "./xterm/highlight/highlight";
 import Sandbox from 'websandbox';
 
@@ -101,13 +101,19 @@ export function createPrinter(loggingFormatScript?: string, loggingColorSchema?:
   });
 }
 
+let prevLoggedSource: string | null = null;
+
 function createPrinterFromFormatter(formatter: LoggingFormatter): SyslogPrinter {
   return async (log: Syslog, printSource?: boolean, custsomParameter?: string) => {
     let raw = '';
     if (printSource) {
-      const facility = log.facility >= 16 ? `local${log.facility - 16}` : FacilityCodes[log.facility];
-      raw += styledString(`${facility}[${wrapNull(log.host)}/${wrapNull(log.procId)}]`,
-        'white', '#2196f3') + ' ';
+      const source = log.facility + log.host + log.procId;
+      console.log(prevLoggedSource, source)
+      if (source !== prevLoggedSource) {
+        prevLoggedSource = source;
+        const facility = log.facility >= 16 ? `local${log.facility - 16}` : FacilityCodes[log.facility];
+        raw += styledString(`facility: ${facility} host: ${wrapNull(log.host)} procId: ${wrapNull(log.procId)}`, "#6f6f6f", undefined, Mod.Italic) + '\n';
+      }
     }
 
     return formatter.accept(log, custsomParameter)
@@ -129,5 +135,5 @@ function createPrinterFromFormatter(formatter: LoggingFormatter): SyslogPrinter 
 }
 
 function wrapNull(v: any) {
-  return v ? v : "";
+  return v ? v : "null";
 }
