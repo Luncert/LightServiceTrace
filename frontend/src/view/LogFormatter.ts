@@ -1,6 +1,6 @@
 import { parseTimestamp } from "./common/Util";
 import { Mod, styledString } from "./xterm/Colors";
-import highlight, { loadGoghColorSchema } from "./xterm/highlight/highlight";
+import highlight from "./xterm/highlight/highlight";
 import Sandbox from 'websandbox';
 
 const Levels = [
@@ -61,9 +61,9 @@ export function validateLoggingFormat(format: string): Promise<string | true> {
 }
 
 export function createPrinter(loggingFormatScript?: string, loggingColorSchema?: string): SyslogPrinter {
-  if (loggingColorSchema) {
-    loadGoghColorSchema(loggingColorSchema);
-  }
+  // if (loggingColorSchema) {
+  //   loadGoghColorSchema(loggingColorSchema);
+  // }
   
   if (!loggingFormatScript) {
     return createPrinterFromFormatter(defaultLogFormatter);

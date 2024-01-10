@@ -1,14 +1,13 @@
-import { Terminal } from 'xterm';
+import { ILinkHandler, Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { ISearchOptions, SearchAddon } from 'xterm-addon-search';
-import WebLinksAddon, { LinkHandler } from './WebLinksAddon';
 import 'xterm/css/xterm.css';
 
 type KeyListener = (key: string, domEvent: KeyboardEvent) => void;
 
 interface XtermOpt {
   themeMode: 'light' | 'dark';
-  linkHandler?: LinkHandler;
+  linkHandler?: ILinkHandler;
 }
 
 export default class Xterm {
@@ -28,6 +27,8 @@ export default class Xterm {
     this.term = new Terminal({
       theme: {
         foreground: 'rgb(200, 200, 200)',
+        background: "rgb(10, 10, 10)",
+        cursor: "rgb(10, 10, 10)",
       },
       allowTransparency: true,
       windowsMode: false,
@@ -40,12 +41,15 @@ export default class Xterm {
       fontSize: 18,
       fontWeight: '400',
       fontWeightBold: '500',
+      letterSpacing: 1,
+      tabStopWidth: 2,
+      linkHandler: opt?.linkHandler
     });
     this.fitAddon = new FitAddon();
     this.searchAddon = new SearchAddon();
     this.term.loadAddon(this.fitAddon);
     this.term.loadAddon(this.searchAddon);
-    this.term.loadAddon(new WebLinksAddon(opt?.linkHandler));
+    // this.term.loadAddon(new WebLinksAddon(opt?.linkHandler));
     // this.term.loadAddon(new XtermWebfont());
     this.term.onKey(({key, domEvent}) => {
       this.internalKeyListener && this.internalKeyListener(key, domEvent);
@@ -71,8 +75,8 @@ export default class Xterm {
 
   public attach(elem: HTMLElement) {
     this.term.open(elem);
-    this.fitAddon.fit();
     this.observer.observe(elem);
+    this.fitAddon.fit();
   }
 
   public dettach(elem: HTMLElement) {

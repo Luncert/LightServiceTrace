@@ -7,19 +7,19 @@ import Configuration from "./view/Configuration";
 import { t } from "i18next";
 
 export default ({
-  defaultMenu: "log-explorer",
+  defaultMenu: "log-streaming",
   menus: [
-    {
-      name: "log-explorer",
-      icon: BsSearch,
-      text: () => t('menu.log-explorer'),
-      view: LogExplorer
-    },
     {
       name: "log-streaming",
       icon: FaSolidTerminal,
       text: () => t('menu.log-streaming'),
       view: LogStreaming
+    },
+    {
+      name: "log-explorer",
+      icon: BsSearch,
+      text: () => t('menu.log-explorer'),
+      view: LogExplorer
     },
     {
       name: "configuration",

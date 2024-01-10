@@ -41,16 +41,16 @@ declare global {
   }
 
   interface Syslog {
-    prioVersion: string;
+    prioVersion?: string;
     facility: number;
     level: number;
     version: number;
     timestamp: number;
     host: string;
-    appName: string;
-    procId: string;
-    msgId: string;
-    structuredData: string
+    appName: string | null;
+    procId: string | null;
+    msgId: string | null;
+    structuredData: string | null;
     message: string;
   }
 }
