@@ -103,6 +103,10 @@ export function createPrinter(loggingFormatScript?: string, loggingColorSchema?:
 
 let prevLoggedSource: string | null = null;
 
+export function clearCache() {
+  prevLoggedSource = null;
+}
+
 function createPrinterFromFormatter(formatter: LoggingFormatter): SyslogPrinter {
   return async (log: Syslog, printSource?: boolean, custsomParameter?: string) => {
     let raw = '';

@@ -8,7 +8,7 @@ import DataManagementTemplate from "../mgrui/lib/components/template/DataManagem
 import { Filter, Filters } from "../mgrui/lib/components/filters/Filters";
 import { buildFilterBy, createFilterStore } from "../mgrui/lib/components/filters/Functions";
 import { useApp } from "./App";
-import { createPrinter } from "./LogFormatter";
+import { clearCache, createPrinter } from "./LogFormatter";
 import LogStreamingSearchBar from "./LogStreamingSearchBar";
 
 export default function LogStreaming() {
@@ -91,7 +91,10 @@ export default function LogStreaming() {
           {t(connected() ? "labels.disconnect" : "labels.connect")}
         </Button>
         <Button variant="contained" color="warning"
-          onClick={() => term.clear()}>
+          onClick={() => {
+            term.clear();
+            clearCache();
+          }}>
           {t("labels.clear")}
         </Button>
       </Filters>
