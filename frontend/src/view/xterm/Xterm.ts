@@ -2,6 +2,7 @@ import { ILinkHandler, Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { ISearchOptions, SearchAddon } from 'xterm-addon-search';
 import 'xterm/css/xterm.css';
+import XtermWebfont from './WebfontAddon';
 
 type KeyListener = (key: string, domEvent: KeyboardEvent) => void;
 
@@ -16,6 +17,8 @@ export default class Xterm {
   private fitAddon: FitAddon;
 
   private searchAddon: SearchAddon;
+
+  private webfontAddon: XtermWebfont;
 
   private observer: ResizeObserver = new ResizeObserver(() => this.fitAddon.fit());
 
@@ -35,22 +38,23 @@ export default class Xterm {
       cursorStyle: 'underline',
       cursorInactiveStyle: 'underline',
       disableStdin: false,
-      fontFamily: 'Courier',
+      fontFamily: 'krlonjt',
       convertEol: true, // support \n
       scrollback: 100000,
       fontSize: 18,
       fontWeight: '400',
       fontWeightBold: '500',
-      letterSpacing: 1,
+      // letterSpacing: 1,
       tabStopWidth: 2,
       linkHandler: opt?.linkHandler
     });
     this.fitAddon = new FitAddon();
     this.searchAddon = new SearchAddon();
+    this.webfontAddon = new XtermWebfont();
     this.term.loadAddon(this.fitAddon);
     this.term.loadAddon(this.searchAddon);
+    this.term.loadAddon(this.webfontAddon);
     // this.term.loadAddon(new WebLinksAddon(opt?.linkHandler));
-    // this.term.loadAddon(new XtermWebfont());
     this.term.onKey(({key, domEvent}) => {
       this.internalKeyListener && this.internalKeyListener(key, domEvent);
       this.keyListener && this.keyListener(key, domEvent);
@@ -74,7 +78,8 @@ export default class Xterm {
   }
 
   public attach(elem: HTMLElement) {
-    this.term.open(elem);
+    this.webfontAddon.loadWebfontAndOpen(elem);
+    // this.term.open(elem);
     this.observer.observe(elem);
     this.fitAddon.fit();
   }

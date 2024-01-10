@@ -38,7 +38,7 @@ class Backend {
           Mod.Bold
         )
       );
-      // x.forEach(onReceivedLog);
+      x.forEach(onReceivedLog);
     };
     streamConnection.onmessage = (evt) => {
       console.warn('received unexpected event', evt);
@@ -102,7 +102,7 @@ const x: Syslog[] = [
     "procId": null,
     "msgId": null,
     "structuredData": null,
-    "message": "test"
+    "message": "test 你好"
   },
   {
     "facility": 1,
