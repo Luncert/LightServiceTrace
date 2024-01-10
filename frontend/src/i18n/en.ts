@@ -11,8 +11,6 @@ export default ({
     connect: "Connect",
     clear: "Clear",
     disconnect: "Disconnect",
-    showSourceSwitch: "Show Source",
-    hideSourceSwitch: "Hide Source",
     total: "Total",
     themeSwitch: "Use dark theme",
     loggingFormat: "Logging Format",

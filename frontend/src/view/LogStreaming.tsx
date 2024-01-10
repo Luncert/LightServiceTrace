@@ -21,7 +21,6 @@ export default function LogStreaming() {
 
   const showSearchBar = bucket(false);
   const connected = bucket(false);
-  const showSource = bucket(true);
   const filterStore = createFilterStore({
     host: { match: { operator: "like", value: "" } },
     appName: { match: { operator: "like", value: "" } },
@@ -38,7 +37,7 @@ export default function LogStreaming() {
       conn.close();
     } else {
       conn = getBackend().streaming(buildFilterBy(filterStore),
-        term, log => printer()(log, showSource(), conditionalValue(app.enableCustomFilter(), customFilter()))
+        term, log => printer()(log, true, conditionalValue(app.enableCustomFilter(), customFilter()))
         .then(s => term.write(s)));
     }
     connected(!connected());
@@ -65,12 +64,6 @@ export default function LogStreaming() {
       disableOuterMargin disableInnerMargin
       headers={
       <Filters>
-        <Filter id="streaming-show-source-switch" type="switch"
-          label={showSource() ? t("labels.showSourceSwitch") : t("labels.hideSourceSwitch")}
-          state={showSource}
-          labelPlacement="start"
-          disabled={connected()}
-        />
         <Filter id="streaming-host-filter" type="text"
           label={t("model.log.host")}
           onChange={filterStore.host}
