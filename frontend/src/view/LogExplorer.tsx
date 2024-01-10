@@ -1,7 +1,7 @@
 import { Box, Button, Modal, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useTheme } from "@suid/material";
 import TablePagination from "../mgrui/lib/components/table/TablePagination";
 import PageSizeSelector from "../mgrui/lib/components/table/PageSizeSelector";
-import { createBucket } from "../mgrui/lib/components/utils";
+import { bucket } from "../mgrui/lib/components/utils";
 import { Filter, Filters  } from "../mgrui/lib/components/filters/Filters";
 import { Index, createEffect, createResource } from "solid-js";
 import getBackend from "../service/Backend";
@@ -18,11 +18,11 @@ import { editor } from "monaco-editor";
 export default function LogExplorer() {
   const theme = useTheme();
   const backdrop = useBackdrop();
-  const offset = createBucket(0);
-  const pageSize = createBucket(10, {
+  const offset = bucket(0);
+  const pageSize = bucket(10, {
     localStorageName: "logExplorer.pageSize"
   });
-  const openMessageModal = createBucket(false);
+  const openMessageModal = bucket(false);
   let monacoEditorContainer: HTMLDivElement;
   let monacoEditor: editor.IStandaloneCodeEditor;
   

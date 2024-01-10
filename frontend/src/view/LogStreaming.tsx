@@ -1,5 +1,5 @@
 import { Button, useTheme } from "@suid/material";
-import { conditionalValue, createBucket, names } from "../mgrui/lib/components/utils";
+import { conditionalValue, bucket, names } from "../mgrui/lib/components/utils";
 import { Show, createMemo, onCleanup, onMount } from "solid-js";
 import Xterm from "./xterm/Xterm";
 import getBackend, { StreamConnection } from "../service/Backend";
@@ -19,15 +19,15 @@ export default function LogStreaming() {
   let ref: HTMLDivElement;
   let conn: StreamConnection;
 
-  const showSearchBar = createBucket(false);
-  const connected = createBucket(false);
-  const showSource = createBucket(false);
+  const showSearchBar = bucket(false);
+  const connected = bucket(false);
+  const showSource = bucket(true);
   const filterStore = createFilterStore({
     host: { match: { operator: "like", value: "" } },
     appName: { match: { operator: "like", value: "" } },
     processId: { match: { operator: "like", value: "" } },
   });
-  const customFilter = createBucket('');
+  const customFilter = bucket('');
 
   const printer = createMemo(() => {
     return createPrinter(conditionalValue(app.enableCustomLoggingFormatter(), app.loggingFormatScript()), app.loggingColorSchema());
@@ -67,7 +67,7 @@ export default function LogStreaming() {
       <Filters>
         <Filter id="streaming-show-source-switch" type="switch"
           label={showSource() ? t("labels.showSourceSwitch") : t("labels.hideSourceSwitch")}
-          onChange={(value) => showSource(value)}
+          state={showSource}
           labelPlacement="start"
           disabled={connected()}
         />

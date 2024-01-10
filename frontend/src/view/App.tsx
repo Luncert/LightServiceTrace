@@ -2,7 +2,7 @@
 import { Route, Router, Routes } from '@solidjs/router';
 import { ThemeProvider, createPalette, createTheme } from '@suid/material';
 import Home from './Home';
-import { createBucket, useCtx } from '../mgrui/lib/components/utils';
+import { bucket, useCtx } from '../mgrui/lib/components/utils';
 import { createContext, createMemo } from 'solid-js';
 
 type PaletteMode = "light" | "dark";
@@ -24,19 +24,19 @@ export function useApp() {
 }
 
 export default function App() {
-  const themeMode = createBucket<PaletteMode>("light", {
+  const themeMode = bucket<PaletteMode>("light", {
     localStorageName: 'config.theme',
   });
-  const enableCustomLoggingFormatter = createBucket(false, {
+  const enableCustomLoggingFormatter = bucket(false, {
     localStorageName: 'config.enableCustomLoggingFormatter'
   });
-  const enableCustomFilter = createBucket(false, {
+  const enableCustomFilter = bucket(false, {
     localStorageName: 'config.enableCustomFilter'
   });
-  const loggingColorSchema = createBucket("", {
+  const loggingColorSchema = bucket("", {
     localStorageName: "config.loggingColorSchema"
   });
-  const loggingFormatScript = createBucket("", {
+  const loggingFormatScript = bucket("", {
     localStorageName: 'config.loggingFormatScript'
   });
   const palette = createMemo(() => {

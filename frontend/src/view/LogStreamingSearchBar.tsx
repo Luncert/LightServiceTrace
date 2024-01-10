@@ -1,5 +1,5 @@
 import { ButtonGroup, IconButton, InputAdornment, Paper, TextField } from "@suid/material";
-import { createBucket } from "../mgrui/lib/components/utils";
+import { bucket } from "../mgrui/lib/components/utils";
 import { IoArrowDown, IoArrowUp, IoClose } from 'solid-icons/io';
 
 export default function LogStreamingSearchBar(props: {
@@ -7,8 +7,8 @@ export default function LogStreamingSearchBar(props: {
   findPrevious: (text: string) => void;
   onClose: () => void;
 }) {
-  const searchDirection = createBucket<"up" | "down">("up");
-  const text = createBucket('');
+  const searchDirection = bucket<"up" | "down">("up");
+  const text = bucket('');
   return (
    <Paper class="absolute top-2 right-2">
     <form onSubmit={(e) => {
