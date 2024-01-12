@@ -38,7 +38,7 @@ export default class Xterm {
       cursorStyle: 'underline',
       cursorInactiveStyle: 'underline',
       disableStdin: false,
-      fontFamily: 'krlonjt',
+      fontFamily: 'Courier', // krlonjt
       convertEol: true, // support \n
       scrollback: 100000,
       fontSize: 18,

@@ -15,9 +15,9 @@ export default class XtermWebfont implements ITerminalAddon {
         reject("terminal not bind");
         return;
       }
-      const fontFamily = this.term.options.fontFamily || "Courier";
-      await new FontFaceObserver(fontFamily).load();
-      await new FontFaceObserver(fontFamily, { weight: "bold" }).load();
+      // const fontFamily = this.term.options.fontFamily || "Courier";
+      // await new FontFaceObserver(fontFamily).load();
+      // await new FontFaceObserver(fontFamily, { weight: "bold" }).load();
       this.term?.open(element);
       resolve(true);
     });

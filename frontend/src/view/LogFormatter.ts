@@ -102,8 +102,10 @@ export function createPrinter(loggingFormatScript?: string, loggingColorSchema?:
 }
 
 let prevLoggedSource: string | null = null;
+const loggingSourceMapping = new Map<string, {id: number, color: string}>();
 
 export function clearCache() {
+  loggingSourceMapping.clear();
   prevLoggedSource = null;
 }
 
@@ -112,11 +114,23 @@ function createPrinterFromFormatter(formatter: LoggingFormatter): SyslogPrinter 
     let raw = '';
     if (printSource) {
       const source = log.facility + log.host + log.procId;
-      console.log(prevLoggedSource, source)
       if (source !== prevLoggedSource) {
         prevLoggedSource = source;
+        if (!loggingSourceMapping.has(source)) {
+          const id = loggingSourceMapping.size;
+          loggingSourceMapping.set(source, {id, color: getRandomColor(id)})
+        }
+        const data = loggingSourceMapping.get(source);
+        raw += styledString(" ", undefined, data?.color) + " ";
         const facility = log.facility >= 16 ? `local${log.facility - 16}` : FacilityCodes[log.facility];
-        raw += styledString(`facility: ${facility} host: ${wrapNull(log.host)} procId: ${wrapNull(log.procId)}`, "#000000", "#53c44d", Mod.Italic) + '\n';
+        raw += styledString("facility: ", "#3f3f3f", undefined, Mod.Italic) + styledString(facility, "#53c44d", undefined, Mod.Italic)
+          + styledString(" host: ", "#3f3f3f", undefined, Mod.Italic) + styledString(wrapNull(log.host), "#53c44d", undefined, Mod.Italic)
+          + styledString(" procId: ", "#3f3f3f", undefined, Mod.Italic) + styledString(wrapNull(log.procId), "#53c44d", undefined, Mod.Italic)
+          + "\n";
+        raw += styledString(" ", undefined, data?.color) + " ";
+      } else {
+        const data = loggingSourceMapping.get(source);
+        raw += styledString(" ", undefined, data?.color) + " ";
       }
     }
 
@@ -136,6 +150,15 @@ function createPrinterFromFormatter(formatter: LoggingFormatter): SyslogPrinter 
         return '';
       })
   };
+}
+
+const letters = "89ABCDEF";
+function getRandomColor(seed: number) {
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 8)];
+  }
+  return color;
 }
 
 function wrapNull(v: any) {
