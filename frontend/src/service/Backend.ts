@@ -38,7 +38,7 @@ class Backend {
           Mod.Bold
         )
       );
-      x.forEach(onReceivedLog);
+      // x.forEach(onReceivedLog);
     };
     streamConnection.onmessage = (evt) => {
       console.warn('received unexpected event', evt);
