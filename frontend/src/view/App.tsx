@@ -24,7 +24,7 @@ export function useApp() {
 }
 
 export default function App() {
-  const themeMode = bucket<PaletteMode>("light", {
+  const themeMode = bucket<PaletteMode>("dark", {
     localStorageName: 'config.theme',
   });
   const enableCustomLoggingFormatter = bucket(false, {

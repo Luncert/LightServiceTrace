@@ -9,6 +9,7 @@ export default function LogStreamingSearchBar(props: {
 }) {
   const searchDirection = bucket<"up" | "down">("up");
   const text = bucket('');
+
   return (
    <Paper class="absolute top-2 right-2">
     <form onSubmit={(e) => {
@@ -20,7 +21,7 @@ export default function LogStreamingSearchBar(props: {
       e.preventDefault();
     }}>
       <TextField id="log-streaming-search-input" size="small" placeholder="Search"
-        autoComplete="off"
+        autoComplete="off" focused
         onChange={(evt, v) => text(v)}
         InputProps={{
           endAdornment: (

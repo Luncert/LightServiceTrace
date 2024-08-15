@@ -2,7 +2,8 @@ import { ILinkHandler, Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { ISearchOptions, SearchAddon } from 'xterm-addon-search';
 import 'xterm/css/xterm.css';
-import XtermWebfont from './WebfontAddon';
+import XtermWebfont from './font/WebfontAddon';
+import BufferAddon from './buffer/BufferAddon';
 
 type KeyListener = (key: string, domEvent: KeyboardEvent) => void;
 
@@ -19,6 +20,8 @@ export default class Xterm {
   private searchAddon: SearchAddon;
 
   private webfontAddon: XtermWebfont;
+
+  private bufferAddon: BufferAddon;
 
   private observer: ResizeObserver = new ResizeObserver(() => this.fitAddon.fit());
 
@@ -51,9 +54,11 @@ export default class Xterm {
     this.fitAddon = new FitAddon();
     this.searchAddon = new SearchAddon();
     this.webfontAddon = new XtermWebfont();
+    this.bufferAddon = new BufferAddon();
     this.term.loadAddon(this.fitAddon);
     this.term.loadAddon(this.searchAddon);
     this.term.loadAddon(this.webfontAddon);
+    this.term.loadAddon(this.bufferAddon);
     // this.term.loadAddon(new WebLinksAddon(opt?.linkHandler));
     this.term.onKey(({key, domEvent}) => {
       this.internalKeyListener && this.internalKeyListener(key, domEvent);

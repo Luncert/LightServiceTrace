@@ -25,22 +25,22 @@ export type LinkHandler = (event: MouseEvent, uri: string) => void
 
 export default class WebLinksAddon implements ITerminalAddon {
 
-  private _terminal: Terminal
-  private _linkMatcherId: number | undefined
+  // private _terminal: Terminal
+  // private _linkMatcherId: number | undefined
   private _linkProvider: IDisposable | undefined
 
   constructor(private _handler: LinkHandler = handleLink) {
   }
 
   activate(terminal: Terminal): void {
-    this._terminal = terminal
-    this._linkProvider = this._terminal.registerLinkProvider(new WebLinkProvider(this._terminal, strictUrlRegex, this._handler))
+    // this._terminal = terminal
+    this._linkProvider = terminal.registerLinkProvider(new WebLinkProvider(terminal, strictUrlRegex, this._handler))
   }
 
   dispose(): void {
-    if (this._linkMatcherId !== undefined && this._terminal !== undefined) {
-      this._terminal.deregisterLinkMatcher(this._linkMatcherId);
-    }
+    // if (this._linkMatcherId !== undefined && this._terminal !== undefined) {
+    //   this._terminal.deregisterLinkMatcher(this._linkMatcherId);
+    // }
 
     this._linkProvider?.dispose();
   }

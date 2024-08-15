@@ -69,14 +69,14 @@ function GeneralConfig() {
         </label>
         <Button startIcon={<FiDownload />} onClick={onExport}>Export</Button>
       </Stack>
-      <div>
+      {/* <div>
         <FormControlLabel
           control={<MuiSwitch checked={app.theme() === 'dark'}
           onChange={(evt, value) => app.theme(value ? 'dark' : 'light')} />}
           label={t("labels.themeSwitch")}
           labelPlacement="start"
           sx={{ marginLeft: 0 }} />
-      </div>
+      </div> */}
     </Stack>
   )
 }

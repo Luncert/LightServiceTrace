@@ -47,22 +47,26 @@ export default function LogStreaming() {
     term.attach(ref);
     term.on('key', (key, evt) => {
       if (evt.ctrlKey && evt.key === 'f') {
-        showSearchBar(true);
+        showSearchBar(true)
+      } else if (evt.key === "Escape") {
+        showSearchBar(false)
       }
     })
-    // let log = {
-    //   "facility": 1,
-    //   "level": 6,
-    //   "version": 0,
-    //   "timestamp": 1723693507985,
-    //   "host": "selfbilling-paas-eu10.selfbilling-dev-eu10.selfbilling-deviation-service-01915403-adc7-4640-4e1f-96f3b0cdf",
-    //   "appName": null,
-    //   "procId": null,
-    //   "msgId": null,
-    //   "structuredData": null,
-    //   "message": "2024-08-15 03:37:46,441 INFO  [org.springframework.kafka.KafkaListenerEndpointContainer#2-0-C-1] - [com.sap.cf.sales.self.billing.service.deviation.infrastructure.messaging.SbcLifecycleEventInHandler] [tenant_id=4fbf2d91-eb06-463e-9e0e-df7ef0ed3a55, component_id=c6a56bf7-1dbf-4858-9000-f9fa2247e55b, component_name=selfbilling-deviation-service-01915403-adc7-4640-4e1f-96f3b0cdf3f4, organization_name=selfbilling-paas-eu10, component_type=application, space_name=selfbilling-dev-eu10, component_instance=0, organization_id=37b90951-2e2d-40af-9055-249fe90d05d9, correlation_id=lukas.li@sap.com|1723693058, space_id=9f386d19-3ab4-4ce8-b961-f456dde1cc0a, container_id=10.36.196.17, tenant_subdomain=sbi-allfeatures-qkk] - dispatch event SIMULATION_COMPLETED from SBWAP\n"
-    // }
-    // printer()(log, true, conditionalValue(app.enableCustomFilter(), customFilter())).then(s => term.write(s))
+    let log = {
+      "facility": 1,
+      "level": 6,
+      "version": 0,
+      "timestamp": 1723693507985,
+      "host": "selfbilling-paas-eu10.selfbilling-dev-eu10.selfbilling-deviation-service-01915403-adc7-4640-4e1f-96f3b0cdf",
+      "appName": null,
+      "procId": null,
+      "msgId": null,
+      "structuredData": null,
+      "message": "2024-08-15 03:37:46,441 INFO  [org.springframework.kafka.KafkaListenerEndpointContainer#2-0-C-1] - [com.sap.cf.sales.self.billing.service.deviation.infrastructure.messaging.SbcLifecycleEventInHandler] [tenant_id=4fbf2d91-eb06-463e-9e0e-df7ef0ed3a55, component_id=c6a56bf7-1dbf-4858-9000-f9fa2247e55b, component_name=selfbilling-deviation-service-01915403-adc7-4640-4e1f-96f3b0cdf3f4, organization_name=selfbilling-paas-eu10, component_type=application, space_name=selfbilling-dev-eu10, component_instance=0, organization_id=37b90951-2e2d-40af-9055-249fe90d05d9, correlation_id=lukas.li@sap.com|1723693058, space_id=9f386d19-3ab4-4ce8-b961-f456dde1cc0a, container_id=10.36.196.17, tenant_subdomain=sbi-allfeatures-qkk] - dispatch event SIMULATION_COMPLETED from SBWAP\n"
+    }
+    for (let i = 0; i < 10; i++) {
+      printer()(log, true, conditionalValue(app.enableCustomFilter(), customFilter())).then(s => term.write(s))
+    }
   })
 
   onCleanup(() => {
