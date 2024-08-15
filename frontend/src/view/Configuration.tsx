@@ -176,15 +176,22 @@ Websandbox.connection.setLocalApi({
   },
   format: function(log) {
     // write your logic here
-    try {
-      const msg = JSON.parse(log.message);
-      let r = msg.written_at + " " + msg.type.toUpperCase() + " " + msg.logger + " " + msg.level + " " + msg.msg;
-      if (msg.stacktrace) {
-        r += " " + msg.stacktrace.join("\\n").replaceAll("\t", "  ");
+    if (log.message.startsWith('{'})) {
+      try {
+        const msg = JSON.parse(log.message);
+        let r = msg.written_at + " " + msg.type.toUpperCase() + " " + msg.logger + " " + msg.level + " " + msg.msg;
+        if (msg.stacktrace) {
+          r += " " + msg.stacktrace.join("\\n").replaceAll("\t", "  ");
+        }
+        return r;
+      } catch (e) {
+        console.error(e);
       }
-      return r;
-    } catch (e) {
-      console.error(e);
+    }
+
+    // fallback
+    if (log.message.match(/\d{4}-\d{2}-\d{2}/g)) {
+      return log.message;
     }
     return Levels[log.level] + ' ' + parseTimestamp(log.timestamp) + ' ' + log.message;
   }

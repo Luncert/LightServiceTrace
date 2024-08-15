@@ -24,6 +24,27 @@
 				<string>log.dataLink</string>
 			</dict>
 
+			<dict>
+				<key>match</key>
+				<string>\[\w+?(\.\w+?)*?#[\w\d-]*?\]</string>
+				<key>name</key>
+				<string>log.header.thread</string>
+			</dict>
+
+			<dict>
+				<key>match</key>
+				<string>\[\w+?(\.\w+?)*?\]</string>
+				<key>name</key>
+				<string>log.header.class</string>
+			</dict>
+
+			<dict>
+				<key>match</key>
+				<string>\[.*?\]</string>
+				<key>name</key>
+				<string>log.header.unknown</string>
+			</dict>
+
 			<!-- Log levels -->
 
 			<!-- Trace/Verbose -->
