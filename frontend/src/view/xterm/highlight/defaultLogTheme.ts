@@ -15,7 +15,7 @@ export const theme: Theme = {
   "log.verbose": (raw) => styled(raw, "rgb(61, 64, 100)"),
   "log.warning": (raw) => styled(raw, "rgb(161, 152, 26)"),
   "log.dataLink": (raw) => styled(raw, "rgb(81, 126, 150)", undefined, Mod.Italic),
-  "log.header.thread": (raw) => styled(raw, "rgb(100, 150, 100)"),
-  "log.header.class": (raw) => styled(raw, "rgb(180, 100, 180)"),
-  "log.header.unknown": (raw) => styled(raw, "rgb(100, 100, 100)"),
+  "log.metadata.thread": (raw) => styled(raw, "rgb(100, 150, 100)"),
+  "log.metadata.class": (raw) => styled(raw, "rgb(180, 100, 180)"),
+  "log.metadata.headers": (raw) => styled(raw, "rgb(100, 100, 100)"),
 }

@@ -28,21 +28,21 @@
 				<key>match</key>
 				<string>\[\w+?(\.\w+?)*?#[\w\d-]*?\]</string>
 				<key>name</key>
-				<string>log.header.thread</string>
+				<string>log.metadata.thread</string>
 			</dict>
 
 			<dict>
 				<key>match</key>
 				<string>\[\w+?(\.\w+?)*?\]</string>
 				<key>name</key>
-				<string>log.header.class</string>
+				<string>log.metadata.class</string>
 			</dict>
 
 			<dict>
 				<key>match</key>
-				<string>\[.*?\]</string>
+				<string>\[([\w\d_-]+=.*?)(, ?([\w\d_-]+=.*?))*\]</string>
 				<key>name</key>
-				<string>log.header.unknown</string>
+				<string>log.metadata.headers</string>
 			</dict>
 
 			<!-- Log levels -->
