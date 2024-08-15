@@ -6,7 +6,7 @@ export default class BufferAddon {
 
   activate(terminal: Terminal) {
     this.disposables.push(terminal.onScroll((a, b) => {
-      // console.log(a, b)
+      console.log(a, b)
     }))
     this.disposables.push(terminal.buffer.onBufferChange(buf => {
       console.log(buf.length, buf.viewportY, buf.baseY)
