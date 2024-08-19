@@ -26,16 +26,23 @@
 
 			<dict>
 				<key>match</key>
-				<string>\[\w+?(\.\w+?)*?#[\w\d-]*?\]</string>
+				<string>([a-zA-Z_$][a-zA-Z\d_$]*)(\.[a-zA-Z_$][a-zA-Z\d_$]*)*#[\w\d-]*?</string>
 				<key>name</key>
-				<string>log.metadata.thread</string>
+				<string>log.metadata.java.thread</string>
 			</dict>
 
-			<dict>
+			<!-- <dict>
 				<key>match</key>
 				<string>\[\w+?(\.\w+?)*?\]</string>
 				<key>name</key>
 				<string>log.metadata.class</string>
+			</dict> -->
+
+			<dict>
+				<key>match</key>
+				<string>([a-zA-Z_$][a-zA-Z\d_$]*)(\.[a-zA-Z_$][a-zA-Z\d_$]*)*</string>
+				<key>name</key>
+				<string>log.metadata.java.package</string>
 			</dict>
 
 			<dict>
