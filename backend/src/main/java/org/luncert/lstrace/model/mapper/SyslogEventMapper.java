@@ -21,8 +21,7 @@ public class SyslogEventMapper {
         .procId(source.getProcId())
         .msgId(source.getMsgId())
         .message(source.getMessage())
-        .thread(source.getThread())
-        .logger(source.getLogger())
+        .type(source.getType())
         .attrs(source.getAttrs())
         .build();
     //return modelMapper.typeMap(Rfc5424SyslogEvent.class, SyslogEvent.class)
