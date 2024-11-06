@@ -76,6 +76,9 @@ public class Rfc5424BytesSyslogParser extends AbstractBytesParser implements IRf
     return builder.build();
   }
 
+  /**
+   * Convert 2021-01-22T07:52:37.98708+08:00 to 2021-01-21T23:52:37.987Z.
+   */
   private String cleanTimestamp(String ts) {
     ts = ts.substring(0, 23) + ts.substring(25);
     try {

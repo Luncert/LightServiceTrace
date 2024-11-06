@@ -17,6 +17,7 @@ public class GoRouterMessageParser extends AbstractBytesParser implements IMessa
     var host = token(' ');
     skip('[');
     var timestamp = token(']');
+    // convert 2024-11-06T07:19:15.665422060Z to 2024-11-06T07:19:15.665Z
     if (timestamp.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{9}Z")) {
       timestamp = timestamp.substring(0, 23) + "Z";
     }

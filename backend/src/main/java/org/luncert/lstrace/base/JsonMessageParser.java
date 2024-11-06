@@ -56,6 +56,9 @@ public class JsonMessageParser implements IMessageParser {
     });
   }
 
+  /**
+   * Convert 1730880630722147405 to 2024-11-06T08:10:30.722Z.
+   */
   private void convertTimestamp(Rfc5424SyslogEvent event, String raw) {
     if (raw.length() == 19) {
       event.setTimestamp(Instant.ofEpochSecond(0L, Long.parseLong(raw))

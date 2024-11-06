@@ -31,7 +31,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 
 @Slf4j
-@Service
+//@Service
 @RequiredArgsConstructor
 public class LogPersistenceService extends LuceneFiltersQueryOrmEngine<SyslogEvent>
     implements ApplicationListener<SyslogServerEvent>, ILogQueryService {
@@ -86,6 +86,8 @@ public class LogPersistenceService extends LuceneFiltersQueryOrmEngine<SyslogEve
         document.add(new StringField("message", v, Field.Store.YES)));
 
     try {
+      //cherServlet] in context with path [] threw exception [Request processing failed: java.lang.IllegalArgumentException: Document contains at least one immense term in field="message" (whose UTF8 encoding is longer than the max length 32766), all of which were skipped.  Please correct the analyzer to not produce such terms.  The prefix of the first immense term is: '[123, 34, 100, 34, 58, 123, 34, 67, 105, 116, 121, 67, 111, 100, 101, 34, 58, 34, 34, 44, 34, 67, 114, 101, 97, 116, 105, 111, 110, 68]...', original message: bytes can be at most 32766 in length; got 34441] with root cause
+      //   2024-11-06T17:54:55.43+0800 [APP/PROC/WEB/0] OUT org.apache.lucene.util.BytesRefHash$MaxBytesLengthExceededException: bytes can be at most 32766 in length; got 34441
       writer.addDocument(document);
       writer.flush();
     } catch (IOException e) {

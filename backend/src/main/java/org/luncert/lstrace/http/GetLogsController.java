@@ -22,12 +22,13 @@ public class GetLogsController {
   private static final String ANONYMOUS_CHANNEL = "anonymous";
 
   private final ILogStreamService logStreamService;
-  private final ILogQueryService logQueryService;
+  //private final ILogQueryService logQueryService;
 
   @GetMapping
   public Page<GetSyslogResponse> getLogs(@RequestParam String criteria)
       throws IOException, ParseException {
-    return logQueryService.search(criteria);
+    return null;
+    //return logQueryService.search(criteria);
   }
 
   @GetMapping("/streaming")

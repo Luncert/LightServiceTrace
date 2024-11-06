@@ -27,6 +27,9 @@ public class Rfc5424SyslogEvent implements SyslogServerEventIF {
   private int level;
   private int version;
 
+  /**
+   * UTC timestamp. e.g 2024-11-06T07:19:15.665Z.
+   */
   private String timestamp;
   private String host;
   private String appName;
