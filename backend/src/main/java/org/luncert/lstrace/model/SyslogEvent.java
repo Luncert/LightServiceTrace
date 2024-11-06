@@ -24,7 +24,5 @@ public class SyslogEvent {
   private String msgId;
   //private String structuredData;
   private String message;
-  private String thread;
-  private String logger;
   private Map<String, String> attrs;
 }

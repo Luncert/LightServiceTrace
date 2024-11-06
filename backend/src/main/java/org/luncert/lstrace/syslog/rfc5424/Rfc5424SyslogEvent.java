@@ -39,8 +39,6 @@ public class Rfc5424SyslogEvent implements SyslogServerEventIF {
   //private String structuredData;
   private String message;
 
-  private String thread;
-  private String logger;
   private Map<String, String> attrs;
 
   @Override
