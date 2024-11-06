@@ -52,5 +52,7 @@ public class GoRouterMessageParser extends AbstractBytesParser implements IMessa
         attrs.put(name, token(' '));
       }
     }
+
+    syslog.setType("RTR");
   }
 }

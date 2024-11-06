@@ -54,6 +54,8 @@ public class JsonMessageParser implements IMessageParser {
         attrs.put(k, v);
       }
     });
+
+    syslog.setType("APP");
   }
 
   /**

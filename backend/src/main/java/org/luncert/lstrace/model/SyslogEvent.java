@@ -17,6 +17,7 @@ public class SyslogEvent {
   private int version;
 
   private long timestamp;
+  private String type;
   private String host;
   private String appName;
   private String procId;
