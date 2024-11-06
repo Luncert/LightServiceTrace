@@ -3,6 +3,7 @@ package org.luncert.lstrace.syslog.rfc5424;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,8 +30,12 @@ public class Rfc5424SyslogEvent implements SyslogServerEventIF {
   private String appName;
   private String procId;
   private String msgId;
-  private String structuredData;
+  //private String structuredData;
   private String message;
+
+  private String thread;
+  private String logger;
+  private Map<String, String> attrs;
 
   @Override
   public Date getDate() {

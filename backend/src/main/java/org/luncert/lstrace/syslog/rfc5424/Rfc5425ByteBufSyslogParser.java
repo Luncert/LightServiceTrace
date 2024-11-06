@@ -36,13 +36,13 @@ public class Rfc5425ByteBufSyslogParser implements IRfc5424SyslogParser<ByteBuf>
         .procId(token(' '))
         .msgId(token(' '));
 
-    if (nextByte() == '[') {
-      builder.structuredData(token(']'));
-      parserData.cursor += 2;
-    } else {
-      builder.structuredData(token(' '));
-      parserData.cursor += 1;
-    }
+    //if (nextByte() == '[') {
+    //  builder.structuredData(token(']'));
+    //  parserData.cursor += 2;
+    //} else {
+    //  builder.structuredData(token(' '));
+    //  parserData.cursor += 1;
+    //}
 
     if (parserData.byteBuf.readableBytes() > 0) {
       if (match(3, UTF_8_BOM)) {

@@ -80,8 +80,8 @@ public class LogPersistenceService extends LuceneFiltersQueryOrmEngine<SyslogEve
         document.add(new StringField("procId", v, Field.Store.YES)));
     whenNotEmpty(source.getMsgId(), v ->
         document.add(new StringField("msgId", v, Field.Store.YES)));
-    whenNotEmpty(source.getStructuredData(), v ->
-        document.add(new StringField("structuredData", v, Field.Store.YES)));
+    //whenNotEmpty(source.getStructuredData(), v ->
+    //    document.add(new StringField("structuredData", v, Field.Store.YES)));
     whenNotEmpty(source.getMessage(), v ->
         document.add(new StringField("message", v, Field.Store.YES)));
 

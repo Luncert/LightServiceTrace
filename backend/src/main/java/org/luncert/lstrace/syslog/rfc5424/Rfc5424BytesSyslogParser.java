@@ -2,25 +2,14 @@ package org.luncert.lstrace.syslog.rfc5424;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import org.luncert.lstrace.base.AbstractBytesParser;
 
-public class Rfc5424BytesSyslogParser implements IRfc5424SyslogParser<byte[]> {
-
-  private final ThreadLocal<BytesParserData> dataThreadLocal = new ThreadLocal<>();
-
-  private static class BytesParserData {
-
-    private int cursor = 0;
-    private final byte[] raw;
-
-    public BytesParserData(byte[] raw) {
-      this.raw = raw;
-    }
-  }
+public class Rfc5424BytesSyslogParser extends AbstractBytesParser implements IRfc5424SyslogParser<byte[]> {
 
   public Rfc5424SyslogEvent parse(byte[] raw) {
     Rfc5424SyslogEvent.Rfc5424SyslogEventBuilder builder = Rfc5424SyslogEvent.builder();
     BytesParserData parserData = new BytesParserData(raw);
-    dataThreadLocal.set(parserData);
+    init(parserData);
 
     String prioVersion = token(SP);
     if (prioVersion == null) {
@@ -34,12 +23,12 @@ public class Rfc5424BytesSyslogParser implements IRfc5424SyslogParser<byte[]> {
         .procId(token(' '))
         .msgId(token(' '));
 
-    if (parserData.raw[parserData.cursor] == '[') {
-      builder.structuredData(token(']'));
-      parserData.cursor += 1;
-    } else {
-      builder.structuredData(token(' '));
-    }
+    //if (parserData.raw[parserData.cursor] == '[') {
+    //  builder.structuredData(token(']'));
+    //  parserData.cursor += 1;
+    //} else {
+    //  builder.structuredData(token(' '));
+    //}
 
     if (parserData.cursor < raw.length) {
       if (match(3, UTF_8_BOM)) {
@@ -73,30 +62,5 @@ public class Rfc5424BytesSyslogParser implements IRfc5424SyslogParser<byte[]> {
     }
 
     return builder.build();
-  }
-
-  private String token(char c) {
-    BytesParserData parserData = dataThreadLocal.get();
-    for (int i = parserData.cursor; i < parserData.raw.length; i++) {
-      if (parserData.raw[i] == c) {
-        int cursor = parserData.cursor;
-        parserData.cursor = i + 1;
-        return new String(Arrays.copyOfRange(parserData.raw, cursor, i),
-            StandardCharsets.UTF_8);
-      }
-    }
-    parserData.cursor = parserData.raw.length;
-    return null;
-  }
-
-  private boolean match(int len, byte[] pattern) {
-    BytesParserData parserData = dataThreadLocal.get();
-    int j = 0;
-    for (int i = parserData.cursor; i < parserData.raw.length && i < len; i++, j++) {
-      if (parserData.raw[i] != pattern[j]) {
-        break;
-      }
-    }
-    return j == pattern.length;
   }
 }
