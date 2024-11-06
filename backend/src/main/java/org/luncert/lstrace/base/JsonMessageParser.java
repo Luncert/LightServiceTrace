@@ -34,8 +34,6 @@ public class JsonMessageParser implements IMessageParser {
       .<String, BiConsumer<Rfc5424SyslogEvent, String>>builder()
       .put("written_ts", this::convertTimestamp)
       .put("level", this::convertLevel)
-      .put("thread", this::convertThread)
-      .put("logger", this::convertLogger)
       .put("msg", this::convertMessage)
       .build();
 
@@ -73,14 +71,6 @@ public class JsonMessageParser implements IMessageParser {
 
   private void convertLevel(Rfc5424SyslogEvent event, String raw) {
     event.setLevel(levelMappings.get(raw));
-  }
-
-  private void convertThread(Rfc5424SyslogEvent event, String raw) {
-    event.setThread(raw);
-  }
-
-  private void convertLogger(Rfc5424SyslogEvent event, String raw) {
-    event.setLogger(raw);
   }
 
   private void convertMessage(Rfc5424SyslogEvent event, String raw) {
