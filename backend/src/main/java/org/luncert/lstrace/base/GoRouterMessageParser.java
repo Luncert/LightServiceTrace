@@ -1,14 +1,10 @@
 package org.luncert.lstrace.base;
 
 import java.nio.charset.StandardCharsets;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import org.luncert.lstrace.syslog.rfc5424.Rfc5424SyslogEvent;
 
 public class GoRouterMessageParser extends AbstractBytesParser implements IMessageParser {
-
-  private final SimpleDateFormat timestampFormat = new SimpleDateFormat(("yyyy-MM-dd'T'hh:mm:ss.SSSSSSSSS'Z'"));
 
   public void postProcess(Rfc5424SyslogEvent syslog) {
     BytesParserData parserData = new BytesParserData(
@@ -21,11 +17,10 @@ public class GoRouterMessageParser extends AbstractBytesParser implements IMessa
     var host = token(' ');
     skip('[');
     var timestamp = token(']');
-    try {
-      syslog.setTimestamp(String.valueOf(timestampFormat.parse(timestamp).getTime()));
-    } catch (ParseException e) {
-      // ignore
+    if (timestamp.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{9}Z")) {
+      timestamp = timestamp.substring(0, 23) + "Z";
     }
+    syslog.setTimestamp(timestamp);
 
     skip('"');
     var httpHeader = token('"');

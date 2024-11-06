@@ -1,5 +1,7 @@
 package org.luncert.lstrace.base;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.luncert.lstrace.syslog.rfc5424.Rfc5424SyslogEvent;
@@ -16,7 +18,8 @@ public class GoRouterMessageParserTest {
         .build();
     parser.postProcess(event);
 
-    Assert.assertEquals("selfbilling-core-service-5ijd4fikhm7bwjzi.cert.cfapps.eu10.hana.ondemand.com - GET /odata/v2/CatalogService HTTP/1.1", event.getMessage());
-    Assert.assertEquals(32, event.getAttrs().size());
+    assertEquals("2024-11-06T07:19:15.665Z", event.getTimestamp());
+    assertEquals("selfbilling-core-service-5ijd4fikhm7bwjzi.cert.cfapps.eu10.hana.ondemand.com - GET /odata/v2/CatalogService HTTP/1.1", event.getMessage());
+    assertEquals(32, event.getAttrs().size());
   }
 }

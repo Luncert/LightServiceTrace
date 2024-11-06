@@ -1,10 +1,20 @@
 package org.luncert.lstrace.syslog.rfc5424;
 
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.TimeZone;
 import org.luncert.lstrace.base.AbstractBytesParser;
 
 public class Rfc5424BytesSyslogParser extends AbstractBytesParser implements IRfc5424SyslogParser<byte[]> {
+
+  private final SimpleDateFormat sdfParse = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+  private final SimpleDateFormat sdfFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
+  public Rfc5424BytesSyslogParser() {
+    sdfFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+  }
 
   public Rfc5424SyslogEvent parse(byte[] raw) {
     Rfc5424SyslogEvent.Rfc5424SyslogEventBuilder builder = Rfc5424SyslogEvent.builder();
@@ -17,18 +27,20 @@ public class Rfc5424BytesSyslogParser extends AbstractBytesParser implements IRf
     }
     builder.raw(raw)
         .prioVersion(prioVersion)
-        .timestamp(token(' '))
+        .timestamp(cleanTimestamp(token(' ')))
         .host(token(' '))
         .appName(token(' '))
         .procId(token(' '))
         .msgId(token(' '));
 
-    //if (parserData.raw[parserData.cursor] == '[') {
-    //  builder.structuredData(token(']'));
-    //  parserData.cursor += 1;
-    //} else {
-    //  builder.structuredData(token(' '));
-    //}
+    if (parserData.raw[parserData.cursor] == '[') {
+      token(']');
+      //builder.structuredData(token(']'));
+      parserData.cursor += 1;
+    } else {
+      token(' ');
+      //builder.structuredData(token(' '));
+    }
 
     if (parserData.cursor < raw.length) {
       if (match(3, UTF_8_BOM)) {
@@ -62,5 +74,14 @@ public class Rfc5424BytesSyslogParser extends AbstractBytesParser implements IRf
     }
 
     return builder.build();
+  }
+
+  private String cleanTimestamp(String ts) {
+    ts = ts.substring(0, 23) + ts.substring(25);
+    try {
+      return sdfFormat.format(sdfParse.parse(ts));
+    } catch (ParseException e) {
+      return ts;
+    }
   }
 }

@@ -16,6 +16,8 @@ import org.productivity.java.syslog4j.server.SyslogServerEventIF;
 @AllArgsConstructor
 public class Rfc5424SyslogEvent implements SyslogServerEventIF {
 
+  private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
   private static final String NIL = "-";
 
   private byte[] raw;
@@ -42,11 +44,8 @@ public class Rfc5424SyslogEvent implements SyslogServerEventIF {
     if (NIL.equals(timestamp)) {
       return null;
     }
-    String fixTz = timestamp.replace("Z", "+00:00");
-    final int tzSeparatorPos = fixTz.lastIndexOf(":");
-    fixTz = fixTz.substring(0, tzSeparatorPos) + fixTz.substring(tzSeparatorPos + 1);
     try {
-      return new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSSZ").parse(fixTz);
+      return sdf.parse(timestamp);
     } catch (ParseException e) {
       throw new Rfc5424SyslogException(e);
     }

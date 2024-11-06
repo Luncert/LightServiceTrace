@@ -20,7 +20,7 @@ public class JsonMessageParserTest {
     parser.postProcess(log);
 
     assertEquals(0, log.getLevel());
-    assertEquals("1730880630722", log.getTimestamp());
+    assertEquals("2024-11-06T08:10:30.722Z", log.getTimestamp());
     assertEquals("org.apache.kafka.clients.consumer.internals.ConsumerCoordinator", log.getLogger());
     assertEquals("[Consumer clientId=consumer-com.sap.cf.sales.self.billing.consumer.sbwap.journalEntryConfirmation-21, groupId=com.sap.cf.sales.self.billing.consumer.sbwap.journalEntryConfirmation] LeaveGroup request with Generation{generationId=378, memberId='consumer-com.sap.cf.sales.self.billing.consumer.sbwap.journalEntryConfirmation-21-8507e3ff-37a5-40f5-8290-53376d8a6c60', protocol='range'} failed with error: Group authorization failed.", log.getMessage());
   }

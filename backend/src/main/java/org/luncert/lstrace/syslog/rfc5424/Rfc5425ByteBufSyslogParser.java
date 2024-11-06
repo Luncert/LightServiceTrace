@@ -2,10 +2,19 @@ package org.luncert.lstrace.syslog.rfc5424;
 
 import io.netty.buffer.ByteBuf;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 public class Rfc5425ByteBufSyslogParser implements IRfc5424SyslogParser<ByteBuf> {
 
   private final ThreadLocal<ByteBufParserData> dataThreadLocal = new ThreadLocal<>();
+  private final SimpleDateFormat sdfParse = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+  private final SimpleDateFormat sdfFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
+  public Rfc5425ByteBufSyslogParser() {
+    sdfFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+  }
 
   private static class ByteBufParserData {
 
@@ -30,19 +39,21 @@ public class Rfc5425ByteBufSyslogParser implements IRfc5424SyslogParser<ByteBuf>
     }
     builder
         .prioVersion(prioVersion)
-        .timestamp(token(' '))
+        .timestamp(cleanTimestamp(token(' ')))
         .host(token(' '))
         .appName(token(' '))
         .procId(token(' '))
         .msgId(token(' '));
 
-    //if (nextByte() == '[') {
-    //  builder.structuredData(token(']'));
-    //  parserData.cursor += 2;
-    //} else {
-    //  builder.structuredData(token(' '));
-    //  parserData.cursor += 1;
-    //}
+    if (nextByte() == '[') {
+      token(']');
+      //builder.structuredData(token(']'));
+      parserData.cursor += 2;
+    } else {
+      token(' ');
+      //builder.structuredData(token(' '));
+      parserData.cursor += 1;
+    }
 
     if (parserData.byteBuf.readableBytes() > 0) {
       if (match(3, UTF_8_BOM)) {
@@ -77,6 +88,15 @@ public class Rfc5425ByteBufSyslogParser implements IRfc5424SyslogParser<ByteBuf>
     }
 
     return builder.build();
+  }
+
+  private String cleanTimestamp(String ts) {
+    ts = ts.substring(0, 23) + ts.substring(26);
+    try {
+      return sdfFormat.format(sdfParse.parse(ts));
+    } catch (ParseException e) {
+      return ts;
+    }
   }
 
   private String token(char c) {

@@ -4,6 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -14,6 +19,8 @@ import org.luncert.lstrace.syslog.rfc5424.Rfc5424SyslogEvent;
 public class JsonMessageParser implements IMessageParser {
 
   private final ObjectMapper objectMapper;
+  private final SimpleDateFormat timestampFormat13 = new SimpleDateFormat(("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+  private final DateTimeFormatter timestampFormat19 = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
   private final Map<String, Integer> levelMappings = ImmutableMap.of(
       "TRACE", 5,
@@ -50,11 +57,13 @@ public class JsonMessageParser implements IMessageParser {
   }
 
   private void convertTimestamp(Rfc5424SyslogEvent event, String raw) {
-    var t = Long.valueOf(raw);
-    while (t > 1_0000_0000_0000_000L) {
-      t /= 1000;
+    if (raw.length() == 19) {
+      event.setTimestamp(Instant.ofEpochSecond(0L, Long.parseLong(raw))
+          .atZone(ZoneId.of("UTC"))
+          .format(timestampFormat19));
+    } else {
+      event.setTimestamp(timestampFormat13.format(new Date(Long.parseLong(raw))));
     }
-    event.setTimestamp(String.valueOf(t));
   }
 
   private void convertLevel(Rfc5424SyslogEvent event, String raw) {
